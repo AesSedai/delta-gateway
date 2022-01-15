@@ -1,0 +1,7 @@
+client/package-lock.json
+client/.next
+client/node_modules/
+server/node_modules/
+server/package-lock.json
+graphql.schema.graphql
+graphql.ts

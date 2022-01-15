@@ -1,0 +1,6 @@
+build/
+node_modules/
+persist/
+logs/
+.env
+et2-admin-service-account-file.json
