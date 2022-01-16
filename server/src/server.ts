@@ -76,7 +76,9 @@ app.route({
     }
 })
 
-app.listen(3000, () => {
+const port = process.env.SERVER_PORT_CONTAINER || 3000
+
+app.listen(port, "0.0.0.0", () => {
     const { execute, subscribe } = getEnveloped({})
 
     useServer(
@@ -107,5 +109,5 @@ app.listen(3000, () => {
         app.websocketServer
     )
 
-    console.log(`GraphQL server is running.`)
+    console.log(`GraphQL server is running on port ${port}.`)
 })

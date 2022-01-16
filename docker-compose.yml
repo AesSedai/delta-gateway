@@ -1,9 +1,27 @@
 services:
+    db:
+        image: postgres:13.2-alpine
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        ports:
+            - ${POSTGRES_PORT_HOST}:${POSTGRES_PORT_CONTAINER}
+        volumes:
+            - db:/var/lib/postgres/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        networks:
+            - app
+
     redis:
         image: redis:6.2-rc3-alpine
         command: redis-server
         ports:
-            - 6379:6379
+            - ${REDIS_PORT_HOST}:${REDIS_PORT_CONTAINER}
         networks:
             - app
 
@@ -20,14 +38,11 @@ services:
         environment:
             HASURA_GRAPHQL_LOG_LEVEL: warn
             HASURA_GRAPHQL_DATABASE_URL: ${HASURA_GRAPHQL_DATABASE_URL}
-            HASURA_GRAPHQL_UNAUTHORIZED_ROLE: ${HASURA_GRAPHQL_UNAUTHORIZED_ROLE}
             HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: "true"
             ## enable the console served by server
             HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
             ## enable debugging mode. It is recommended to disable this in production
             HASURA_GRAPHQL_DEV_MODE: "true"
-            HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
-            HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
         #     HASURA_GRAPHQL_METADATA_DIR: /hasura-metadata
         # volumes:
         #     - ./hasura/metadata:/hasura-metadata
@@ -35,28 +50,48 @@ services:
             - app
 
     client:
-        build: ./client
+        build:
+            context: ./client
+            args:
+                PORT: ${CLIENT_PORT_CONTAINER}
         # command: npm run build
         # command: npx serve -s build -l 3000
         environment:
             CHOKIDAR_USEPOLLING: "true"
             FAST_REFRESH: "true"
+            SERVER_URL: ${SERVER_URL}
         volumes:
             - ./client:/usr/src/app
         ports:
-            - 3000:3000
+            - ${CLIENT_PORT_HOST}:${CLIENT_PORT_CONTAINER}
         networks:
             - app
 
     server:
-        build: ./server
+        build:
+            context: ./server
+            args:
+                PORT: ${SERVER_PORT_CONTAINER}
+        environment:
+            SERVER_PORT_CONTAINER: ${SERVER_PORT_CONTAINER}
+            HASURA_GRAPHQL_URL: ${HASURA_GRAPHQL_URL}
+            HASURA_METADATA_URL: ${HASURA_METADATA_URL}
         volumes:
             - ./server:/usr/src/app
         ports:
-            - 8081:8081
+            - ${SERVER_PORT_HOST}:${SERVER_PORT_CONTAINER}
+        healthcheck:
+            test: ["CMD-SHELL", "netstat -tulnp | grep ${SERVER_PORT_CONTAINER}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
         networks:
             - app
 
 networks:
     app:
         driver: bridge
+
+volumes:
+    db:
+        external: true
