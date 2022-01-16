@@ -1,0 +1,10 @@
+table:
+  name: loans
+  schema: public
+object_relationships:
+- name: library_book
+  using:
+    foreign_key_constraint_on: library_book_id
+- name: member
+  using:
+    foreign_key_constraint_on: member_id

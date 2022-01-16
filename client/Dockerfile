@@ -1,4 +1,4 @@
-FROM node:16.10.0-alpine3.13
+FROM node:16.13.2-alpine3.15
 
 ARG PORT=3000
 

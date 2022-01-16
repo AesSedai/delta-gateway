@@ -1,0 +1,18 @@
+table:
+  name: libraries
+  schema: public
+array_relationships:
+- name: library_books
+  using:
+    foreign_key_constraint_on:
+      column: library_id
+      table:
+        name: library_books
+        schema: public
+- name: library_members
+  using:
+    foreign_key_constraint_on:
+      column: library_id
+      table:
+        name: library_members
+        schema: public

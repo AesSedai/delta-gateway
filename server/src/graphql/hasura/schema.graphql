@@ -1,0 +1,2958 @@
+schema {
+  query: query_root
+  mutation: mutation_root
+  subscription: subscription_root
+}
+
+"""whether this query should be cached (Hasura Cloud only)"""
+directive @cached(
+  """refresh the cache entry"""
+  refresh: Boolean! = false
+
+  """measured in seconds"""
+  ttl: Int! = 60
+) on QUERY
+
+"""
+Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
+"""
+input Int_comparison_exp {
+  _eq: Int
+  _gt: Int
+  _gte: Int
+  _in: [Int!]
+  _is_null: Boolean
+  _lt: Int
+  _lte: Int
+  _neq: Int
+  _nin: [Int!]
+}
+
+"""
+Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
+"""
+input String_comparison_exp {
+  _eq: String
+  _gt: String
+  _gte: String
+
+  """does the column match the given case-insensitive pattern"""
+  _ilike: String
+  _in: [String!]
+
+  """
+  does the column match the given POSIX regular expression, case insensitive
+  """
+  _iregex: String
+  _is_null: Boolean
+
+  """does the column match the given pattern"""
+  _like: String
+  _lt: String
+  _lte: String
+  _neq: String
+
+  """does the column NOT match the given case-insensitive pattern"""
+  _nilike: String
+  _nin: [String!]
+
+  """
+  does the column NOT match the given POSIX regular expression, case insensitive
+  """
+  _niregex: String
+
+  """does the column NOT match the given pattern"""
+  _nlike: String
+
+  """
+  does the column NOT match the given POSIX regular expression, case sensitive
+  """
+  _nregex: String
+
+  """does the column NOT match the given SQL regular expression"""
+  _nsimilar: String
+
+  """
+  does the column match the given POSIX regular expression, case sensitive
+  """
+  _regex: String
+
+  """does the column match the given SQL regular expression"""
+  _similar: String
+}
+
+"""
+columns and relationships of "authors"
+"""
+type authors {
+  """An array relationship"""
+  books(
+    """distinct select on columns"""
+    distinct_on: [books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [books_order_by!]
+
+    """filter the rows returned"""
+    where: books_bool_exp
+  ): [books!]!
+
+  """An aggregate relationship"""
+  books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [books_order_by!]
+
+    """filter the rows returned"""
+    where: books_bool_exp
+  ): books_aggregate!
+  created_at: timestamptz!
+  id: uuid!
+  name: String
+  updated_at: timestamptz!
+}
+
+"""
+aggregated selection of "authors"
+"""
+type authors_aggregate {
+  aggregate: authors_aggregate_fields
+  nodes: [authors!]!
+}
+
+"""
+aggregate fields of "authors"
+"""
+type authors_aggregate_fields {
+  count(columns: [authors_select_column!], distinct: Boolean): Int!
+  max: authors_max_fields
+  min: authors_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "authors". All fields are combined with a logical 'AND'.
+"""
+input authors_bool_exp {
+  _and: [authors_bool_exp!]
+  _not: authors_bool_exp
+  _or: [authors_bool_exp!]
+  books: books_bool_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "authors"
+"""
+enum authors_constraint {
+  """unique or primary key constraint"""
+  authors_pkey
+}
+
+"""
+input type for inserting data into table "authors"
+"""
+input authors_insert_input {
+  books: books_arr_rel_insert_input
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+}
+
+"""aggregate max on columns"""
+type authors_max_fields {
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+}
+
+"""aggregate min on columns"""
+type authors_min_fields {
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+}
+
+"""
+response of any mutation on the table "authors"
+"""
+type authors_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [authors!]!
+}
+
+"""
+input type for inserting object relation for remote table "authors"
+"""
+input authors_obj_rel_insert_input {
+  data: authors_insert_input!
+
+  """on conflict condition"""
+  on_conflict: authors_on_conflict
+}
+
+"""
+on conflict condition type for table "authors"
+"""
+input authors_on_conflict {
+  constraint: authors_constraint!
+  update_columns: [authors_update_column!]! = []
+  where: authors_bool_exp
+}
+
+"""Ordering options when selecting data from "authors"."""
+input authors_order_by {
+  books_aggregate: books_aggregate_order_by
+  created_at: order_by
+  id: order_by
+  name: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: authors"""
+input authors_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "authors"
+"""
+enum authors_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "authors"
+"""
+input authors_set_input {
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "authors"
+"""
+enum authors_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  updated_at
+}
+
+"""
+columns and relationships of "books"
+"""
+type books {
+  """An object relationship"""
+  author: authors!
+  author_id: uuid!
+  created_at: timestamptz!
+  id: uuid!
+  isbn: String
+
+  """An array relationship"""
+  library_books(
+    """distinct select on columns"""
+    distinct_on: [library_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_books_order_by!]
+
+    """filter the rows returned"""
+    where: library_books_bool_exp
+  ): [library_books!]!
+
+  """An aggregate relationship"""
+  library_books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [library_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_books_order_by!]
+
+    """filter the rows returned"""
+    where: library_books_bool_exp
+  ): library_books_aggregate!
+  published_at: timestamp
+  title: String
+  updated_at: timestamptz!
+}
+
+"""
+aggregated selection of "books"
+"""
+type books_aggregate {
+  aggregate: books_aggregate_fields
+  nodes: [books!]!
+}
+
+"""
+aggregate fields of "books"
+"""
+type books_aggregate_fields {
+  count(columns: [books_select_column!], distinct: Boolean): Int!
+  max: books_max_fields
+  min: books_min_fields
+}
+
+"""
+order by aggregate values of table "books"
+"""
+input books_aggregate_order_by {
+  count: order_by
+  max: books_max_order_by
+  min: books_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "books"
+"""
+input books_arr_rel_insert_input {
+  data: [books_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: books_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "books". All fields are combined with a logical 'AND'.
+"""
+input books_bool_exp {
+  _and: [books_bool_exp!]
+  _not: books_bool_exp
+  _or: [books_bool_exp!]
+  author: authors_bool_exp
+  author_id: uuid_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  isbn: String_comparison_exp
+  library_books: library_books_bool_exp
+  published_at: timestamp_comparison_exp
+  title: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "books"
+"""
+enum books_constraint {
+  """unique or primary key constraint"""
+  books_pkey
+}
+
+"""
+input type for inserting data into table "books"
+"""
+input books_insert_input {
+  author: authors_obj_rel_insert_input
+  author_id: uuid
+  created_at: timestamptz
+  id: uuid
+  isbn: String
+  library_books: library_books_arr_rel_insert_input
+  published_at: timestamp
+  title: String
+  updated_at: timestamptz
+}
+
+"""aggregate max on columns"""
+type books_max_fields {
+  author_id: uuid
+  created_at: timestamptz
+  id: uuid
+  isbn: String
+  published_at: timestamp
+  title: String
+  updated_at: timestamptz
+}
+
+"""
+order by max() on columns of table "books"
+"""
+input books_max_order_by {
+  author_id: order_by
+  created_at: order_by
+  id: order_by
+  isbn: order_by
+  published_at: order_by
+  title: order_by
+  updated_at: order_by
+}
+
+"""aggregate min on columns"""
+type books_min_fields {
+  author_id: uuid
+  created_at: timestamptz
+  id: uuid
+  isbn: String
+  published_at: timestamp
+  title: String
+  updated_at: timestamptz
+}
+
+"""
+order by min() on columns of table "books"
+"""
+input books_min_order_by {
+  author_id: order_by
+  created_at: order_by
+  id: order_by
+  isbn: order_by
+  published_at: order_by
+  title: order_by
+  updated_at: order_by
+}
+
+"""
+response of any mutation on the table "books"
+"""
+type books_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [books!]!
+}
+
+"""
+input type for inserting object relation for remote table "books"
+"""
+input books_obj_rel_insert_input {
+  data: books_insert_input!
+
+  """on conflict condition"""
+  on_conflict: books_on_conflict
+}
+
+"""
+on conflict condition type for table "books"
+"""
+input books_on_conflict {
+  constraint: books_constraint!
+  update_columns: [books_update_column!]! = []
+  where: books_bool_exp
+}
+
+"""Ordering options when selecting data from "books"."""
+input books_order_by {
+  author: authors_order_by
+  author_id: order_by
+  created_at: order_by
+  id: order_by
+  isbn: order_by
+  library_books_aggregate: library_books_aggregate_order_by
+  published_at: order_by
+  title: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: books"""
+input books_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "books"
+"""
+enum books_select_column {
+  """column name"""
+  author_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  isbn
+
+  """column name"""
+  published_at
+
+  """column name"""
+  title
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "books"
+"""
+input books_set_input {
+  author_id: uuid
+  created_at: timestamptz
+  id: uuid
+  isbn: String
+  published_at: timestamp
+  title: String
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "books"
+"""
+enum books_update_column {
+  """column name"""
+  author_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  isbn
+
+  """column name"""
+  published_at
+
+  """column name"""
+  title
+
+  """column name"""
+  updated_at
+}
+
+"""
+columns and relationships of "libraries"
+"""
+type libraries {
+  address: String
+  created_at: timestamptz!
+  id: uuid!
+
+  """An array relationship"""
+  library_books(
+    """distinct select on columns"""
+    distinct_on: [library_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_books_order_by!]
+
+    """filter the rows returned"""
+    where: library_books_bool_exp
+  ): [library_books!]!
+
+  """An aggregate relationship"""
+  library_books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [library_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_books_order_by!]
+
+    """filter the rows returned"""
+    where: library_books_bool_exp
+  ): library_books_aggregate!
+
+  """
+  fetch data from the table: "library_members"
+  """
+  library_members(
+    """distinct select on columns"""
+    distinct_on: [library_members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_members_order_by!]
+
+    """filter the rows returned"""
+    where: library_members_bool_exp
+  ): [library_members!]!
+
+  """An aggregate relationship"""
+  library_members_aggregate(
+    """distinct select on columns"""
+    distinct_on: [library_members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_members_order_by!]
+
+    """filter the rows returned"""
+    where: library_members_bool_exp
+  ): library_members_aggregate!
+  name: String
+  updated_at: timestamptz!
+}
+
+"""
+aggregated selection of "libraries"
+"""
+type libraries_aggregate {
+  aggregate: libraries_aggregate_fields
+  nodes: [libraries!]!
+}
+
+"""
+aggregate fields of "libraries"
+"""
+type libraries_aggregate_fields {
+  count(columns: [libraries_select_column!], distinct: Boolean): Int!
+  max: libraries_max_fields
+  min: libraries_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "libraries". All fields are combined with a logical 'AND'.
+"""
+input libraries_bool_exp {
+  _and: [libraries_bool_exp!]
+  _not: libraries_bool_exp
+  _or: [libraries_bool_exp!]
+  address: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  library_books: library_books_bool_exp
+  library_members: library_members_bool_exp
+  name: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "libraries"
+"""
+enum libraries_constraint {
+  """unique or primary key constraint"""
+  libraries_pkey
+}
+
+"""
+input type for inserting data into table "libraries"
+"""
+input libraries_insert_input {
+  address: String
+  created_at: timestamptz
+  id: uuid
+  library_books: library_books_arr_rel_insert_input
+  library_members: library_members_arr_rel_insert_input
+  name: String
+  updated_at: timestamptz
+}
+
+"""aggregate max on columns"""
+type libraries_max_fields {
+  address: String
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+}
+
+"""aggregate min on columns"""
+type libraries_min_fields {
+  address: String
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+}
+
+"""
+response of any mutation on the table "libraries"
+"""
+type libraries_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [libraries!]!
+}
+
+"""
+input type for inserting object relation for remote table "libraries"
+"""
+input libraries_obj_rel_insert_input {
+  data: libraries_insert_input!
+
+  """on conflict condition"""
+  on_conflict: libraries_on_conflict
+}
+
+"""
+on conflict condition type for table "libraries"
+"""
+input libraries_on_conflict {
+  constraint: libraries_constraint!
+  update_columns: [libraries_update_column!]! = []
+  where: libraries_bool_exp
+}
+
+"""Ordering options when selecting data from "libraries"."""
+input libraries_order_by {
+  address: order_by
+  created_at: order_by
+  id: order_by
+  library_books_aggregate: library_books_aggregate_order_by
+  library_members_aggregate: library_members_aggregate_order_by
+  name: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: libraries"""
+input libraries_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "libraries"
+"""
+enum libraries_select_column {
+  """column name"""
+  address
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "libraries"
+"""
+input libraries_set_input {
+  address: String
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "libraries"
+"""
+enum libraries_update_column {
+  """column name"""
+  address
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  updated_at
+}
+
+"""
+columns and relationships of "library_books"
+"""
+type library_books {
+  """An object relationship"""
+  book: books!
+  book_id: uuid!
+  created_at: timestamptz!
+  id: uuid!
+
+  """An object relationship"""
+  library: libraries!
+  library_id: uuid!
+
+  """An array relationship"""
+  loans(
+    """distinct select on columns"""
+    distinct_on: [loans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [loans_order_by!]
+
+    """filter the rows returned"""
+    where: loans_bool_exp
+  ): [loans!]!
+
+  """An aggregate relationship"""
+  loans_aggregate(
+    """distinct select on columns"""
+    distinct_on: [loans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [loans_order_by!]
+
+    """filter the rows returned"""
+    where: loans_bool_exp
+  ): loans_aggregate!
+  quantity: Int!
+  updated_at: timestamptz!
+}
+
+"""
+aggregated selection of "library_books"
+"""
+type library_books_aggregate {
+  aggregate: library_books_aggregate_fields
+  nodes: [library_books!]!
+}
+
+"""
+aggregate fields of "library_books"
+"""
+type library_books_aggregate_fields {
+  avg: library_books_avg_fields
+  count(columns: [library_books_select_column!], distinct: Boolean): Int!
+  max: library_books_max_fields
+  min: library_books_min_fields
+  stddev: library_books_stddev_fields
+  stddev_pop: library_books_stddev_pop_fields
+  stddev_samp: library_books_stddev_samp_fields
+  sum: library_books_sum_fields
+  var_pop: library_books_var_pop_fields
+  var_samp: library_books_var_samp_fields
+  variance: library_books_variance_fields
+}
+
+"""
+order by aggregate values of table "library_books"
+"""
+input library_books_aggregate_order_by {
+  avg: library_books_avg_order_by
+  count: order_by
+  max: library_books_max_order_by
+  min: library_books_min_order_by
+  stddev: library_books_stddev_order_by
+  stddev_pop: library_books_stddev_pop_order_by
+  stddev_samp: library_books_stddev_samp_order_by
+  sum: library_books_sum_order_by
+  var_pop: library_books_var_pop_order_by
+  var_samp: library_books_var_samp_order_by
+  variance: library_books_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "library_books"
+"""
+input library_books_arr_rel_insert_input {
+  data: [library_books_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: library_books_on_conflict
+}
+
+"""aggregate avg on columns"""
+type library_books_avg_fields {
+  quantity: Float
+}
+
+"""
+order by avg() on columns of table "library_books"
+"""
+input library_books_avg_order_by {
+  quantity: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "library_books". All fields are combined with a logical 'AND'.
+"""
+input library_books_bool_exp {
+  _and: [library_books_bool_exp!]
+  _not: library_books_bool_exp
+  _or: [library_books_bool_exp!]
+  book: books_bool_exp
+  book_id: uuid_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  library: libraries_bool_exp
+  library_id: uuid_comparison_exp
+  loans: loans_bool_exp
+  quantity: Int_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "library_books"
+"""
+enum library_books_constraint {
+  """unique or primary key constraint"""
+  library_books_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "library_books"
+"""
+input library_books_inc_input {
+  quantity: Int
+}
+
+"""
+input type for inserting data into table "library_books"
+"""
+input library_books_insert_input {
+  book: books_obj_rel_insert_input
+  book_id: uuid
+  created_at: timestamptz
+  id: uuid
+  library: libraries_obj_rel_insert_input
+  library_id: uuid
+  loans: loans_arr_rel_insert_input
+  quantity: Int
+  updated_at: timestamptz
+}
+
+"""aggregate max on columns"""
+type library_books_max_fields {
+  book_id: uuid
+  created_at: timestamptz
+  id: uuid
+  library_id: uuid
+  quantity: Int
+  updated_at: timestamptz
+}
+
+"""
+order by max() on columns of table "library_books"
+"""
+input library_books_max_order_by {
+  book_id: order_by
+  created_at: order_by
+  id: order_by
+  library_id: order_by
+  quantity: order_by
+  updated_at: order_by
+}
+
+"""aggregate min on columns"""
+type library_books_min_fields {
+  book_id: uuid
+  created_at: timestamptz
+  id: uuid
+  library_id: uuid
+  quantity: Int
+  updated_at: timestamptz
+}
+
+"""
+order by min() on columns of table "library_books"
+"""
+input library_books_min_order_by {
+  book_id: order_by
+  created_at: order_by
+  id: order_by
+  library_id: order_by
+  quantity: order_by
+  updated_at: order_by
+}
+
+"""
+response of any mutation on the table "library_books"
+"""
+type library_books_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [library_books!]!
+}
+
+"""
+input type for inserting object relation for remote table "library_books"
+"""
+input library_books_obj_rel_insert_input {
+  data: library_books_insert_input!
+
+  """on conflict condition"""
+  on_conflict: library_books_on_conflict
+}
+
+"""
+on conflict condition type for table "library_books"
+"""
+input library_books_on_conflict {
+  constraint: library_books_constraint!
+  update_columns: [library_books_update_column!]! = []
+  where: library_books_bool_exp
+}
+
+"""Ordering options when selecting data from "library_books"."""
+input library_books_order_by {
+  book: books_order_by
+  book_id: order_by
+  created_at: order_by
+  id: order_by
+  library: libraries_order_by
+  library_id: order_by
+  loans_aggregate: loans_aggregate_order_by
+  quantity: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: library_books"""
+input library_books_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "library_books"
+"""
+enum library_books_select_column {
+  """column name"""
+  book_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  library_id
+
+  """column name"""
+  quantity
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "library_books"
+"""
+input library_books_set_input {
+  book_id: uuid
+  created_at: timestamptz
+  id: uuid
+  library_id: uuid
+  quantity: Int
+  updated_at: timestamptz
+}
+
+"""aggregate stddev on columns"""
+type library_books_stddev_fields {
+  quantity: Float
+}
+
+"""
+order by stddev() on columns of table "library_books"
+"""
+input library_books_stddev_order_by {
+  quantity: order_by
+}
+
+"""aggregate stddev_pop on columns"""
+type library_books_stddev_pop_fields {
+  quantity: Float
+}
+
+"""
+order by stddev_pop() on columns of table "library_books"
+"""
+input library_books_stddev_pop_order_by {
+  quantity: order_by
+}
+
+"""aggregate stddev_samp on columns"""
+type library_books_stddev_samp_fields {
+  quantity: Float
+}
+
+"""
+order by stddev_samp() on columns of table "library_books"
+"""
+input library_books_stddev_samp_order_by {
+  quantity: order_by
+}
+
+"""aggregate sum on columns"""
+type library_books_sum_fields {
+  quantity: Int
+}
+
+"""
+order by sum() on columns of table "library_books"
+"""
+input library_books_sum_order_by {
+  quantity: order_by
+}
+
+"""
+update columns of table "library_books"
+"""
+enum library_books_update_column {
+  """column name"""
+  book_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  library_id
+
+  """column name"""
+  quantity
+
+  """column name"""
+  updated_at
+}
+
+"""aggregate var_pop on columns"""
+type library_books_var_pop_fields {
+  quantity: Float
+}
+
+"""
+order by var_pop() on columns of table "library_books"
+"""
+input library_books_var_pop_order_by {
+  quantity: order_by
+}
+
+"""aggregate var_samp on columns"""
+type library_books_var_samp_fields {
+  quantity: Float
+}
+
+"""
+order by var_samp() on columns of table "library_books"
+"""
+input library_books_var_samp_order_by {
+  quantity: order_by
+}
+
+"""aggregate variance on columns"""
+type library_books_variance_fields {
+  quantity: Float
+}
+
+"""
+order by variance() on columns of table "library_books"
+"""
+input library_books_variance_order_by {
+  quantity: order_by
+}
+
+"""
+columns and relationships of "library_members"
+"""
+type library_members {
+  created_at: timestamptz!
+  id: uuid!
+
+  """An object relationship"""
+  library: libraries!
+  library_id: uuid!
+
+  """An object relationship"""
+  member: members!
+  member_id: uuid!
+  updated_at: timestamptz!
+}
+
+"""
+aggregated selection of "library_members"
+"""
+type library_members_aggregate {
+  aggregate: library_members_aggregate_fields
+  nodes: [library_members!]!
+}
+
+"""
+aggregate fields of "library_members"
+"""
+type library_members_aggregate_fields {
+  count(columns: [library_members_select_column!], distinct: Boolean): Int!
+  max: library_members_max_fields
+  min: library_members_min_fields
+}
+
+"""
+order by aggregate values of table "library_members"
+"""
+input library_members_aggregate_order_by {
+  count: order_by
+  max: library_members_max_order_by
+  min: library_members_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "library_members"
+"""
+input library_members_arr_rel_insert_input {
+  data: [library_members_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: library_members_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "library_members". All fields are combined with a logical 'AND'.
+"""
+input library_members_bool_exp {
+  _and: [library_members_bool_exp!]
+  _not: library_members_bool_exp
+  _or: [library_members_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  library: libraries_bool_exp
+  library_id: uuid_comparison_exp
+  member: members_bool_exp
+  member_id: uuid_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "library_members"
+"""
+enum library_members_constraint {
+  """unique or primary key constraint"""
+  library_members_pkey
+}
+
+"""
+input type for inserting data into table "library_members"
+"""
+input library_members_insert_input {
+  created_at: timestamptz
+  id: uuid
+  library: libraries_obj_rel_insert_input
+  library_id: uuid
+  member: members_obj_rel_insert_input
+  member_id: uuid
+  updated_at: timestamptz
+}
+
+"""aggregate max on columns"""
+type library_members_max_fields {
+  created_at: timestamptz
+  id: uuid
+  library_id: uuid
+  member_id: uuid
+  updated_at: timestamptz
+}
+
+"""
+order by max() on columns of table "library_members"
+"""
+input library_members_max_order_by {
+  created_at: order_by
+  id: order_by
+  library_id: order_by
+  member_id: order_by
+  updated_at: order_by
+}
+
+"""aggregate min on columns"""
+type library_members_min_fields {
+  created_at: timestamptz
+  id: uuid
+  library_id: uuid
+  member_id: uuid
+  updated_at: timestamptz
+}
+
+"""
+order by min() on columns of table "library_members"
+"""
+input library_members_min_order_by {
+  created_at: order_by
+  id: order_by
+  library_id: order_by
+  member_id: order_by
+  updated_at: order_by
+}
+
+"""
+response of any mutation on the table "library_members"
+"""
+type library_members_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [library_members!]!
+}
+
+"""
+on conflict condition type for table "library_members"
+"""
+input library_members_on_conflict {
+  constraint: library_members_constraint!
+  update_columns: [library_members_update_column!]! = []
+  where: library_members_bool_exp
+}
+
+"""Ordering options when selecting data from "library_members"."""
+input library_members_order_by {
+  created_at: order_by
+  id: order_by
+  library: libraries_order_by
+  library_id: order_by
+  member: members_order_by
+  member_id: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: library_members"""
+input library_members_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "library_members"
+"""
+enum library_members_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  library_id
+
+  """column name"""
+  member_id
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "library_members"
+"""
+input library_members_set_input {
+  created_at: timestamptz
+  id: uuid
+  library_id: uuid
+  member_id: uuid
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "library_members"
+"""
+enum library_members_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  library_id
+
+  """column name"""
+  member_id
+
+  """column name"""
+  updated_at
+}
+
+"""
+columns and relationships of "loans"
+"""
+type loans {
+  created_at: timestamptz!
+  id: uuid!
+
+  """An object relationship"""
+  library_book: library_books!
+  library_book_id: uuid!
+
+  """An object relationship"""
+  member: members!
+  member_id: uuid!
+  updated_at: timestamptz!
+}
+
+"""
+aggregated selection of "loans"
+"""
+type loans_aggregate {
+  aggregate: loans_aggregate_fields
+  nodes: [loans!]!
+}
+
+"""
+aggregate fields of "loans"
+"""
+type loans_aggregate_fields {
+  count(columns: [loans_select_column!], distinct: Boolean): Int!
+  max: loans_max_fields
+  min: loans_min_fields
+}
+
+"""
+order by aggregate values of table "loans"
+"""
+input loans_aggregate_order_by {
+  count: order_by
+  max: loans_max_order_by
+  min: loans_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "loans"
+"""
+input loans_arr_rel_insert_input {
+  data: [loans_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: loans_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "loans". All fields are combined with a logical 'AND'.
+"""
+input loans_bool_exp {
+  _and: [loans_bool_exp!]
+  _not: loans_bool_exp
+  _or: [loans_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  library_book: library_books_bool_exp
+  library_book_id: uuid_comparison_exp
+  member: members_bool_exp
+  member_id: uuid_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "loans"
+"""
+enum loans_constraint {
+  """unique or primary key constraint"""
+  loans_library_book_id_member_id_unique
+
+  """unique or primary key constraint"""
+  loans_pkey
+}
+
+"""
+input type for inserting data into table "loans"
+"""
+input loans_insert_input {
+  created_at: timestamptz
+  id: uuid
+  library_book: library_books_obj_rel_insert_input
+  library_book_id: uuid
+  member: members_obj_rel_insert_input
+  member_id: uuid
+  updated_at: timestamptz
+}
+
+"""aggregate max on columns"""
+type loans_max_fields {
+  created_at: timestamptz
+  id: uuid
+  library_book_id: uuid
+  member_id: uuid
+  updated_at: timestamptz
+}
+
+"""
+order by max() on columns of table "loans"
+"""
+input loans_max_order_by {
+  created_at: order_by
+  id: order_by
+  library_book_id: order_by
+  member_id: order_by
+  updated_at: order_by
+}
+
+"""aggregate min on columns"""
+type loans_min_fields {
+  created_at: timestamptz
+  id: uuid
+  library_book_id: uuid
+  member_id: uuid
+  updated_at: timestamptz
+}
+
+"""
+order by min() on columns of table "loans"
+"""
+input loans_min_order_by {
+  created_at: order_by
+  id: order_by
+  library_book_id: order_by
+  member_id: order_by
+  updated_at: order_by
+}
+
+"""
+response of any mutation on the table "loans"
+"""
+type loans_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [loans!]!
+}
+
+"""
+on conflict condition type for table "loans"
+"""
+input loans_on_conflict {
+  constraint: loans_constraint!
+  update_columns: [loans_update_column!]! = []
+  where: loans_bool_exp
+}
+
+"""Ordering options when selecting data from "loans"."""
+input loans_order_by {
+  created_at: order_by
+  id: order_by
+  library_book: library_books_order_by
+  library_book_id: order_by
+  member: members_order_by
+  member_id: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: loans"""
+input loans_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "loans"
+"""
+enum loans_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  library_book_id
+
+  """column name"""
+  member_id
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "loans"
+"""
+input loans_set_input {
+  created_at: timestamptz
+  id: uuid
+  library_book_id: uuid
+  member_id: uuid
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "loans"
+"""
+enum loans_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  library_book_id
+
+  """column name"""
+  member_id
+
+  """column name"""
+  updated_at
+}
+
+"""
+columns and relationships of "members"
+"""
+type members {
+  address: String
+  created_at: timestamptz!
+  id: uuid!
+
+  """
+  fetch data from the table: "library_members"
+  """
+  library_members(
+    """distinct select on columns"""
+    distinct_on: [library_members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_members_order_by!]
+
+    """filter the rows returned"""
+    where: library_members_bool_exp
+  ): [library_members!]!
+
+  """An aggregate relationship"""
+  library_members_aggregate(
+    """distinct select on columns"""
+    distinct_on: [library_members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_members_order_by!]
+
+    """filter the rows returned"""
+    where: library_members_bool_exp
+  ): library_members_aggregate!
+
+  """An array relationship"""
+  loans(
+    """distinct select on columns"""
+    distinct_on: [loans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [loans_order_by!]
+
+    """filter the rows returned"""
+    where: loans_bool_exp
+  ): [loans!]!
+
+  """An aggregate relationship"""
+  loans_aggregate(
+    """distinct select on columns"""
+    distinct_on: [loans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [loans_order_by!]
+
+    """filter the rows returned"""
+    where: loans_bool_exp
+  ): loans_aggregate!
+  name: String
+  updated_at: timestamptz!
+}
+
+"""
+aggregated selection of "members"
+"""
+type members_aggregate {
+  aggregate: members_aggregate_fields
+  nodes: [members!]!
+}
+
+"""
+aggregate fields of "members"
+"""
+type members_aggregate_fields {
+  count(columns: [members_select_column!], distinct: Boolean): Int!
+  max: members_max_fields
+  min: members_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "members". All fields are combined with a logical 'AND'.
+"""
+input members_bool_exp {
+  _and: [members_bool_exp!]
+  _not: members_bool_exp
+  _or: [members_bool_exp!]
+  address: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  library_members: library_members_bool_exp
+  loans: loans_bool_exp
+  name: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "members"
+"""
+enum members_constraint {
+  """unique or primary key constraint"""
+  members_pkey
+}
+
+"""
+input type for inserting data into table "members"
+"""
+input members_insert_input {
+  address: String
+  created_at: timestamptz
+  id: uuid
+  library_members: library_members_arr_rel_insert_input
+  loans: loans_arr_rel_insert_input
+  name: String
+  updated_at: timestamptz
+}
+
+"""aggregate max on columns"""
+type members_max_fields {
+  address: String
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+}
+
+"""aggregate min on columns"""
+type members_min_fields {
+  address: String
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+}
+
+"""
+response of any mutation on the table "members"
+"""
+type members_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [members!]!
+}
+
+"""
+input type for inserting object relation for remote table "members"
+"""
+input members_obj_rel_insert_input {
+  data: members_insert_input!
+
+  """on conflict condition"""
+  on_conflict: members_on_conflict
+}
+
+"""
+on conflict condition type for table "members"
+"""
+input members_on_conflict {
+  constraint: members_constraint!
+  update_columns: [members_update_column!]! = []
+  where: members_bool_exp
+}
+
+"""Ordering options when selecting data from "members"."""
+input members_order_by {
+  address: order_by
+  created_at: order_by
+  id: order_by
+  library_members_aggregate: library_members_aggregate_order_by
+  loans_aggregate: loans_aggregate_order_by
+  name: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: members"""
+input members_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "members"
+"""
+enum members_select_column {
+  """column name"""
+  address
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "members"
+"""
+input members_set_input {
+  address: String
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "members"
+"""
+enum members_update_column {
+  """column name"""
+  address
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  updated_at
+}
+
+"""mutation root"""
+type mutation_root {
+  """
+  delete data from the table: "authors"
+  """
+  delete_authors(
+    """filter the rows which have to be deleted"""
+    where: authors_bool_exp!
+  ): authors_mutation_response
+
+  """
+  delete single row from the table: "authors"
+  """
+  delete_authors_by_pk(id: uuid!): authors
+
+  """
+  delete data from the table: "books"
+  """
+  delete_books(
+    """filter the rows which have to be deleted"""
+    where: books_bool_exp!
+  ): books_mutation_response
+
+  """
+  delete single row from the table: "books"
+  """
+  delete_books_by_pk(id: uuid!): books
+
+  """
+  delete data from the table: "libraries"
+  """
+  delete_libraries(
+    """filter the rows which have to be deleted"""
+    where: libraries_bool_exp!
+  ): libraries_mutation_response
+
+  """
+  delete single row from the table: "libraries"
+  """
+  delete_libraries_by_pk(id: uuid!): libraries
+
+  """
+  delete data from the table: "library_books"
+  """
+  delete_library_books(
+    """filter the rows which have to be deleted"""
+    where: library_books_bool_exp!
+  ): library_books_mutation_response
+
+  """
+  delete single row from the table: "library_books"
+  """
+  delete_library_books_by_pk(id: uuid!): library_books
+
+  """
+  delete data from the table: "library_members"
+  """
+  delete_library_members(
+    """filter the rows which have to be deleted"""
+    where: library_members_bool_exp!
+  ): library_members_mutation_response
+
+  """
+  delete single row from the table: "library_members"
+  """
+  delete_library_members_by_pk(id: uuid!): library_members
+
+  """
+  delete data from the table: "loans"
+  """
+  delete_loans(
+    """filter the rows which have to be deleted"""
+    where: loans_bool_exp!
+  ): loans_mutation_response
+
+  """
+  delete single row from the table: "loans"
+  """
+  delete_loans_by_pk(id: uuid!): loans
+
+  """
+  delete data from the table: "members"
+  """
+  delete_members(
+    """filter the rows which have to be deleted"""
+    where: members_bool_exp!
+  ): members_mutation_response
+
+  """
+  delete single row from the table: "members"
+  """
+  delete_members_by_pk(id: uuid!): members
+
+  """
+  insert data into the table: "authors"
+  """
+  insert_authors(
+    """the rows to be inserted"""
+    objects: [authors_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: authors_on_conflict
+  ): authors_mutation_response
+
+  """
+  insert a single row into the table: "authors"
+  """
+  insert_authors_one(
+    """the row to be inserted"""
+    object: authors_insert_input!
+
+    """on conflict condition"""
+    on_conflict: authors_on_conflict
+  ): authors
+
+  """
+  insert data into the table: "books"
+  """
+  insert_books(
+    """the rows to be inserted"""
+    objects: [books_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: books_on_conflict
+  ): books_mutation_response
+
+  """
+  insert a single row into the table: "books"
+  """
+  insert_books_one(
+    """the row to be inserted"""
+    object: books_insert_input!
+
+    """on conflict condition"""
+    on_conflict: books_on_conflict
+  ): books
+
+  """
+  insert data into the table: "libraries"
+  """
+  insert_libraries(
+    """the rows to be inserted"""
+    objects: [libraries_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: libraries_on_conflict
+  ): libraries_mutation_response
+
+  """
+  insert a single row into the table: "libraries"
+  """
+  insert_libraries_one(
+    """the row to be inserted"""
+    object: libraries_insert_input!
+
+    """on conflict condition"""
+    on_conflict: libraries_on_conflict
+  ): libraries
+
+  """
+  insert data into the table: "library_books"
+  """
+  insert_library_books(
+    """the rows to be inserted"""
+    objects: [library_books_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: library_books_on_conflict
+  ): library_books_mutation_response
+
+  """
+  insert a single row into the table: "library_books"
+  """
+  insert_library_books_one(
+    """the row to be inserted"""
+    object: library_books_insert_input!
+
+    """on conflict condition"""
+    on_conflict: library_books_on_conflict
+  ): library_books
+
+  """
+  insert data into the table: "library_members"
+  """
+  insert_library_members(
+    """the rows to be inserted"""
+    objects: [library_members_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: library_members_on_conflict
+  ): library_members_mutation_response
+
+  """
+  insert a single row into the table: "library_members"
+  """
+  insert_library_members_one(
+    """the row to be inserted"""
+    object: library_members_insert_input!
+
+    """on conflict condition"""
+    on_conflict: library_members_on_conflict
+  ): library_members
+
+  """
+  insert data into the table: "loans"
+  """
+  insert_loans(
+    """the rows to be inserted"""
+    objects: [loans_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: loans_on_conflict
+  ): loans_mutation_response
+
+  """
+  insert a single row into the table: "loans"
+  """
+  insert_loans_one(
+    """the row to be inserted"""
+    object: loans_insert_input!
+
+    """on conflict condition"""
+    on_conflict: loans_on_conflict
+  ): loans
+
+  """
+  insert data into the table: "members"
+  """
+  insert_members(
+    """the rows to be inserted"""
+    objects: [members_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: members_on_conflict
+  ): members_mutation_response
+
+  """
+  insert a single row into the table: "members"
+  """
+  insert_members_one(
+    """the row to be inserted"""
+    object: members_insert_input!
+
+    """on conflict condition"""
+    on_conflict: members_on_conflict
+  ): members
+
+  """
+  update data of the table: "authors"
+  """
+  update_authors(
+    """sets the columns of the filtered rows to the given values"""
+    _set: authors_set_input
+
+    """filter the rows which have to be updated"""
+    where: authors_bool_exp!
+  ): authors_mutation_response
+
+  """
+  update single row of the table: "authors"
+  """
+  update_authors_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: authors_set_input
+    pk_columns: authors_pk_columns_input!
+  ): authors
+
+  """
+  update data of the table: "books"
+  """
+  update_books(
+    """sets the columns of the filtered rows to the given values"""
+    _set: books_set_input
+
+    """filter the rows which have to be updated"""
+    where: books_bool_exp!
+  ): books_mutation_response
+
+  """
+  update single row of the table: "books"
+  """
+  update_books_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: books_set_input
+    pk_columns: books_pk_columns_input!
+  ): books
+
+  """
+  update data of the table: "libraries"
+  """
+  update_libraries(
+    """sets the columns of the filtered rows to the given values"""
+    _set: libraries_set_input
+
+    """filter the rows which have to be updated"""
+    where: libraries_bool_exp!
+  ): libraries_mutation_response
+
+  """
+  update single row of the table: "libraries"
+  """
+  update_libraries_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: libraries_set_input
+    pk_columns: libraries_pk_columns_input!
+  ): libraries
+
+  """
+  update data of the table: "library_books"
+  """
+  update_library_books(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: library_books_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: library_books_set_input
+
+    """filter the rows which have to be updated"""
+    where: library_books_bool_exp!
+  ): library_books_mutation_response
+
+  """
+  update single row of the table: "library_books"
+  """
+  update_library_books_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: library_books_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: library_books_set_input
+    pk_columns: library_books_pk_columns_input!
+  ): library_books
+
+  """
+  update data of the table: "library_members"
+  """
+  update_library_members(
+    """sets the columns of the filtered rows to the given values"""
+    _set: library_members_set_input
+
+    """filter the rows which have to be updated"""
+    where: library_members_bool_exp!
+  ): library_members_mutation_response
+
+  """
+  update single row of the table: "library_members"
+  """
+  update_library_members_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: library_members_set_input
+    pk_columns: library_members_pk_columns_input!
+  ): library_members
+
+  """
+  update data of the table: "loans"
+  """
+  update_loans(
+    """sets the columns of the filtered rows to the given values"""
+    _set: loans_set_input
+
+    """filter the rows which have to be updated"""
+    where: loans_bool_exp!
+  ): loans_mutation_response
+
+  """
+  update single row of the table: "loans"
+  """
+  update_loans_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: loans_set_input
+    pk_columns: loans_pk_columns_input!
+  ): loans
+
+  """
+  update data of the table: "members"
+  """
+  update_members(
+    """sets the columns of the filtered rows to the given values"""
+    _set: members_set_input
+
+    """filter the rows which have to be updated"""
+    where: members_bool_exp!
+  ): members_mutation_response
+
+  """
+  update single row of the table: "members"
+  """
+  update_members_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: members_set_input
+    pk_columns: members_pk_columns_input!
+  ): members
+}
+
+"""column ordering options"""
+enum order_by {
+  """in ascending order, nulls last"""
+  asc
+
+  """in ascending order, nulls first"""
+  asc_nulls_first
+
+  """in ascending order, nulls last"""
+  asc_nulls_last
+
+  """in descending order, nulls first"""
+  desc
+
+  """in descending order, nulls first"""
+  desc_nulls_first
+
+  """in descending order, nulls last"""
+  desc_nulls_last
+}
+
+type query_root {
+  """
+  fetch data from the table: "authors"
+  """
+  authors(
+    """distinct select on columns"""
+    distinct_on: [authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [authors_order_by!]
+
+    """filter the rows returned"""
+    where: authors_bool_exp
+  ): [authors!]!
+
+  """
+  fetch aggregated fields from the table: "authors"
+  """
+  authors_aggregate(
+    """distinct select on columns"""
+    distinct_on: [authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [authors_order_by!]
+
+    """filter the rows returned"""
+    where: authors_bool_exp
+  ): authors_aggregate!
+
+  """fetch data from the table: "authors" using primary key columns"""
+  authors_by_pk(id: uuid!): authors
+
+  """An array relationship"""
+  books(
+    """distinct select on columns"""
+    distinct_on: [books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [books_order_by!]
+
+    """filter the rows returned"""
+    where: books_bool_exp
+  ): [books!]!
+
+  """An aggregate relationship"""
+  books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [books_order_by!]
+
+    """filter the rows returned"""
+    where: books_bool_exp
+  ): books_aggregate!
+
+  """fetch data from the table: "books" using primary key columns"""
+  books_by_pk(id: uuid!): books
+
+  """
+  fetch data from the table: "libraries"
+  """
+  libraries(
+    """distinct select on columns"""
+    distinct_on: [libraries_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [libraries_order_by!]
+
+    """filter the rows returned"""
+    where: libraries_bool_exp
+  ): [libraries!]!
+
+  """
+  fetch aggregated fields from the table: "libraries"
+  """
+  libraries_aggregate(
+    """distinct select on columns"""
+    distinct_on: [libraries_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [libraries_order_by!]
+
+    """filter the rows returned"""
+    where: libraries_bool_exp
+  ): libraries_aggregate!
+
+  """fetch data from the table: "libraries" using primary key columns"""
+  libraries_by_pk(id: uuid!): libraries
+
+  """An array relationship"""
+  library_books(
+    """distinct select on columns"""
+    distinct_on: [library_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_books_order_by!]
+
+    """filter the rows returned"""
+    where: library_books_bool_exp
+  ): [library_books!]!
+
+  """An aggregate relationship"""
+  library_books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [library_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_books_order_by!]
+
+    """filter the rows returned"""
+    where: library_books_bool_exp
+  ): library_books_aggregate!
+
+  """fetch data from the table: "library_books" using primary key columns"""
+  library_books_by_pk(id: uuid!): library_books
+
+  """
+  fetch data from the table: "library_members"
+  """
+  library_members(
+    """distinct select on columns"""
+    distinct_on: [library_members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_members_order_by!]
+
+    """filter the rows returned"""
+    where: library_members_bool_exp
+  ): [library_members!]!
+
+  """An aggregate relationship"""
+  library_members_aggregate(
+    """distinct select on columns"""
+    distinct_on: [library_members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_members_order_by!]
+
+    """filter the rows returned"""
+    where: library_members_bool_exp
+  ): library_members_aggregate!
+
+  """fetch data from the table: "library_members" using primary key columns"""
+  library_members_by_pk(id: uuid!): library_members
+
+  """An array relationship"""
+  loans(
+    """distinct select on columns"""
+    distinct_on: [loans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [loans_order_by!]
+
+    """filter the rows returned"""
+    where: loans_bool_exp
+  ): [loans!]!
+
+  """An aggregate relationship"""
+  loans_aggregate(
+    """distinct select on columns"""
+    distinct_on: [loans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [loans_order_by!]
+
+    """filter the rows returned"""
+    where: loans_bool_exp
+  ): loans_aggregate!
+
+  """fetch data from the table: "loans" using primary key columns"""
+  loans_by_pk(id: uuid!): loans
+
+  """
+  fetch data from the table: "members"
+  """
+  members(
+    """distinct select on columns"""
+    distinct_on: [members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [members_order_by!]
+
+    """filter the rows returned"""
+    where: members_bool_exp
+  ): [members!]!
+
+  """
+  fetch aggregated fields from the table: "members"
+  """
+  members_aggregate(
+    """distinct select on columns"""
+    distinct_on: [members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [members_order_by!]
+
+    """filter the rows returned"""
+    where: members_bool_exp
+  ): members_aggregate!
+
+  """fetch data from the table: "members" using primary key columns"""
+  members_by_pk(id: uuid!): members
+}
+
+type subscription_root {
+  """
+  fetch data from the table: "authors"
+  """
+  authors(
+    """distinct select on columns"""
+    distinct_on: [authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [authors_order_by!]
+
+    """filter the rows returned"""
+    where: authors_bool_exp
+  ): [authors!]!
+
+  """
+  fetch aggregated fields from the table: "authors"
+  """
+  authors_aggregate(
+    """distinct select on columns"""
+    distinct_on: [authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [authors_order_by!]
+
+    """filter the rows returned"""
+    where: authors_bool_exp
+  ): authors_aggregate!
+
+  """fetch data from the table: "authors" using primary key columns"""
+  authors_by_pk(id: uuid!): authors
+
+  """An array relationship"""
+  books(
+    """distinct select on columns"""
+    distinct_on: [books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [books_order_by!]
+
+    """filter the rows returned"""
+    where: books_bool_exp
+  ): [books!]!
+
+  """An aggregate relationship"""
+  books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [books_order_by!]
+
+    """filter the rows returned"""
+    where: books_bool_exp
+  ): books_aggregate!
+
+  """fetch data from the table: "books" using primary key columns"""
+  books_by_pk(id: uuid!): books
+
+  """
+  fetch data from the table: "libraries"
+  """
+  libraries(
+    """distinct select on columns"""
+    distinct_on: [libraries_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [libraries_order_by!]
+
+    """filter the rows returned"""
+    where: libraries_bool_exp
+  ): [libraries!]!
+
+  """
+  fetch aggregated fields from the table: "libraries"
+  """
+  libraries_aggregate(
+    """distinct select on columns"""
+    distinct_on: [libraries_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [libraries_order_by!]
+
+    """filter the rows returned"""
+    where: libraries_bool_exp
+  ): libraries_aggregate!
+
+  """fetch data from the table: "libraries" using primary key columns"""
+  libraries_by_pk(id: uuid!): libraries
+
+  """An array relationship"""
+  library_books(
+    """distinct select on columns"""
+    distinct_on: [library_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_books_order_by!]
+
+    """filter the rows returned"""
+    where: library_books_bool_exp
+  ): [library_books!]!
+
+  """An aggregate relationship"""
+  library_books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [library_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_books_order_by!]
+
+    """filter the rows returned"""
+    where: library_books_bool_exp
+  ): library_books_aggregate!
+
+  """fetch data from the table: "library_books" using primary key columns"""
+  library_books_by_pk(id: uuid!): library_books
+
+  """
+  fetch data from the table: "library_members"
+  """
+  library_members(
+    """distinct select on columns"""
+    distinct_on: [library_members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_members_order_by!]
+
+    """filter the rows returned"""
+    where: library_members_bool_exp
+  ): [library_members!]!
+
+  """An aggregate relationship"""
+  library_members_aggregate(
+    """distinct select on columns"""
+    distinct_on: [library_members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [library_members_order_by!]
+
+    """filter the rows returned"""
+    where: library_members_bool_exp
+  ): library_members_aggregate!
+
+  """fetch data from the table: "library_members" using primary key columns"""
+  library_members_by_pk(id: uuid!): library_members
+
+  """An array relationship"""
+  loans(
+    """distinct select on columns"""
+    distinct_on: [loans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [loans_order_by!]
+
+    """filter the rows returned"""
+    where: loans_bool_exp
+  ): [loans!]!
+
+  """An aggregate relationship"""
+  loans_aggregate(
+    """distinct select on columns"""
+    distinct_on: [loans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [loans_order_by!]
+
+    """filter the rows returned"""
+    where: loans_bool_exp
+  ): loans_aggregate!
+
+  """fetch data from the table: "loans" using primary key columns"""
+  loans_by_pk(id: uuid!): loans
+
+  """
+  fetch data from the table: "members"
+  """
+  members(
+    """distinct select on columns"""
+    distinct_on: [members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [members_order_by!]
+
+    """filter the rows returned"""
+    where: members_bool_exp
+  ): [members!]!
+
+  """
+  fetch aggregated fields from the table: "members"
+  """
+  members_aggregate(
+    """distinct select on columns"""
+    distinct_on: [members_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [members_order_by!]
+
+    """filter the rows returned"""
+    where: members_bool_exp
+  ): members_aggregate!
+
+  """fetch data from the table: "members" using primary key columns"""
+  members_by_pk(id: uuid!): members
+}
+
+scalar timestamp
+
+"""
+Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'.
+"""
+input timestamp_comparison_exp {
+  _eq: timestamp
+  _gt: timestamp
+  _gte: timestamp
+  _in: [timestamp!]
+  _is_null: Boolean
+  _lt: timestamp
+  _lte: timestamp
+  _neq: timestamp
+  _nin: [timestamp!]
+}
+
+scalar timestamptz
+
+"""
+Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
+"""
+input timestamptz_comparison_exp {
+  _eq: timestamptz
+  _gt: timestamptz
+  _gte: timestamptz
+  _in: [timestamptz!]
+  _is_null: Boolean
+  _lt: timestamptz
+  _lte: timestamptz
+  _neq: timestamptz
+  _nin: [timestamptz!]
+}
+
+scalar uuid
+
+"""
+Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
+"""
+input uuid_comparison_exp {
+  _eq: uuid
+  _gt: uuid
+  _gte: uuid
+  _in: [uuid!]
+  _is_null: Boolean
+  _lt: uuid
+  _lte: uuid
+  _neq: uuid
+  _nin: [uuid!]
+}

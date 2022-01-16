@@ -1,38 +1,45 @@
 import { envelop, useLogger, useSchema, useTiming } from "@envelop/core"
-import { makeExecutableSchema } from "@graphql-tools/schema"
 import fastify from "fastify"
 import fastifyWebsocket from "fastify-websocket"
 import { getGraphQLParameters, processRequest, renderGraphiQL, sendResult, shouldRenderGraphiQL } from "graphql-helix"
 import { useServer } from "graphql-ws/lib/use/ws"
+import { schema } from "./graphql/hasura/schema"
+import validateEnv from "./utils/validateEnv"
 
-const schema = makeExecutableSchema({
-    typeDefs: /* GraphQL */ `
-        type Query {
-            hello: String!
-        }
-        type Subscription {
-            greetings: String!
-        }
-    `,
-    resolvers: {
-        Query: {
-            hello: () => "World"
-        },
-        Subscription: {
-            greetings: {
-                subscribe: async function* sayHiIn5Languages() {
-                    for (const hi of ["Hi", "Bonjour", "Hola", "Ciao", "Zdravo"]) {
-                        yield { greetings: hi }
-                        await new Promise((resolve) => setTimeout(resolve, 1000)) // wait 1 second
-                    }
-                }
-            }
-        }
-    }
-})
+validateEnv()
+
+// const schema = makeExecutableSchema({
+//     typeDefs: /* GraphQL */ `
+//         type Query {
+//             hello: String!
+//         }
+//         type Subscription {
+//             greetings: String!
+//         }
+//     `,
+//     resolvers: {
+//         Query: {
+//             hello: () => "World"
+//         },
+//         Subscription: {
+//             greetings: {
+//                 subscribe: async function* sayHiIn5Languages() {
+//                     for (const hi of ["Hi", "Bonjour", "Hola", "Ciao", "Zdravo"]) {
+//                         yield { greetings: hi }
+//                         await new Promise((resolve) => setTimeout(resolve, 1000)) // wait 1 second
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// })
 
 const getEnveloped = envelop({
-    plugins: [useSchema(schema), useLogger(), useTiming()]
+    plugins: [
+        useSchema(schema),
+        useLogger({ logFn: (args) => console.log(args), skipIntrospection: true }),
+        useTiming()
+    ]
 })
 const app = fastify()
 await app.register(fastifyWebsocket, {

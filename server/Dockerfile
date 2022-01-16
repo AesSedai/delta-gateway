@@ -1,8 +1,6 @@
-FROM node:17.3.0-alpine3.15
+FROM node:16.13.2-alpine3.15
 
 ARG PORT=4000
-
-RUN apk add --no-cache curl
 
 # Create app directory
 WORKDIR /usr/src/app

@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "knex": "^0.95.4",
+    "knex-migrate": "^1.7.4",
+    "pg": "^8.5.1"
+  }
+}

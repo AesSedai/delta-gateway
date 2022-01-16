@@ -1,0 +1,7 @@
+- "!include public_authors.yaml"
+- "!include public_books.yaml"
+- "!include public_libraries.yaml"
+- "!include public_library_books.yaml"
+- "!include public_library_members.yaml"
+- "!include public_loans.yaml"
+- "!include public_members.yaml"

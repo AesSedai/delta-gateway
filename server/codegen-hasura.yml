@@ -1,0 +1,7 @@
+schema:
+  - ${HASURA_HTTP_GRAPHQL_LOCAL_URL}
+overwrite: true
+generates:
+  ./src/graphql/hasura/schema.graphql:
+    plugins:
+      - schema-ast

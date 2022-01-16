@@ -43,8 +43,10 @@ services:
             HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
             ## enable debugging mode. It is recommended to disable this in production
             HASURA_GRAPHQL_DEV_MODE: "true"
-        #     HASURA_GRAPHQL_METADATA_DIR: /hasura-metadata
+            # HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura-migrations
+            # HASURA_GRAPHQL_METADATA_DIR: /hasura-metadata
         # volumes:
+        #     - ./hasura/migrations:/hasura-migrations
         #     - ./hasura/metadata:/hasura-metadata
         networks:
             - app
@@ -73,9 +75,11 @@ services:
             args:
                 PORT: ${SERVER_PORT_CONTAINER}
         environment:
+            NODE_ENV: "development"
             SERVER_PORT_CONTAINER: ${SERVER_PORT_CONTAINER}
-            HASURA_GRAPHQL_URL: ${HASURA_GRAPHQL_URL}
-            HASURA_METADATA_URL: ${HASURA_METADATA_URL}
+            HASURA_HTTP_GRAPHQL_URL: ${HASURA_HTTP_GRAPHQL_URL}
+            HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
+            HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
         volumes:
             - ./server:/usr/src/app
         ports:
