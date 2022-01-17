@@ -3,7 +3,6 @@ import fastify from "fastify"
 import fastifyWebsocket from "fastify-websocket"
 import { getGraphQLParameters, processRequest, renderGraphiQL, sendResult, shouldRenderGraphiQL } from "graphql-helix"
 import { useServer } from "graphql-ws/lib/use/ws"
-import { testSchema } from "./graphql/local/schema"
 import { schema } from "./graphql/schema"
 import validateEnv from "./utils/validateEnv"
 
@@ -11,7 +10,7 @@ validateEnv()
 
 const getEnveloped = envelop({
     plugins: [
-        useSchema(testSchema),
+        useSchema(schema),
         useLogger(),
         // useLogger({ logFn: (args) => console.log(args), skipIntrospection: true }),
         useTiming()
