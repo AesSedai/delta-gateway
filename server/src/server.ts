@@ -3,41 +3,17 @@ import fastify from "fastify"
 import fastifyWebsocket from "fastify-websocket"
 import { getGraphQLParameters, processRequest, renderGraphiQL, sendResult, shouldRenderGraphiQL } from "graphql-helix"
 import { useServer } from "graphql-ws/lib/use/ws"
-import { schema } from "./graphql/hasura/schema"
+import { testSchema } from "./graphql/local/schema"
+import { schema } from "./graphql/schema"
 import validateEnv from "./utils/validateEnv"
 
 validateEnv()
 
-// const schema = makeExecutableSchema({
-//     typeDefs: /* GraphQL */ `
-//         type Query {
-//             hello: String!
-//         }
-//         type Subscription {
-//             greetings: String!
-//         }
-//     `,
-//     resolvers: {
-//         Query: {
-//             hello: () => "World"
-//         },
-//         Subscription: {
-//             greetings: {
-//                 subscribe: async function* sayHiIn5Languages() {
-//                     for (const hi of ["Hi", "Bonjour", "Hola", "Ciao", "Zdravo"]) {
-//                         yield { greetings: hi }
-//                         await new Promise((resolve) => setTimeout(resolve, 1000)) // wait 1 second
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// })
-
 const getEnveloped = envelop({
     plugins: [
-        useSchema(schema),
-        useLogger({ logFn: (args) => console.log(args), skipIntrospection: true }),
+        useSchema(testSchema),
+        useLogger(),
+        // useLogger({ logFn: (args) => console.log(args), skipIntrospection: true }),
         useTiming()
     ]
 })

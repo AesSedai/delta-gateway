@@ -26,7 +26,7 @@ const httpExecutor: AsyncExecutor = async ({ document, variables, operationName,
     return fetchResult.json()
 }
 
-const wsExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) =>
+export const wsExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) =>
     observableToAsyncIterable({
         subscribe: (observer) => ({
             unsubscribe: subscriptionClient.subscribe(
@@ -56,9 +56,15 @@ const wsExecutor: AsyncExecutor = async ({ document, variables, operationName, e
         })
     })
 
-const executor: AsyncExecutor = async (args) => {
+export const executor: AsyncExecutor = async (args) => {
+  // args.
+  console.log("!!!operationName", args.operationName)
+    console.log("!!!extensions", JSON.stringify(args.extensions, null, 2))
     // get the operation node of from the document that should be executed
     const operation = getOperationAST(args.document, args.operationName)
+    console.log("!!!operation", operation)
+    console.log("!!!document", JSON.stringify(args.document, null, 2))
+    
     // subscription operations should be handled by the wsExecutor
     if (operation?.operation === "subscription") {
         return wsExecutor(args)
@@ -73,3 +79,4 @@ export const schema = wrapSchema({
     }),
     executor
 })
+

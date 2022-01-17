@@ -29,10 +29,18 @@ services:
         image: hasura/graphql-engine:v2.1.1.cli-migrations-v3
         ports:
             - ${HASURA_PORT_HOST}:${HASURA_PORT_CONTAINER}
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "bash",
+                    "-c",
+                    "exec 5<>/dev/tcp/127.0.0.1/${HASURA_PORT_CONTAINER} && echo -e 'GET /healthz HTTP/1.1\n\n' >&5 && cat <&5 | head -n 1 | grep 200"
+                ]
+            interval: 30s
+            timeout: 3s
         depends_on:
             db:
-                condition: service_healthy
-            server:
                 condition: service_healthy
         restart: always
         environment:
@@ -80,6 +88,9 @@ services:
             HASURA_HTTP_GRAPHQL_URL: ${HASURA_HTTP_GRAPHQL_URL}
             HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
             HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
+        depends_on:
+            graphql-engine:
+                condition: service_healthy
         volumes:
             - ./server:/usr/src/app
         ports:

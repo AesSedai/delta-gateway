@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@graphql-tools/delegate": "^8.4.3"
+  }
+}
