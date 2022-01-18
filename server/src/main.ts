@@ -1,7 +1,7 @@
 import hasha from "hasha"
 import * as jsonDiffPatch from "jsondiffpatch"
 import { chain, cloneDeep, has, isEqual } from "lodash"
-import jsondiffpatchArraysByHash from "./vendor/jsondiffpatch-arrays-by-hash/main"
+import * as jsondiffpatchArraysByHash from "jsondiffpatch-arrays-by-hash"
 
 const t0 = {
     data: {

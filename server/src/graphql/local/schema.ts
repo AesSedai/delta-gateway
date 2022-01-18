@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
-import { BREAK, DocumentNode, Kind, SelectionSetNode, visit } from "graphql"
+import { BREAK, DocumentNode, GraphQLError, Kind, SelectionSetNode, visit } from "graphql"
 import { ExecutionResult } from "graphql-ws"
 import { hasuraSchema as rawHasuraSchema, wsExecutor } from "../hasura/schema"
 
@@ -20,7 +20,6 @@ export const schema = makeExecutableSchema({
                 query: subscription_root
                 deltas: [delta]!
                 # patch: [RFC4627Patch]
-                # rev: String!
             }
 
             type Subscription {
@@ -33,18 +32,6 @@ export const schema = makeExecutableSchema({
         Subscription: {
             live: {
                 subscribe: async function* (obj, args, context, info) {
-                    // type GraphQLResolveInfo = {
-                    //   fieldName: string,
-                    //   fieldNodes: Array<Field>,
-                    //   returnType: GraphQLOutputType,
-                    //   parentType: GraphQLCompositeType,
-                    //   schema: GraphQLSchema,
-                    //   fragments: { [fragmentName: string]: FragmentDefinition },
-                    //   rootValue: any,
-                    //   operation: OperationDefinition,
-                    //   variableValues: { [variableName: string]: any },
-                    // }
-
                     let selectionSet: SelectionSetNode = {
                         kind: "SelectionSet",
                         selections: []
@@ -73,23 +60,34 @@ export const schema = makeExecutableSchema({
                         ]
                     }
 
-                    const iterable = await wsExecutor({
-                        document: op,
-                        variables: info.variableValues
-                    })
+                    try {
+                        const iterable = await wsExecutor({
+                            document: op,
+                            variables: info.variableValues
+                        })
 
-                    for await (const result of iterable as AsyncIterable<ExecutionResult>) {
-                        console.log("result", result)
-                        yield {
-                            live: {
-                                query: result.data,
-                                deltas: [
-                                    {
-                                        rev: "0",
-                                        patch: "5"
+                        for await (const result of iterable as AsyncIterable<ExecutionResult>) {
+                            if (result.errors != null) {
+                                throw result.errors[0]
+                            } else {
+                                yield {
+                                    live: {
+                                        query: result.data,
+                                        deltas: [
+                                            {
+                                                rev: "0",
+                                                patch: "5"
+                                            }
+                                        ]
                                     }
-                                ]
+                                }
                             }
+                        }
+                    } catch (err) {
+                        if (err instanceof Error) {
+                            throw new GraphQLError(err.message)
+                        } else {
+                            throw err
                         }
                     }
                 }

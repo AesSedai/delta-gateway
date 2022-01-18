@@ -37,17 +37,16 @@ export const wsExecutor: AsyncExecutor = async ({ document, variables, operation
                     extensions
                 },
                 {
-                    // @ts-expect-error
-                    next: (data) => observer.next && observer.next(data as unknown),
-                    error: (err) => {
+                    next: (data) => observer.next && observer.next(data as any),
+                    error: (err: any) => {
                         if (!observer.error) return
                         if (err instanceof Error) {
                             observer.error(err)
-                        } else if (err instanceof CloseEvent) {
-                            observer.error(new Error(`Socket closed with event ${err.code}`))
                         } else if (Array.isArray(err)) {
                             // GraphQLError[]
                             observer.error(new Error(err.map(({ message }) => message).join(", ")))
+                        } else {
+                            observer.error(new Error(`Socket closed with event ${JSON.stringify(err, null, 2)}`))
                         }
                     },
                     complete: () => observer.complete && observer.complete()
@@ -57,14 +56,14 @@ export const wsExecutor: AsyncExecutor = async ({ document, variables, operation
     })
 
 export const executor: AsyncExecutor = async (args) => {
-  // args.
-  console.log("!!!operationName", args.operationName)
+    // args.
+    console.log("!!!operationName", args.operationName)
     console.log("!!!extensions", JSON.stringify(args.extensions, null, 2))
     // get the operation node of from the document that should be executed
     const operation = getOperationAST(args.document, args.operationName)
     console.log("!!!operation", operation)
     console.log("!!!document", JSON.stringify(args.document, null, 2))
-    
+
     // subscription operations should be handled by the wsExecutor
     if (operation?.operation === "subscription") {
         return wsExecutor(args)
@@ -79,4 +78,3 @@ export const schema = wrapSchema({
     }),
     executor
 })
-
