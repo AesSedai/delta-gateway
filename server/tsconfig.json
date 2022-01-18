@@ -3,7 +3,7 @@
         "baseUrl": "./",
         "target": "esnext",
         "lib": ["esnext"],
-        "typeRoots": ["./node_modules/@types"],
+        "typeRoots": ["./node_modules/@types", "./typings"],
         "allowJs": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
