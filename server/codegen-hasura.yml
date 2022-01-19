@@ -1,7 +1,21 @@
 schema:
   - ${HASURA_HTTP_GRAPHQL_LOCAL_URL}
+documents:
+  - ./src/graphql/hasura/**/*.tsx
+  - ./src/graphql/hasura/**/*.ts
 overwrite: true
 generates:
+  ./src/graphql/hasura/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-graphql-request
+    config:
+      skipTypename: false
+      addUnderscoreToArgsType: false
+      transformUnderscore: true
+      nonOptionalTypename: true
+      scalars: { 'uuid': 'string' }
   ./src/graphql/hasura/schema.graphql:
     plugins:
       - schema-ast

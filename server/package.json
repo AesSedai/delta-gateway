@@ -5,7 +5,8 @@
     "type": "module",
     "scripts": {
         "start": "nodemon src/server.ts",
-        "generate": "env-cmd -f ../.env graphql-codegen --config codegen-hasura.yml"
+        "generate": "env-cmd -f ../.env graphql-codegen --config codegen-hasura.yml",
+        "seed": "env-cmd -f ../.env node --experimental-specifier-resolution=node --loader ts-node/esm ./src/seeds/seed_bench.ts"
     },
     "nodemonConfig": {
         "restartable": "rs",
@@ -83,6 +84,7 @@
         "fastify": "^3.25.3",
         "fastify-websocket": "^4.0.0",
         "graphql-helix": "^1.11.0",
+        "graphql-request": "^3.7.0",
         "graphql-ws": "^5.5.5",
         "hasha": "^5.2.2",
         "jsondiffpatch": "^0.4.1",

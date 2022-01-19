@@ -1,4 +1,4 @@
-import { envelop, useLogger, useSchema, useTiming } from "@envelop/core"
+import { envelop, useLogger, useSchema } from "@envelop/core"
 import fastify from "fastify"
 import fastifyWebsocket from "fastify-websocket"
 import { getGraphQLParameters, processRequest, renderGraphiQL, sendResult, shouldRenderGraphiQL } from "graphql-helix"
@@ -10,10 +10,10 @@ validateEnv()
 
 const getEnveloped = envelop({
     plugins: [
-        useSchema(schema),
-        useLogger(),
+        useSchema(schema)
+        // useLogger(),
         // useLogger({ logFn: (args) => console.log(args), skipIntrospection: true }),
-        useTiming()
+        // useTiming()
     ]
 })
 const app = fastify()
