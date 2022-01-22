@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "target": "esnext",
+        "lib": ["esnext"],
+        "typeRoots": ["./node_modules/@types", "./typings"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        // "noEmit": true,
+        "checkJs": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "pretty": true,
+        "sourceMap": true,
+        "outDir": "./build"
+    },
+    "include": ["./src"],
+    "exclude": ["node_modules"]
+}

@@ -1,0 +1,20 @@
+schema:
+    - http://127.0.0.1:5002/graphql
+documents:
+    - ./src/**/*.tsx
+    - ./src/**/*.ts
+overwrite: true
+generates:
+    ./src/graphql/graphql.ts:
+        plugins:
+            - typescript
+            - typescript-operations
+            - typescript-react-apollo
+            - typescript-apollo-client-helpers
+        config:
+            skipTypename: false
+            withHooks: true
+            nonOptionalTypename: true
+    ./src/graphql/graphql.schema.graphql:
+        plugins:
+            - schema-ast

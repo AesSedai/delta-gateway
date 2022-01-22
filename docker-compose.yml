@@ -77,29 +77,121 @@ services:
         networks:
             - app
 
-    server:
+    # helix-express:
+    #     build:
+    #         context: ./helix-express
+    #         args:
+    #             PORT: ${HELIX_EXPRESS_SERVER_PORT_CONTAINER}
+    #     environment:
+    #         NODE_ENV: "production"
+    #         SERVER_PORT_CONTAINER: ${HELIX_EXPRESS_SERVER_PORT_CONTAINER}
+    #         HASURA_HTTP_GRAPHQL_URL: ${HASURA_HTTP_GRAPHQL_URL}
+    #         HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
+    #         HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
+    #     depends_on:
+    #         graphql-engine:
+    #             condition: service_healthy
+    #     volumes:
+    #         - ./helix-express:/usr/src/app
+    #     ports:
+    #         - ${HELIX_EXPRESS_SERVER_PORT_HOST}:${HELIX_EXPRESS_SERVER_PORT_CONTAINER}
+    #     healthcheck:
+    #         test: ["CMD-SHELL", "netstat -tulnp | grep ${HELIX_EXPRESS_SERVER_PORT_CONTAINER}"]
+    #         interval: 10s
+    #         timeout: 5s
+    #         retries: 5
+    #     networks:
+    #         - app
+
+    # helix-fastify:
+    #     build:
+    #         context: ./helix-fastify
+    #         args:
+    #             PORT: ${HELIX_FASTIFY_SERVER_PORT_CONTAINER}
+    #     environment:
+    #         NODE_ENV: "production"
+    #         SERVER_PORT_CONTAINER: ${HELIX_FASTIFY_SERVER_PORT_CONTAINER}
+    #         HASURA_HTTP_GRAPHQL_URL: ${HASURA_HTTP_GRAPHQL_URL}
+    #         HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
+    #         HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
+    #     depends_on:
+    #         graphql-engine:
+    #             condition: service_healthy
+    #     volumes:
+    #         - ./helix-fastify:/usr/src/app
+    #     ports:
+    #         - ${HELIX_FASTIFY_SERVER_PORT_HOST}:${HELIX_FASTIFY_SERVER_PORT_CONTAINER}
+    #     healthcheck:
+    #         test: ["CMD-SHELL", "netstat -tulnp | grep ${HELIX_FASTIFY_SERVER_PORT_CONTAINER}"]
+    #         interval: 10s
+    #         timeout: 5s
+    #         retries: 5
+    #     networks:
+    #         - app
+
+    apollo-server-express:
         build:
-            context: ./server
+            context: ./apollo-server-express
             args:
-                PORT: ${SERVER_PORT_CONTAINER}
+                PORT: ${APOLLO_SERVER_EXPRESS_SERVER_PORT_CONTAINER}
         environment:
-            NODE_ENV: "development"
-            SERVER_PORT_CONTAINER: ${SERVER_PORT_CONTAINER}
+            NODE_ENV: "production"
+            SERVER_PORT_CONTAINER: ${APOLLO_SERVER_EXPRESS_SERVER_PORT_CONTAINER}
             HASURA_HTTP_GRAPHQL_URL: ${HASURA_HTTP_GRAPHQL_URL}
             HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
             HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
+        # command: "pm2 start build/server.js -i 5 --no-daemon --node-args=\"--experimental-wasm-simd --experimental-specifier-resolution=node --loader ts-node/esm\""
         depends_on:
             graphql-engine:
                 condition: service_healthy
         volumes:
-            - ./server:/usr/src/app
+            - ./apollo-server-express:/usr/src/app
         ports:
-            - ${SERVER_PORT_HOST}:${SERVER_PORT_CONTAINER}
+            - ${APOLLO_SERVER_EXPRESS_SERVER_PORT_HOST}:${APOLLO_SERVER_EXPRESS_SERVER_PORT_CONTAINER}
         healthcheck:
-            test: ["CMD-SHELL", "netstat -tulnp | grep ${SERVER_PORT_CONTAINER}"]
+            test: ["CMD-SHELL", "netstat -tulnp | grep ${APOLLO_SERVER_EXPRESS_SERVER_PORT_CONTAINER}"]
             interval: 10s
             timeout: 5s
             retries: 5
+        networks:
+            - app
+
+    # zipkin:
+    #     image: openzipkin/zipkin:2.23
+    #     ports:
+    #         - 9411:9411
+    #     networks:
+    #         - app
+
+    # Collector
+    otel-collector:
+        image: otel/opentelemetry-collector-contrib:0.42.0
+        command: ["--config=/conf/collector-config.yaml"]
+        volumes:
+            - ./collector-config.yaml:/conf/collector-config.yaml
+        ports:
+            - 4317:4317
+            - 4318:4318
+            - 9464:9464
+        depends_on:
+            - jaeger-all-in-one
+        networks:
+            - app
+
+    # Jaeger
+    jaeger-all-in-one:
+        image: jaegertracing/all-in-one:1.30.0
+        environment:
+            COLLECTOR_ZIPKIN_HOST_PORT: "9411"
+        ports:
+            - 5775:5775/udp
+            - 6831:6831/udp
+            - 6832:6832/udp
+            - 5778:5778
+            - 9411:9411
+            - 16686:16686
+            - 14250:14250
+            - 14268:14268
         networks:
             - app
 
