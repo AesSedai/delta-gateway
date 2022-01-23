@@ -4,7 +4,7 @@ This proof-of-concept was inpired by the desire to change how Hasura subscriptio
 
 ### Current Hasura Subscription Behavior
 Given the following subscription and result, any change that affected the result set would emit an update to the client that includes all of the unchanged data as well:
-[AuthorBooksSubscription1](./example-images/subscription_author_books_1.jpg)
+![AuthorBooksSubscription1](./example-images/subscription_author_books_1.jpg)
 
 ### Delta Gateway Subscription Behavior
 This Delta Gateway demo wraps the Hasura schema and exposes it so users can adopt it with minimal changes to their graphql setup. The Delta Gateway adds a new Subscription field `live` that allows for a `query` field (the same as Hasura's `subscription_root`) and a `deltas` field.
@@ -12,7 +12,7 @@ This Delta Gateway demo wraps the Hasura schema and exposes it so users can adop
 When a client initially connects, the Hasura result is stored as revision 0 on the gateway and a patch is generated and sent to the client instead of the full subscription result. The client is responsible for taking the patch data and applying it to its cache. When a new Hasura subscription event is emitted, the previous revision is used to generate a delta and only the changes are sent to the client.
 
 The delta generation uses the combination of `[__typename, id]` to uniquely identify objects in the response. As such, it is highly recommended to include these two fields in the subscription to optimise the patch generation.
-[AuthorBooksSubscription2](./example-images/subscription_author_books_2.jpg)
+![AuthorBooksSubscription2](./example-images/subscription_author_books_2.jpg)
 
 ### Included Software
 Docker compose is used to run the demo. Included are the following:
