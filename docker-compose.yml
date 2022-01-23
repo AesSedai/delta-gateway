@@ -51,11 +51,6 @@ services:
             HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
             ## enable debugging mode. It is recommended to disable this in production
             HASURA_GRAPHQL_DEV_MODE: "true"
-            # HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura-migrations
-            # HASURA_GRAPHQL_METADATA_DIR: /hasura-metadata
-        # volumes:
-        #     - ./hasura/migrations:/hasura-migrations
-        #     - ./hasura/metadata:/hasura-metadata
         networks:
             - app
 

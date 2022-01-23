@@ -1,0 +1,25 @@
+url: "http://localhost:5002/graphql"
+db_connection_string: postgres://admin:admin@127.0.0.1:8432/default
+config:
+  # Label must be unique per-run, it identifiers the run in the DB
+  label: authors
+  # Total number of websocket connections to open
+  max_connections: 100
+  # New connections to make per second until target reached
+  connections_per_second: 10
+  # Whether or not to insert the subscription payload data into the DB at the end
+  insert_payload_data: true
+  # The subscription to run
+  query: |
+    subscription author {
+        authors(where: {books: {title: {_ilike: "%1%"}}}) {
+            name
+        }
+    }
+  # Optional variables (if subscription uses variables)
+  # variables:
+    # some_value: a_string
+    # Ranges will loop repeatedly from "start" to "end" and increment by one for each new subscription
+    # some_range: { start: 1, end: 10 }
+    # another_range: { start: 50, end: 100 }
+    # authorIlike: ["%1%", "%2%", "%3%", "%4%", "%5%", "%6%", "%7%", "%8%", "%9%"]

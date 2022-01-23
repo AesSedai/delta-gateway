@@ -1,0 +1,34 @@
+url: "http://localhost:5002/graphql"
+headers:
+    accept: "application/json"
+    content-type: "application/json"
+queries:
+    # Name: Unique name for the query
+    - name: UndiciPool
+      tools: [autocannon, k6]
+      # Execution Strategy: the type of the benchmark to run. Options are:
+      # REQUESTS_PER_SECOND: Fixed duration, fixed rps. Example parameters:
+      #   duration: 10s
+      #   rps: 500
+      # FIXED_REQUEST_NUMBER: Complete requests as fast as possible, no duration. Example parameters:
+      #   requests: 10000
+      # MAX_REQUESTS_IN_DURATION: Make as many requests as possible in duration. Example parameters:
+      #   duration: 10s
+      # MULTI_STAGE: (K6 only currently) Several stages of REQUESTS_PER_SECOND benchmark. Example parameters:
+      #   initial_rps: 0
+      #   stages:
+      #     - duration: 5s
+      #       target: 100
+      #     - duration: 10s
+      #       target: 1000
+      # CUSTOM: Pass completely custom options to each tool (see full API spec for all supported options, very large)
+      execution_strategy: MAX_REQUESTS_IN_DURATION
+      rps: 1000
+      duration: 30s
+      connections: 500
+      query: |
+        query MyQuery {
+            authors(where: {books: {title: {_similar: "%6%"}}}) {
+                name
+            }
+        }

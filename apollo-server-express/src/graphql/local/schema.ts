@@ -15,6 +15,7 @@ export const schema = makeExecutableSchema({
             schema {
                 subscription: Subscription
             }
+
             type delta {
                 rev: String!
                 patch: String!
