@@ -1,6 +1,7 @@
 import { ApolloClient, ApolloProvider, from, InMemoryCache, NormalizedCacheObject } from "@apollo/client"
 import { onError } from "@apollo/client/link/error"
 import { RetryLink } from "@apollo/client/link/retry"
+import { WebSocketLink } from "@apollo/client/link/ws"
 import { FC, useState } from "react"
 import useAsyncEffect from "use-async-effect"
 import { GraphqlWsLink } from "../utils/grapqhlWsLink"
@@ -41,6 +42,13 @@ export const WithApollo: FC = ({ children }) => {
             }
         })
 
+        const wsLink = new WebSocketLink({
+            uri: "ws://127.0.0.1:5002/graphql",
+            options: {
+                reconnect: true
+            }
+        })
+
         const graphqlWsLink = new GraphqlWsLink({
             url: "ws://127.0.0.1:5002/graphql",
             keepAlive: 10000
@@ -55,7 +63,7 @@ export const WithApollo: FC = ({ children }) => {
         })
 
         const client = new ApolloClient({
-            link: from([retryLink, errorLink, graphqlWsLink]),
+            link: from([retryLink, errorLink, wsLink]),
             cache,
             connectToDevTools: true
         })

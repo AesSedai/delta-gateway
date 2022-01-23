@@ -64,8 +64,6 @@ services:
             context: ./client
             args:
                 PORT: ${CLIENT_PORT_CONTAINER}
-        # command: npm run build
-        # command: npx serve -s build -l 3000
         environment:
             CHOKIDAR_USEPOLLING: "true"
             FAST_REFRESH: "true"
@@ -155,13 +153,6 @@ services:
             retries: 5
         networks:
             - app
-
-    # zipkin:
-    #     image: openzipkin/zipkin:2.23
-    #     ports:
-    #         - 9411:9411
-    #     networks:
-    #         - app
 
     # Collector
     otel-collector:

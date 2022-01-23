@@ -1,43 +1,20 @@
 import { AsyncExecutor, observableToAsyncIterable } from "@graphql-tools/utils"
-import { introspectSchema, wrapSchema } from "@graphql-tools/wrap"
-import opentelemetry from "@opentelemetry/api"
-// import { fetch } from "cross-undici-fetch"
-// import fetch from 'node-fetch'
+import { introspectSchema } from "@graphql-tools/wrap"
 import { getOperationAST, print } from "graphql"
 import { createClient } from "graphql-ws"
+import { Pool } from "undici"
 import WebSocket from "ws"
-import { tracer } from "../../openTelemetry"
-import bent from "bent"
-import { fetch, request, Client, Pool } from 'undici'
 
 const subscriptionClient = createClient({
     url: process.env.HASURA_WS_GRAPHQL_URL!,
     webSocketImpl: WebSocket
 })
 
-const client = new Pool("http://graphql-engine:8080", {pipelining: 10, connections: 10})
-const post = bent('POST', 'json', 200)
-
+const client = new Pool("http://graphql-engine:8080", { pipelining: 10, connections: 10 })
 
 const httpExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) => {
-    // const executorSpan = tracer.startSpan("httpExecutor")
-    // const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), executorSpan)
-
-    // const docSpan = tracer.startSpan("print doc", undefined, ctx)
     const query = print(document)
-    // docSpan.end()
-
-    // const bodySpan = tracer.startSpan("body stringify", undefined, ctx)
     const body = JSON.stringify({ query, variables, operationName, extensions })
-    // bodySpan.end()
-
-    // const fetchSpan = tracer.startSpan("fetch", undefined, ctx)
-    
-    // const resp = await post(process.env.HASURA_HTTP_GRAPHQL_URL!, body, {
-    //     "Content-Type": "application/json"
-    // })
-
-    // console.log("resp", resp)
 
     const res = await client.request({
         path: "/v1/graphql",
@@ -48,27 +25,11 @@ const httpExecutor: AsyncExecutor = async ({ document, variables, operationName,
         body: body
     })
 
-    const result = res.body.json()
-
-    // const fetchResult = await fetch(process.env.HASURA_HTTP_GRAPHQL_URL!, {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json"
-    //     },
-    //     body: body
-    // })
-    // fetchSpan.end()
-
-    // const jsonSpan = tracer.startSpan("json()", undefined, ctx)
-    // const result = fetchResult.json()
-    // jsonSpan.end()
-    // executorSpan.end()
-    // return resp as Promise<any>
-    return result as Promise<any>
+    return res.body.json() as Promise<any>
 }
 
-export const wsExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) =>
-    observableToAsyncIterable({
+export const wsExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) => {
+    return observableToAsyncIterable({
         subscribe: (observer) => ({
             unsubscribe: subscriptionClient.subscribe(
                 {
@@ -95,6 +56,7 @@ export const wsExecutor: AsyncExecutor = async ({ document, variables, operation
             )
         })
     })
+}
 
 export const executor: AsyncExecutor = async (args) => {
     // get the operation node of from the document that should be executed
@@ -110,7 +72,7 @@ export const executor: AsyncExecutor = async (args) => {
 
 export const hasuraSchema = await introspectSchema(executor)
 
-export const schema = wrapSchema({
-    schema: await introspectSchema(executor),
-    executor
-})
+export const schema = {
+    schema: hasuraSchema,
+    executor: executor
+}
