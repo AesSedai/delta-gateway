@@ -87,6 +87,7 @@ services:
     #         HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
     #         HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
     #         HASURA_HTTP_ROOT_URL: ${HASURA_HTTP_ROOT_URL}
+    #         OTLP_COLLECTOR_URL: ${OTLP_COLLECTOR_URL}
     #     depends_on:
     #         graphql-engine:
     #             condition: service_healthy
@@ -114,6 +115,7 @@ services:
     #         HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
     #         HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
     #         HASURA_HTTP_ROOT_URL: ${HASURA_HTTP_ROOT_URL}
+    #         OTLP_COLLECTOR_URL: ${OTLP_COLLECTOR_URL}
     #     depends_on:
     #         graphql-engine:
     #             condition: service_healthy
@@ -141,6 +143,7 @@ services:
             HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
             HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
             HASURA_HTTP_ROOT_URL: ${HASURA_HTTP_ROOT_URL}
+            OTLP_COLLECTOR_URL: ${OTLP_COLLECTOR_URL}
         # command: "pm2 start build/server.js -i 5 --no-daemon --node-args=\"--experimental-wasm-simd --experimental-specifier-resolution=node --loader ts-node/esm\""
         depends_on:
             graphql-engine:
@@ -167,6 +170,7 @@ services:
             - 4317:4317
             - 4318:4318
             - 9464:9464
+            - 55681:55681
         depends_on:
             - jaeger-all-in-one
         networks:
@@ -175,14 +179,11 @@ services:
     # Jaeger
     jaeger-all-in-one:
         image: jaegertracing/all-in-one:1.30.0
-        environment:
-            COLLECTOR_ZIPKIN_HOST_PORT: "9411"
         ports:
             - 5775:5775/udp
             - 6831:6831/udp
             - 6832:6832/udp
             - 5778:5778
-            - 9411:9411
             - 16686:16686
             - 14250:14250
             - 14268:14268

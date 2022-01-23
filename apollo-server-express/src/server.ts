@@ -1,4 +1,4 @@
-// import "./openTelemetry"
+import "./openTelemetry"
 
 import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core"
 import { ApolloServer } from "apollo-server-express"

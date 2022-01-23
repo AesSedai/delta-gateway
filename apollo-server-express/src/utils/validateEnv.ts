@@ -7,7 +7,8 @@ const validateEnv = () => {
         HASURA_HTTP_GRAPHQL_URL: str(),
         HASURA_WS_GRAPHQL_URL: str(),
         HASURA_HTTP_METADATA_URL: str(),
-        HASURA_HTTP_ROOT_URL: str()
+        HASURA_HTTP_ROOT_URL: str(),
+        OTLP_COLLECTOR_URL: str()
     })
 }
 
