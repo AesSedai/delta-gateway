@@ -6,7 +6,8 @@ declare global {
             HASURA_HTTP_GRAPHQL_URL: string
             HASURA_WS_GRAPHQL_URL: string
             HASURA_HTTP_METADATA_URL: string
-            HASURA_HTTP_GRAPHQL_LOCAL_URL?: string            
+            HASURA_HTTP_GRAPHQL_LOCAL_URL?: string
+            HASURA_HTTP_ROOT_URL: string
         }
     }
 }

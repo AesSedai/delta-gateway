@@ -10,7 +10,7 @@ const subscriptionClient = createClient({
     webSocketImpl: WebSocket
 })
 
-const client = new Pool("http://graphql-engine:8080", { pipelining: 10, connections: 10 })
+const client = new Pool(process.env.HASURA_HTTP_ROOT_URL!, { pipelining: 10, connections: 10 })
 
 const httpExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) => {
     const query = print(document)

@@ -1,8 +1,8 @@
 import { AsyncExecutor, observableToAsyncIterable } from "@graphql-tools/utils"
-import { introspectSchema, wrapSchema } from "@graphql-tools/wrap"
-import { fetch } from "cross-undici-fetch"
+import { introspectSchema } from "@graphql-tools/wrap"
 import { getOperationAST, print } from "graphql"
 import { createClient } from "graphql-ws"
+import { Pool } from "undici"
 import WebSocket from "ws"
 
 const subscriptionClient = createClient({
@@ -10,20 +10,26 @@ const subscriptionClient = createClient({
     webSocketImpl: WebSocket
 })
 
+const client = new Pool(process.env.HASURA_HTTP_ROOT_URL!, { pipelining: 10, connections: 10 })
+
 const httpExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) => {
     const query = print(document)
-    const fetchResult = await fetch(process.env.HASURA_HTTP_GRAPHQL_URL!, {
+    const body = JSON.stringify({ query, variables, operationName, extensions })
+
+    const res = await client.request({
+        path: "/v1/graphql",
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ query, variables, operationName, extensions })
+        body: body
     })
-    return fetchResult.json()
+
+    return res.body.json() as Promise<any>
 }
 
-export const wsExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) =>
-    observableToAsyncIterable({
+export const wsExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) => {
+    return observableToAsyncIterable({
         subscribe: (observer) => ({
             unsubscribe: subscriptionClient.subscribe(
                 {
@@ -50,6 +56,7 @@ export const wsExecutor: AsyncExecutor = async ({ document, variables, operation
             )
         })
     })
+}
 
 export const executor: AsyncExecutor = async (args) => {
     // get the operation node of from the document that should be executed
@@ -65,7 +72,7 @@ export const executor: AsyncExecutor = async (args) => {
 
 export const hasuraSchema = await introspectSchema(executor)
 
-export const schema = wrapSchema({
-    schema: await introspectSchema(executor),
-    executor
-})
+export const schema = {
+    schema: hasuraSchema,
+    executor: executor
+}

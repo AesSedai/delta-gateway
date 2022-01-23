@@ -1,3 +1,5 @@
+// import "./openTelemetry"
+
 import { envelop, useLogger, useSchema } from "@envelop/core"
 import fastify from "fastify"
 import fastifyWebsocket from "fastify-websocket"

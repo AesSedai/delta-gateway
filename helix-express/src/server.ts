@@ -1,3 +1,5 @@
+// import "./openTelemetry"
+
 import { envelop, useLogger, useSchema } from "@envelop/core"
 import express from "express"
 import { GraphQLError } from "graphql"

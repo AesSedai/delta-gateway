@@ -86,6 +86,7 @@ services:
     #         HASURA_HTTP_GRAPHQL_URL: ${HASURA_HTTP_GRAPHQL_URL}
     #         HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
     #         HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
+    #         HASURA_HTTP_ROOT_URL: ${HASURA_HTTP_ROOT_URL}
     #     depends_on:
     #         graphql-engine:
     #             condition: service_healthy
@@ -112,6 +113,7 @@ services:
     #         HASURA_HTTP_GRAPHQL_URL: ${HASURA_HTTP_GRAPHQL_URL}
     #         HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
     #         HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
+    #         HASURA_HTTP_ROOT_URL: ${HASURA_HTTP_ROOT_URL}
     #     depends_on:
     #         graphql-engine:
     #             condition: service_healthy
@@ -138,6 +140,7 @@ services:
             HASURA_HTTP_GRAPHQL_URL: ${HASURA_HTTP_GRAPHQL_URL}
             HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
             HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}
+            HASURA_HTTP_ROOT_URL: ${HASURA_HTTP_ROOT_URL}
         # command: "pm2 start build/server.js -i 5 --no-daemon --node-args=\"--experimental-wasm-simd --experimental-specifier-resolution=node --loader ts-node/esm\""
         depends_on:
             graphql-engine:
