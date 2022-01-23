@@ -35,6 +35,7 @@ Also included is OpenTelemetry and Jaeger for tracing, which has been used to he
 ## Setup and Usage
 Assuming `docker-compose` is available, `npm install` has been run in each directory with a `package.json` file, that the Hasura CLI is available. Initial bringup:
 ```
+$ cp .env.sample .env
 $ docker-compose up
 ```
 This should create the postgres database, which needs to be migrated:
