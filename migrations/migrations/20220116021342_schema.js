@@ -4,6 +4,7 @@ exports.up = async (knex) => {
     await knex.schema.createTable("authors", function (table) {
         table.uuid("id").defaultTo(knex.raw("uuid_generate_v4()")).primary()
         table.string("name")
+
         table.timestamps(true, true)
     })
     await knex.raw(onUpdateTrigger("authors"))
@@ -27,106 +28,37 @@ exports.up = async (knex) => {
     })
     await knex.raw(onUpdateTrigger("books"))
 
-    await knex.schema.createTable("libraries", function (table) {
+    await knex.schema.createTable("cache", function (table) {
         table.uuid("id").defaultTo(knex.raw("uuid_generate_v4()")).primary()
-        table.string("name")
-        table.string("address")
-        table.timestamps(true, true)
-    })
-    await knex.raw(onUpdateTrigger("libraries"))
 
-    await knex.schema.createTable("library_books", function (table) {
-        table.uuid("id").defaultTo(knex.raw("uuid_generate_v4()")).primary()
-        table.integer("quantity").defaultTo(0).notNullable()
+        table.text("query").notNullable().defaultTo("")
+        table.jsonb("result").notNullable().defaultTo({})
+        table.jsonb("patch").notNullable().defaultTo({})
 
-        table
-            .uuid("library_id")
-            .notNullable()
-            .index()
-            .references("id")
-            .inTable("public.libraries")
-            .onUpdate("CASCADE")
-            .onDelete("CASCADE")
+        table.dateTime("lastUpdated")
 
-        table
-            .uuid("book_id")
-            .notNullable()
-            .index()
-            .references("id")
-            .inTable("public.books")
-            .onUpdate("CASCADE")
-            .onDelete("CASCADE")
+        table.unique(["query", "lastUpdated"])
 
         table.timestamps(true, true)
     })
-    await knex.raw(onUpdateTrigger("library_books"))
+    await knex.raw(onUpdateTrigger("cache"))
 
-    await knex.schema.createTable("members", function (table) {
-        table.uuid("id").defaultTo(knex.raw("uuid_generate_v4()")).primary()
-        table.string("name")
-        table.string("address")
-        table.timestamps(true, true)
+    await knex.schema.createTable("events", (table) => {
+        table.string("label").notNullable()
+        table.integer("connection_id").notNullable()
+        table.integer("operation_id").notNullable()
+        table.integer("event_number").notNullable()
+        table.jsonb("event_data").notNullable()
+        table.timestamp("event_time", { useTz: true }).notNullable()
+        table.boolean("is_error").notNullable()
+        table.integer("latency")
+        table.unique(["label", "connection_id", "operation_id", "event_number"])
     })
-    await knex.raw(onUpdateTrigger("members"))
-
-    await knex.schema.createTable("library_members", function (table) {
-        table.uuid("id").defaultTo(knex.raw("uuid_generate_v4()")).primary()
-
-        table
-            .uuid("library_id")
-            .notNullable()
-            .index()
-            .references("id")
-            .inTable("public.libraries")
-            .onUpdate("CASCADE")
-            .onDelete("CASCADE")
-
-        table
-            .uuid("member_id")
-            .notNullable()
-            .index()
-            .references("id")
-            .inTable("public.members")
-            .onUpdate("CASCADE")
-            .onDelete("CASCADE")
-
-        table.timestamps(true, true)
-    })
-    await knex.raw(onUpdateTrigger("library_members"))
-
-    await knex.schema.createTable("loans", function (table) {
-        table.uuid("id").defaultTo(knex.raw("uuid_generate_v4()")).primary()
-
-        table
-            .uuid("library_book_id")
-            .notNullable()
-            .index()
-            .references("id")
-            .inTable("public.library_books")
-            .onUpdate("CASCADE")
-            .onDelete("CASCADE")
-
-        table
-            .uuid("member_id")
-            .notNullable()
-            .index()
-            .references("id")
-            .inTable("public.members")
-            .onUpdate("CASCADE")
-            .onDelete("CASCADE")
-
-        table.unique(["library_book_id", "member_id"])
-        table.timestamps(true, true)
-    })
-    await knex.raw(onUpdateTrigger("loans"))
 }
 
 exports.down = async (knex) => {
-    await knex.schema.dropTable("loans")
-    await knex.schema.dropTable("library_members")
-    await knex.schema.dropTable("members")
-    await knex.schema.dropTable("library_books")
-    await knex.schema.dropTable("libraries")
     await knex.schema.dropTable("books")
     await knex.schema.dropTable("authors")
+    await knex.schema.dropTable("cache")
+    await knex.schema.dropTable("events")
 }

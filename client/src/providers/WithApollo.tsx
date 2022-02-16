@@ -11,7 +11,15 @@ export const WithApollo: FC = ({ children }) => {
 
     useAsyncEffect(async () => {
         console.log("running async effect")
-        const cache = new InMemoryCache({})
+        const cache = new InMemoryCache({
+            typePolicies: {
+                live: {
+                  // The RootQueryFragment can only match if the cache knows the __typename
+                  // of the root query object.
+                  queryType: true,
+                },
+              },
+        })
 
         const errorLink = onError(({ graphQLErrors, networkError }) => {
             if (graphQLErrors !== undefined)

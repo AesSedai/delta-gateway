@@ -1,12 +1,10 @@
 import { FC } from "react"
-import { MainPage } from "./pages/MainPage"
+import { MainPage } from "./pages/main/MainPage"
 import { WithApollo } from "./providers/WithApollo"
 
 const App: FC = () => {
     return (
-        <WithApollo>
-            <MainPage />
-        </WithApollo>
+        <MainPage />
     )
 }
 

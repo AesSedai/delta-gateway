@@ -4,9 +4,9 @@ config:
   # Label must be unique per-run, it identifiers the run in the DB
   label: authors
   # Total number of websocket connections to open
-  max_connections: 100
+  max_connections: 2000
   # New connections to make per second until target reached
-  connections_per_second: 10
+  connections_per_second: 200
   # Whether or not to insert the subscription payload data into the DB at the end
   insert_payload_data: true
   # The subscription to run

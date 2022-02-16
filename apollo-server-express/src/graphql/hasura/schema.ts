@@ -44,11 +44,12 @@ export const wsExecutor: AsyncExecutor = async ({ document, variables, operation
                         if (!observer.error) return
                         if (err instanceof Error) {
                             observer.error(err)
-                        } else if (err instanceof CloseEvent) {
-                            observer.error(new Error(`Socket closed with event ${err.code}`))
                         } else if (Array.isArray(err)) {
                             // GraphQLError[]
                             observer.error(new Error(err.map(({ message }) => message).join(", ")))
+                        } else {
+                            // @ts-expect-error
+                            observer.error(new Error(`Socket closed with event ${err.code}`))
                         }
                     },
                     complete: () => observer.complete && observer.complete()

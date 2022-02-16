@@ -1,10 +1,10 @@
 schema:
-  - ${HASURA_HTTP_GRAPHQL_LOCAL_URL}
+  - ${APOLLO_SERVER_HTTP_GRAPHQL_LOCAL_URL}
 documents:
-  - ./src/graphql/hasura/**/*.ts
+  - ./src/graphql/local/**/*.ts
 overwrite: true
 generates:
-  ./src/graphql/hasura/graphql.ts:
+  ./src/graphql/local/graphql.ts:
     plugins:
       - typescript
       - typescript-operations
@@ -15,6 +15,6 @@ generates:
       transformUnderscore: true
       nonOptionalTypename: true
       scalars: { 'uuid': 'string' }
-  ./src/graphql/hasura/schema.graphql:
+  ./src/graphql/local/schema.graphql:
     plugins:
       - schema-ast

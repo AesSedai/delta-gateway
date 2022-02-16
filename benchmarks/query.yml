@@ -24,8 +24,8 @@ queries:
       # CUSTOM: Pass completely custom options to each tool (see full API spec for all supported options, very large)
       execution_strategy: MAX_REQUESTS_IN_DURATION
       rps: 1000
-      duration: 30s
-      connections: 500
+      duration: 15s
+      connections: 1000
       query: |
         query MyQuery {
             authors(where: {books: {title: {_similar: "%6%"}}}) {

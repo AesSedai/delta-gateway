@@ -1,18 +1,18 @@
-import { gql } from "@apollo/client"
+import { gql } from "graphql-request"
 
 gql`
     query getAuthors {
-        authors(limit: 5, order_by: { name: asc }) {
+        authors {
             __typename
             id
-            name
             updated_at
+            name
             books {
                 __typename
                 id
-                title
-                isbn
                 updated_at
+                isbn
+                title
             }
         }
     }
