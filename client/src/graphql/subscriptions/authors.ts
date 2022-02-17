@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client"
 
 gql`
-    subscription authors {
-        authors(limit: 5, order_by: { name: asc }) {
+    subscription authors($limit: Int!) {
+        authors(limit: $limit, order_by: { name: asc }) {
             __typename
             id
             name
@@ -19,12 +19,12 @@ gql`
 `
 
 gql`
-    subscription authorsLive($lastUpdated: timestamptz!) {
+    subscription authorsLive($lastUpdated: timestamptz!, $limit: Int!) {
         live {
             __typename
             id
             query {
-                authors(limit: 5, order_by: { name: asc }) {
+                authors(limit: $limit, order_by: { name: asc }) {
                     __typename
                     id
                     name

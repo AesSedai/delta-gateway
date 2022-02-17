@@ -1611,6 +1611,18 @@ export type UpdateAuthorMutationVariables = Exact<{
 
 export type UpdateAuthorMutation = { __typename: 'Mutation', update_authors_by_pk?: { __typename: 'authors', id: any } | null | undefined };
 
+export type SeedAuthorsMutationVariables = Exact<{
+  authors: Array<Authors_Insert_Input> | Authors_Insert_Input;
+}>;
+
+
+export type SeedAuthorsMutation = { __typename: 'Mutation', insert_authors?: { __typename: 'authors_mutation_response', affected_rows: number } | null | undefined };
+
+export type ResetAuthorsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ResetAuthorsMutation = { __typename: 'Mutation', delete_authors?: { __typename: 'authors_mutation_response', affected_rows: number } | null | undefined };
+
 export type AddBookMutationVariables = Exact<{
   book: Books_Insert_Input;
 }>;
@@ -1633,18 +1645,23 @@ export type UpdateBookMutationVariables = Exact<{
 
 export type UpdateBookMutation = { __typename: 'Mutation', update_books_by_pk?: { __typename: 'books', id: any } | null | undefined };
 
-export type GetAuthorsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAuthorsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+}>;
 
 
 export type GetAuthorsQuery = { __typename: 'Query', authors: Array<{ __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any, books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any }> }> };
 
-export type AuthorsSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type AuthorsSubscriptionVariables = Exact<{
+  limit: Scalars['Int'];
+}>;
 
 
 export type AuthorsSubscription = { __typename: 'Subscription', authors: Array<{ __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any, books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any }> }> };
 
 export type AuthorsLiveSubscriptionVariables = Exact<{
   lastUpdated: Scalars['timestamptz'];
+  limit: Scalars['Int'];
 }>;
 
 
@@ -1685,6 +1702,71 @@ export function useUpdateAuthorMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateAuthorMutationHookResult = ReturnType<typeof useUpdateAuthorMutation>;
 export type UpdateAuthorMutationResult = Apollo.MutationResult<UpdateAuthorMutation>;
 export type UpdateAuthorMutationOptions = Apollo.BaseMutationOptions<UpdateAuthorMutation, UpdateAuthorMutationVariables>;
+export const SeedAuthorsDocument = gql`
+    mutation seedAuthors($authors: [authors_insert_input!]!) {
+  insert_authors(objects: $authors) {
+    affected_rows
+  }
+}
+    `;
+export type SeedAuthorsMutationFn = Apollo.MutationFunction<SeedAuthorsMutation, SeedAuthorsMutationVariables>;
+
+/**
+ * __useSeedAuthorsMutation__
+ *
+ * To run a mutation, you first call `useSeedAuthorsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSeedAuthorsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [seedAuthorsMutation, { data, loading, error }] = useSeedAuthorsMutation({
+ *   variables: {
+ *      authors: // value for 'authors'
+ *   },
+ * });
+ */
+export function useSeedAuthorsMutation(baseOptions?: Apollo.MutationHookOptions<SeedAuthorsMutation, SeedAuthorsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SeedAuthorsMutation, SeedAuthorsMutationVariables>(SeedAuthorsDocument, options);
+      }
+export type SeedAuthorsMutationHookResult = ReturnType<typeof useSeedAuthorsMutation>;
+export type SeedAuthorsMutationResult = Apollo.MutationResult<SeedAuthorsMutation>;
+export type SeedAuthorsMutationOptions = Apollo.BaseMutationOptions<SeedAuthorsMutation, SeedAuthorsMutationVariables>;
+export const ResetAuthorsDocument = gql`
+    mutation resetAuthors {
+  delete_authors(where: {}) {
+    affected_rows
+  }
+}
+    `;
+export type ResetAuthorsMutationFn = Apollo.MutationFunction<ResetAuthorsMutation, ResetAuthorsMutationVariables>;
+
+/**
+ * __useResetAuthorsMutation__
+ *
+ * To run a mutation, you first call `useResetAuthorsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResetAuthorsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resetAuthorsMutation, { data, loading, error }] = useResetAuthorsMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useResetAuthorsMutation(baseOptions?: Apollo.MutationHookOptions<ResetAuthorsMutation, ResetAuthorsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResetAuthorsMutation, ResetAuthorsMutationVariables>(ResetAuthorsDocument, options);
+      }
+export type ResetAuthorsMutationHookResult = ReturnType<typeof useResetAuthorsMutation>;
+export type ResetAuthorsMutationResult = Apollo.MutationResult<ResetAuthorsMutation>;
+export type ResetAuthorsMutationOptions = Apollo.BaseMutationOptions<ResetAuthorsMutation, ResetAuthorsMutationVariables>;
 export const AddBookDocument = gql`
     mutation addBook($book: books_insert_input!) {
   insert_books_one(object: $book) {
@@ -1786,8 +1868,8 @@ export type UpdateBookMutationHookResult = ReturnType<typeof useUpdateBookMutati
 export type UpdateBookMutationResult = Apollo.MutationResult<UpdateBookMutation>;
 export type UpdateBookMutationOptions = Apollo.BaseMutationOptions<UpdateBookMutation, UpdateBookMutationVariables>;
 export const GetAuthorsDocument = gql`
-    query getAuthors {
-  authors(limit: 5, order_by: {name: asc}) {
+    query getAuthors($limit: Int!) {
+  authors(limit: $limit, order_by: {name: asc}) {
     __typename
     id
     name
@@ -1815,10 +1897,11 @@ export const GetAuthorsDocument = gql`
  * @example
  * const { data, loading, error } = useGetAuthorsQuery({
  *   variables: {
+ *      limit: // value for 'limit'
  *   },
  * });
  */
-export function useGetAuthorsQuery(baseOptions?: Apollo.QueryHookOptions<GetAuthorsQuery, GetAuthorsQueryVariables>) {
+export function useGetAuthorsQuery(baseOptions: Apollo.QueryHookOptions<GetAuthorsQuery, GetAuthorsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAuthorsQuery, GetAuthorsQueryVariables>(GetAuthorsDocument, options);
       }
@@ -1830,8 +1913,8 @@ export type GetAuthorsQueryHookResult = ReturnType<typeof useGetAuthorsQuery>;
 export type GetAuthorsLazyQueryHookResult = ReturnType<typeof useGetAuthorsLazyQuery>;
 export type GetAuthorsQueryResult = Apollo.QueryResult<GetAuthorsQuery, GetAuthorsQueryVariables>;
 export const AuthorsDocument = gql`
-    subscription authors {
-  authors(limit: 5, order_by: {name: asc}) {
+    subscription authors($limit: Int!) {
+  authors(limit: $limit, order_by: {name: asc}) {
     __typename
     id
     name
@@ -1859,22 +1942,23 @@ export const AuthorsDocument = gql`
  * @example
  * const { data, loading, error } = useAuthorsSubscription({
  *   variables: {
+ *      limit: // value for 'limit'
  *   },
  * });
  */
-export function useAuthorsSubscription(baseOptions?: Apollo.SubscriptionHookOptions<AuthorsSubscription, AuthorsSubscriptionVariables>) {
+export function useAuthorsSubscription(baseOptions: Apollo.SubscriptionHookOptions<AuthorsSubscription, AuthorsSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useSubscription<AuthorsSubscription, AuthorsSubscriptionVariables>(AuthorsDocument, options);
       }
 export type AuthorsSubscriptionHookResult = ReturnType<typeof useAuthorsSubscription>;
 export type AuthorsSubscriptionResult = Apollo.SubscriptionResult<AuthorsSubscription>;
 export const AuthorsLiveDocument = gql`
-    subscription authorsLive($lastUpdated: timestamptz!) {
+    subscription authorsLive($lastUpdated: timestamptz!, $limit: Int!) {
   live {
     __typename
     id
     query {
-      authors(limit: 5, order_by: {name: asc}) {
+      authors(limit: $limit, order_by: {name: asc}) {
         __typename
         id
         name
@@ -1910,6 +1994,7 @@ export const AuthorsLiveDocument = gql`
  * const { data, loading, error } = useAuthorsLiveSubscription({
  *   variables: {
  *      lastUpdated: // value for 'lastUpdated'
+ *      limit: // value for 'limit'
  *   },
  * });
  */

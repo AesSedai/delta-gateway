@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
 import deepdash from "deepdash"
-import { BREAK, DocumentNode, GraphQLError, Kind, SelectionSetNode, visit } from "graphql"
+import { BREAK, DocumentNode, GraphQLError, Kind, print, SelectionSetNode, visit } from "graphql"
 import { ExecutionResult } from "graphql-ws"
 import hasha from "hasha"
 import lodash from "lodash"
@@ -63,6 +63,12 @@ export const schema = makeExecutableSchema({
                         }
                     })
 
+                    // console.log("updated by", JSON.stringify(info.operation.variableDefinitions, null, 2))
+                    // remove our lastUpdated var, keep the remaining ones
+                    const varDefs = (info.operation.variableDefinitions || []).filter((def) => {
+                        return def.variable.name.value !== "lastUpdated"
+                    })
+
                     // construct subscription document to forward
                     const op: DocumentNode = {
                         kind: Kind.DOCUMENT,
@@ -70,7 +76,7 @@ export const schema = makeExecutableSchema({
                             {
                                 kind: Kind.OPERATION_DEFINITION,
                                 operation: "subscription",
-                                variableDefinitions: [], //info.operation.variableDefinitions,
+                                variableDefinitions: varDefs, //info.operation.variableDefinitions,
                                 selectionSet: selectionSet
                             }
                         ]
@@ -78,7 +84,6 @@ export const schema = makeExecutableSchema({
 
                     // console.log("op", JSON.stringify(op, null, 2))
                     // console.log("doc", print(op))
-                    // console.log("updated by", JSON.stringify(info.operation.variableDefinitions, null, 2))
 
                     // initialize rev + docHash (todo: accept rev variable?)
                     let latest = "2022-01-01T00:00:00.000000+00:00"
@@ -86,13 +91,12 @@ export const schema = makeExecutableSchema({
                         latest = info.variableValues.lastUpdated
                     }
                     const docHash = hasha(JSON.stringify(info.operation), { algorithm: "md5" })
-                    // console.log("variables", JSON.stringify(info.variableValues, null, 2))
-                    // console.log("document", JSON.stringify(op, null, 2))
+                    const varValues = _.omit(info.variableValues, "lastUpdated")
 
                     try {
                         const iterable = await wsExecutor({
                             document: op,
-                            variables: {} //info.variableValues
+                            variables: varValues //info.variableValues
                         })
 
                         for await (const result of iterable as AsyncIterable<ExecutionResult>) {
@@ -102,7 +106,7 @@ export const schema = makeExecutableSchema({
                             } else {
                                 const key = `${docHash}:${latest}`
                                 const source = cache[key] == null ? {} : cache[key]
-                                console.log("source", source)
+                                // console.log("source", source)
                                 const patch = instance.diff(source, result.data)
 
                                 // console.log("result data", result.data)

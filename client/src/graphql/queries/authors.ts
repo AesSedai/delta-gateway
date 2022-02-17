@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client"
 
 gql`
-    query getAuthors {
-        authors(limit: 5, order_by: { name: asc }) {
+    query getAuthors($limit: Int!) {
+        authors(limit: $limit, order_by: { name: asc }) {
             __typename
             id
             name

@@ -1,12 +1,15 @@
 import { Box, Button, Divider, Stack, Theme } from "@mui/material"
 import { makeStyles } from "@mui/styles"
 import async from "async"
-import { random, sample } from "lodash"
+import { last, random, sample } from "lodash"
 import { FC, useState } from "react"
 import {
+    Authors_Insert_Input,
     useAddBookMutation,
     useAuthorsSubscription,
     useDeleteBookMutation,
+    useResetAuthorsMutation,
+    useSeedAuthorsMutation,
     useUpdateAuthorMutation,
     useUpdateBookMutation
 } from "../../graphql/graphql"
@@ -22,11 +25,13 @@ export const Sidebar: FC = () => {
     // usually apollo clients aren't split, so to access the same data
     // as the authorSub and authorLiveSub components, we'll just use the
     // normal subscription here so we can get IDs, etc.
-    const authors = useAuthorsSubscription()
+    const authors = useAuthorsSubscription({ variables: { limit: 50 } })
     const [updateAuthorMutation] = useUpdateAuthorMutation()
     const [updateBookMutation] = useUpdateBookMutation()
     const [addBookMutation] = useAddBookMutation()
     const [deleteBookMutation] = useDeleteBookMutation()
+    const [resetAuthorsMutation] = useResetAuthorsMutation()
+    const [seedAuthorsMutation] = useSeedAuthorsMutation()
 
     if (authors.error != null || authors.data == null) {
         if (authors.error != null) {
@@ -109,9 +114,42 @@ export const Sidebar: FC = () => {
         setRunning(false)
     }
 
+    const removeAll = async () => {
+        await resetAuthorsMutation()
+    }
+
+    const seed = async () => {
+        let lastAuthorName = authors.data?.authors.reduce(
+            (acc, author) => (acc > (author.name || "") ? acc : author.name || ""),
+            ""
+        )
+        let startingIdx = 0
+        if (lastAuthorName != null && lastAuthorName.length > 0) {
+            startingIdx = parseInt(last(lastAuthorName.split(" ")) || "1")
+        }
+        const a: Authors_Insert_Input[] = Array.from(Array(3), (_j, i) => {
+            return {
+                name: `Author ${(i + 1 + startingIdx).toString().padStart(3, "0")}`,
+                books: {
+                    data: Array.from(Array(random(1, 5)), (_j, j) => {
+                        return {
+                            title: `Book ${(i + 1 + startingIdx) * 1000 + j}`,
+                            isbn: `978-${random(1, 9)}-${random(1000, 9999)}-${random(1000, 9999)}-${random(1, 9)}`
+                        }
+                    })
+                }
+            }
+        })
+
+        await seedAuthorsMutation({ variables: { authors: a } })
+    }
+
     return (
-        <Box display="flex" sx={{ flex: "1 0 100%" }}>
+        <Box display="flex" sx={{ flex: "1 1 100%" }}>
             <Stack sx={{ width: "100%" }}>
+                <Button onClick={removeAll}>Reset</Button>
+                <Divider></Divider>
+                <Button onClick={seed}>Add 3 Authors</Button>
                 <Button onClick={updateAuthor}>Update Random Author</Button>
                 <Button onClick={updateBook}>Update Random Book</Button>
                 <Button onClick={addBook}>Add Random Book</Button>

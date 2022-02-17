@@ -27,7 +27,8 @@ export const AuthorLiveSub: FC = () => {
     })
     const authorSub = useAuthorsLiveSubscription({
         variables: {
-            lastUpdated: lastUpdated
+            lastUpdated: lastUpdated,
+            limit: 50
         },
         onSubscriptionData: ({ client, subscriptionData }) => {
             if (subscriptionData.data?.live.delta.patch != null) {

@@ -14,6 +14,7 @@ export const AuthorSub: FC = () => {
     const [totalData, setTotalData] = useState<number>(0)
 
     const authors = useAuthorsSubscription({
+        variables: { limit: 50 },
         onSubscriptionData: ({ client, subscriptionData }) => {
             if (subscriptionData.data?.authors != null) {
                 setTotalData(totalData + JSON.stringify(subscriptionData.data).length)
