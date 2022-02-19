@@ -7,7 +7,7 @@ gql`
             id
             name
             updated_at
-            books {
+            books(order_by: { name: asc }) {
                 __typename
                 id
                 title

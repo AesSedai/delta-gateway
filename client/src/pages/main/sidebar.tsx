@@ -139,21 +139,21 @@ export const Sidebar: FC = () => {
     }
 
     const seed = async () => {
-        let lastAuthorName = authors.data?.authors.reduce(
-            (acc, author) => (acc > (author.name || "") ? acc : author.name || ""),
-            ""
-        )
-        let startingIdx = 0
-        if (lastAuthorName != null && lastAuthorName.length > 0) {
-            startingIdx = parseInt(last(lastAuthorName.split(" ")) || "1")
-        }
+        let lastAuthorIdx = parseInt(authors.data?.authors.reduce(
+            (acc, author) => {
+                const name = author.name || ""
+                const idx = parseInt(last(name.split(" ")) || "1").toString()
+                return acc > idx ? acc : idx || ""
+            },
+            "0"
+        ) || "0")
         const a: Authors_Insert_Input[] = Array.from(Array(3), (_j, i) => {
             return {
-                name: `Author ${(i + 1 + startingIdx).toString().padStart(3, "0")}`,
+                name: `Author ${(i + 1 + lastAuthorIdx).toString().padStart(3, "0")}`,
                 books: {
                     data: Array.from(Array(random(1, 5)), (_j, j) => {
                         return {
-                            title: `Book ${(i + 1 + startingIdx) * 1000 + j}`,
+                            title: `Book ${(i + 1 + lastAuthorIdx) * 1000 + j}`,
                             isbn: `978-${random(1, 9)}-${random(1000, 9999)}-${random(1000, 9999)}-${random(1, 9)}`
                         }
                     })

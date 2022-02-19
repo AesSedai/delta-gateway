@@ -2089,6 +2089,7 @@ export const GetAuthorHistoryDocument = gql`
     name
     updated_at
     books(
+      order_by: {title: asc}
       where: {valid_from: {_lte: $ts}, _or: [{valid_to: {_is_null: true}}, {valid_to: {_gt: $ts}}]}
     ) {
       __typename

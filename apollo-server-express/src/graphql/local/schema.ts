@@ -8,6 +8,7 @@ import { sdk } from "../../utils/gqlClient"
 import { instance } from "../../utils/jsondiffpatch"
 import { hasuraSchema as rawHasuraSchema, wsExecutor } from "../hasura/schema"
 import { LiveSubscription } from "./graphql"
+import { DateTime } from "luxon"
 
 const _ = deepdash(lodash)
 
@@ -109,7 +110,7 @@ export const schema = makeExecutableSchema({
                                     limit: info.variableValues.limit
                                 })
 
-                                console.log("data", JSON.stringify(result.data, null, 2))
+                                // console.log("data", JSON.stringify(result.data, null, 2))
 
                                 const renamedKeys = _.mapKeysDeep(history, (value, key) => {
                                     return typeof key === "string" ? key.replace("history_", "") : key
@@ -123,16 +124,18 @@ export const schema = makeExecutableSchema({
                                     }
                                 })
 
-                                console.log("history", JSON.stringify(renamedTypes, null, 2))
+                                // console.log("history", JSON.stringify(renamedTypes))
 
-                                const key = `${docHash}:${latest}`
-                                const source = cache[key] == null ? {} : cache[key]
-                                console.log("source", source)
+                                // const key = `${docHash}:${latest}`
+                                const source = latest == "2022-01-01T00:00:00.000000+00:00" ? {} : renamedTypes
+                                // console.log("source", JSON.stringify(source))
+                                // console.log("same?", _.isEqual(JSON.stringify(source), JSON.stringify(renamedTypes)))
                                 const patch = instance.diff(source, result.data)
 
                                 // console.log("result data", result.data)
                                 if (patch != null) {
                                     // find newest updatedAt
+                                    const oldLatest = latest
                                     latest = _.reduceDeep(
                                         result.data,
                                         (acc, value, key, parent, ctx) => {
@@ -142,18 +145,11 @@ export const schema = makeExecutableSchema({
                                         latest
                                     )
 
-                                    // persist result to db
-                                    const response = await sdk.insertCache({
-                                        result: {
-                                            lastUpdated: latest,
-                                            query: docHash,
-                                            result: result.data,
-                                            patch: patch
-                                        }
-                                    })
-
-                                    const key = `${docHash}:${latest}`
-                                    cache[key] = result.data
+                                    // the entire set has been deleted, so we need to give latest a tiny "bump" to prevent 
+                                    // re-sending the delete-all patch
+                                    if (oldLatest === latest) {
+                                        latest = DateTime.now().plus(1).toISO()
+                                    }
 
                                     let ret: LiveSubscription = {
                                         id: docHash,
