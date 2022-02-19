@@ -3,8 +3,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import { TreeItem, TreeView } from "@mui/lab"
 import { Box, Button, Stack, Theme, Typography } from "@mui/material"
 import { makeStyles } from "@mui/styles"
-import { FC, useState } from "react"
-import { useAuthorsSubscription } from "../../graphql/graphql"
+import { FC, useEffect, useState } from "react"
+import { AuthorsDocument, useGetAuthorsQuery } from "../../graphql/graphql"
 
 const useStyles = makeStyles<Theme>((theme) => ({}))
 
@@ -13,14 +13,28 @@ export const AuthorSub: FC = () => {
     const [expanded, setExpanded] = useState<string[]>([])
     const [totalData, setTotalData] = useState<number>(0)
 
-    const authors = useAuthorsSubscription({
-        variables: { limit: 50 },
-        onSubscriptionData: ({ client, subscriptionData }) => {
-            if (subscriptionData.data?.authors != null) {
-                setTotalData(totalData + JSON.stringify(subscriptionData.data).length)
-            }
-        }
+    // Using a subscription directly is not recommended, 
+    // because apollo will trigger a subscription twice.
+    // REF: https://github.com/apollographql/apollo-client/issues/6037
+    const authors = useGetAuthorsQuery({
+        fetchPolicy: "cache-only"
     })
+
+    useEffect(() => {
+        authors.subscribeToMore({
+            document: AuthorsDocument,
+            variables: { limit: 50 },
+            updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) {
+                    return prev
+                }
+
+                setTotalData((prevState) => prevState + JSON.stringify(subscriptionData.data).length)
+
+                return subscriptionData.data
+            }
+        })
+    }, [])
 
     if (authors.error != null || authors.data == null) {
         if (authors.error != null) {

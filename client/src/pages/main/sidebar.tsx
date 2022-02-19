@@ -2,12 +2,13 @@ import { Box, Button, Divider, Stack, Theme } from "@mui/material"
 import { makeStyles } from "@mui/styles"
 import async from "async"
 import { last, random, sample } from "lodash"
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import {
+    AuthorsDocument,
     Authors_Insert_Input,
     useAddBookMutation,
-    useAuthorsSubscription,
     useDeleteBookMutation,
+    useGetAuthorsQuery,
     useResetAuthorsMutation,
     useSeedAuthorsMutation,
     useUpdateAuthorMutation,
@@ -22,10 +23,29 @@ export const Sidebar: FC = () => {
     const [running, setRunning] = useState<boolean>(false)
     const [actions, setActions] = useState({ total: 100, current: 0 })
 
-    // usually apollo clients aren't split, so to access the same data
+    // Using a subscription directly is not recommended,
+    // because apollo will trigger a subscription twice.
+    // REF: https://github.com/apollographql/apollo-client/issues/6037
+    // Also, usually apollo clients aren't split, so to access the same data
     // as the authorSub and authorLiveSub components, we'll just use the
     // normal subscription here so we can get IDs, etc.
-    const authors = useAuthorsSubscription({ variables: { limit: 50 } })
+    const authors = useGetAuthorsQuery({
+        fetchPolicy: "cache-only"
+    })
+
+    useEffect(() => {
+        authors.subscribeToMore({
+            document: AuthorsDocument,
+            variables: { limit: 50 },
+            updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) {
+                    return prev
+                }
+
+                return subscriptionData.data
+            }
+        })
+    }, [])
     const [updateAuthorMutation] = useUpdateAuthorMutation()
     const [updateBookMutation] = useUpdateBookMutation()
     const [addBookMutation] = useAddBookMutation()

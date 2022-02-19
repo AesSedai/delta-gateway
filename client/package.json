@@ -101,6 +101,7 @@
         "prettier": "^2.5.1",
         "prettier-plugin-organize-imports": "^2.3.4",
         "sass": "^1.49.0",
-        "ts-node": "^10.4.0"
+        "ts-node": "^10.4.0",
+        "ts-toolbelt": "^9.6.0"
     }
 }

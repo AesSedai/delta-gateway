@@ -3,14 +3,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import { TreeItem, TreeView } from "@mui/lab"
 import { Box, Button, Stack, Theme, Typography } from "@mui/material"
 import { makeStyles } from "@mui/styles"
+import localforage from "localforage"
 import { cloneDeep } from "lodash"
 import { FC, useState } from "react"
-import {
-    GetAuthorsDocument,
-    GetAuthorsQuery,
-    useAuthorsLiveSubscription,
-    useGetAuthorsQuery
-} from "../../graphql/graphql"
+import useAsyncEffect from "use-async-effect"
+import { AuthorsLiveDocument, AuthorsLiveSubscription, useGetAuthorsQuery } from "../../graphql/graphql"
 import { instance } from "../../utils/jsondiffpatch"
 
 const useStyles = makeStyles<Theme>((theme) => ({}))
@@ -18,42 +15,58 @@ const useStyles = makeStyles<Theme>((theme) => ({}))
 export const AuthorLiveSub: FC = () => {
     const classes = useStyles()
     const [lastPatch, setLastPatch] = useState<string>("")
-    const [lastUpdated, setLastUpdated] = useState<string>("2022-01-01T00:00:00.000000+00:00")
+    const [lastUpdated, setLastUpdated] = useState<string>("")
     const [expanded, setExpanded] = useState<string[]>([])
     const [totalData, setTotalData] = useState<number>(0)
 
+    // Using a subscription directly is not recommended,
+    // because apollo will trigger a subscription twice.
+    // REF: https://github.com/apollographql/apollo-client/issues/6037
     const authors = useGetAuthorsQuery({
         fetchPolicy: "cache-only"
     })
-    const authorSub = useAuthorsLiveSubscription({
-        variables: {
-            lastUpdated: lastUpdated,
-            limit: 50
-        },
-        onSubscriptionData: ({ client, subscriptionData }) => {
-            if (subscriptionData.data?.live.delta.patch != null) {
-                const existing = client.readQuery<GetAuthorsQuery>({
-                    query: GetAuthorsDocument
-                })
-                setLastPatch(subscriptionData.data.live.delta.patch)
-                let patchResult: any
-                if (existing != null) {
-                    patchResult = instance.patch(
-                        cloneDeep(existing),
-                        JSON.parse(subscriptionData.data.live.delta.patch)
-                    )
-                } else {
-                    patchResult = instance.patch({}, JSON.parse(subscriptionData.data.live.delta.patch))
-                }
-                client.writeQuery({
-                    query: GetAuthorsDocument,
-                    data: patchResult
-                })
-                setLastUpdated(subscriptionData.data.live.delta.lastUpdated)
-                setTotalData(totalData + JSON.stringify(subscriptionData.data).length)
-            }
+
+    useAsyncEffect(async () => {
+        // read from cache
+
+        let timestamp: string | null = await localforage.getItem("AuthorsLiveLastUpdated")
+
+        if (timestamp == null) {
+            timestamp = "2022-01-01T00:00:00.000000+00:00"
         }
-    })
+
+        setLastUpdated(timestamp)
+        authors.subscribeToMore({
+            document: AuthorsLiveDocument,
+            variables: { lastUpdated: timestamp, limit: 50 },
+            updateQuery: (
+                prev,
+                { subscriptionData: { data } }: { subscriptionData: { data: AuthorsLiveSubscription } }
+            ) => {
+                console.log("prev", prev, "data", data)
+                if (data?.live.delta.patch != null) {
+
+                    console.log(cloneDeep(prev), "patch", JSON.parse(data.live.delta.patch))
+
+                    let patchResult: any
+                    if (prev != null) {
+                        patchResult = instance.patch(cloneDeep(prev), JSON.parse(data.live.delta.patch))
+                    } else {
+                        patchResult = instance.patch({}, JSON.parse(data.live.delta.patch))
+                    }
+
+                    void localforage.setItem("AuthorsLiveLastUpdated", data.live.delta.lastUpdated)
+                    setLastUpdated(data.live.delta.lastUpdated)
+                    setLastPatch(data.live.delta.patch)
+                    setTotalData((prevState) => prevState + JSON.stringify(data).length)
+
+                    return patchResult
+                }
+
+                return prev
+            }
+        })
+    }, [])
 
     if (authors.error != null || authors.data == null) {
         if (authors.error != null) {

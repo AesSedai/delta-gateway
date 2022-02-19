@@ -109,6 +109,8 @@ export const schema = makeExecutableSchema({
                                     limit: info.variableValues.limit
                                 })
 
+                                console.log("data", JSON.stringify(result.data, null, 2))
+
                                 const renamedKeys = _.mapKeysDeep(history, (value, key) => {
                                     return typeof key === "string" ? key.replace("history_", "") : key
                                 })
@@ -121,9 +123,11 @@ export const schema = makeExecutableSchema({
                                     }
                                 })
 
+                                console.log("history", JSON.stringify(renamedTypes, null, 2))
+
                                 const key = `${docHash}:${latest}`
                                 const source = cache[key] == null ? {} : cache[key]
-                                // console.log("source", source)
+                                console.log("source", source)
                                 const patch = instance.diff(source, result.data)
 
                                 // console.log("result data", result.data)
