@@ -2,24 +2,52 @@ import { ApolloClient, ApolloProvider, from, InMemoryCache, NormalizedCacheObjec
 import { onError } from "@apollo/client/link/error"
 import { RetryLink } from "@apollo/client/link/retry"
 import { WebSocketLink } from "@apollo/client/link/ws"
-import { FC, useState } from "react"
+import { CachePersistor, LocalForageWrapper } from "apollo3-cache-persist"
+import localforage from "localforage"
+import { useState } from "react"
 import useAsyncEffect from "use-async-effect"
+import { StrictTypedTypePolicies } from "../graphql/graphql"
 import { GraphqlWsLink } from "../utils/grapqhlWsLink"
+import { PersistanceProvider } from "./PersistenceProvider"
 
-export const WithApollo: FC = ({ children }) => {
+interface WithApolloProps {
+    cacheKey?: string
+    children: React.ReactNode
+}
+
+export const WithApollo = (props: WithApolloProps): JSX.Element => {
+    const { children, cacheKey } = props
     const [client, setClient] = useState<ApolloClient<NormalizedCacheObject>>()
+    const [persistor, setPersistor] = useState<CachePersistor<NormalizedCacheObject>>()
 
     useAsyncEffect(async () => {
-        console.log("running async effect")
+        const typePolicies: StrictTypedTypePolicies = {
+            delta: {
+                fields: {
+                    patch: {
+                        merge() {
+                            return ""
+                        }
+                    }
+                }
+            }
+        }
+
         const cache = new InMemoryCache({
-            typePolicies: {
-                live: {
-                  // The RootQueryFragment can only match if the cache knows the __typename
-                  // of the root query object.
-                  queryType: true,
-                },
-              },
+            typePolicies
         })
+
+        const newPersistor = new CachePersistor({
+            cache,
+            storage: new LocalForageWrapper(localforage),
+            key: cacheKey == null ? "apollo-cache-persist" : cacheKey,
+            debug: false,
+            trigger: "write",
+            maxSize: false
+        })
+        // void newPersistor.purge()
+        await newPersistor.restore()
+        setPersistor(newPersistor)
 
         const errorLink = onError(({ graphQLErrors, networkError }) => {
             if (graphQLErrors !== undefined)
@@ -83,7 +111,9 @@ export const WithApollo: FC = ({ children }) => {
         return <h2>Initializing app...</h2>
     }
 
-    console.log("re-rendered WithApollo", client)
-
-    return <ApolloProvider client={client}>{children}</ApolloProvider>
+    return (
+        <ApolloProvider client={client}>
+            <PersistanceProvider persistor={persistor}>{children}</PersistanceProvider>
+        </ApolloProvider>
+    )
 }

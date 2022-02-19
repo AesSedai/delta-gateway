@@ -21,7 +21,7 @@ export const MainPage: FC = () => {
         <Grid container spacing={2} p={2}>
             <Grid item xs={3}>
                 <Paper className={classes.paper}>
-                    <WithApollo>
+                    <WithApollo cacheKey="Sidebar">
                         <Sidebar />
                     </WithApollo>
                 </Paper>
@@ -29,13 +29,13 @@ export const MainPage: FC = () => {
             <Grid item xs={6}>
                 <Paper className={classes.paper}>
                     <Box display="flex" sx={{ flex: "1 0 50%" }}>
-                        <WithApollo>
+                        <WithApollo cacheKey="AuthorSub">
                             <AuthorSub />
                         </WithApollo>
                     </Box>
                     <Divider orientation="vertical" flexItem />
                     <Box display="flex" sx={{ flex: "1 0 50%", pl: 2 }}>
-                        <WithApollo>
+                        <WithApollo cacheKey="AuthorLiveSub">
                             <AuthorLiveSub />
                         </WithApollo>
                     </Box>

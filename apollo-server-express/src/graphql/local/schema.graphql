@@ -84,6 +84,22 @@ type Mutation {
   ): events_mutation_response
 
   """
+  delete data from the table: "history.authors"
+  """
+  delete_history_authors(
+    """filter the rows which have to be deleted"""
+    where: history_authors_bool_exp!
+  ): history_authors_mutation_response
+
+  """
+  delete data from the table: "history.books"
+  """
+  delete_history_books(
+    """filter the rows which have to be deleted"""
+    where: history_books_bool_exp!
+  ): history_books_mutation_response
+
+  """
   insert data into the table: "authors"
   """
   insert_authors(
@@ -170,6 +186,38 @@ type Mutation {
     """on conflict condition"""
     on_conflict: events_on_conflict
   ): events
+
+  """
+  insert data into the table: "history.authors"
+  """
+  insert_history_authors(
+    """the rows to be inserted"""
+    objects: [history_authors_insert_input!]!
+  ): history_authors_mutation_response
+
+  """
+  insert a single row into the table: "history.authors"
+  """
+  insert_history_authors_one(
+    """the row to be inserted"""
+    object: history_authors_insert_input!
+  ): history_authors
+
+  """
+  insert data into the table: "history.books"
+  """
+  insert_history_books(
+    """the rows to be inserted"""
+    objects: [history_books_insert_input!]!
+  ): history_books_mutation_response
+
+  """
+  insert a single row into the table: "history.books"
+  """
+  insert_history_books_one(
+    """the row to be inserted"""
+    object: history_books_insert_input!
+  ): history_books
 
   """
   update data of the table: "authors"
@@ -307,6 +355,28 @@ type Mutation {
     """filter the rows which have to be updated"""
     where: events_bool_exp!
   ): events_mutation_response
+
+  """
+  update data of the table: "history.authors"
+  """
+  update_history_authors(
+    """sets the columns of the filtered rows to the given values"""
+    _set: history_authors_set_input
+
+    """filter the rows which have to be updated"""
+    where: history_authors_bool_exp!
+  ): history_authors_mutation_response
+
+  """
+  update data of the table: "history.books"
+  """
+  update_history_books(
+    """sets the columns of the filtered rows to the given values"""
+    _set: history_books_set_input
+
+    """filter the rows which have to be updated"""
+    where: history_books_bool_exp!
+  ): history_books_mutation_response
 }
 
 type Query {
@@ -476,6 +546,86 @@ type Query {
     """filter the rows returned"""
     where: events_bool_exp
   ): events_aggregate!
+
+  """
+  fetch data from the table: "history.authors"
+  """
+  history_authors(
+    """distinct select on columns"""
+    distinct_on: [history_authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_authors_order_by!]
+
+    """filter the rows returned"""
+    where: history_authors_bool_exp
+  ): [history_authors!]!
+
+  """
+  fetch aggregated fields from the table: "history.authors"
+  """
+  history_authors_aggregate(
+    """distinct select on columns"""
+    distinct_on: [history_authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_authors_order_by!]
+
+    """filter the rows returned"""
+    where: history_authors_bool_exp
+  ): history_authors_aggregate!
+
+  """
+  fetch data from the table: "history.books"
+  """
+  history_books(
+    """distinct select on columns"""
+    distinct_on: [history_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_books_order_by!]
+
+    """filter the rows returned"""
+    where: history_books_bool_exp
+  ): [history_books!]!
+
+  """
+  fetch aggregated fields from the table: "history.books"
+  """
+  history_books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [history_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_books_order_by!]
+
+    """filter the rows returned"""
+    where: history_books_bool_exp
+  ): history_books_aggregate!
 }
 
 """
@@ -698,6 +848,86 @@ type Subscription {
     """filter the rows returned"""
     where: events_bool_exp
   ): events_aggregate!
+
+  """
+  fetch data from the table: "history.authors"
+  """
+  history_authors(
+    """distinct select on columns"""
+    distinct_on: [history_authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_authors_order_by!]
+
+    """filter the rows returned"""
+    where: history_authors_bool_exp
+  ): [history_authors!]!
+
+  """
+  fetch aggregated fields from the table: "history.authors"
+  """
+  history_authors_aggregate(
+    """distinct select on columns"""
+    distinct_on: [history_authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_authors_order_by!]
+
+    """filter the rows returned"""
+    where: history_authors_bool_exp
+  ): history_authors_aggregate!
+
+  """
+  fetch data from the table: "history.books"
+  """
+  history_books(
+    """distinct select on columns"""
+    distinct_on: [history_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_books_order_by!]
+
+    """filter the rows returned"""
+    where: history_books_bool_exp
+  ): [history_books!]!
+
+  """
+  fetch aggregated fields from the table: "history.books"
+  """
+  history_books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [history_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_books_order_by!]
+
+    """filter the rows returned"""
+    where: history_books_bool_exp
+  ): history_books_aggregate!
   live: LiveSubscription!
 }
 
@@ -1689,6 +1919,396 @@ type events_variance_fields {
   operation_id: Float
 }
 
+"""
+columns and relationships of "history.authors"
+"""
+type history_authors {
+  """An array relationship"""
+  books(
+    """distinct select on columns"""
+    distinct_on: [history_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_books_order_by!]
+
+    """filter the rows returned"""
+    where: history_books_bool_exp
+  ): [history_books!]!
+
+  """An aggregate relationship"""
+  books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [history_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_books_order_by!]
+
+    """filter the rows returned"""
+    where: history_books_bool_exp
+  ): history_books_aggregate!
+  created_at: timestamptz!
+  id: uuid!
+  name: String
+  updated_at: timestamptz!
+  valid_from: timestamptz
+  valid_to: timestamptz
+}
+
+"""
+aggregated selection of "history.authors"
+"""
+type history_authors_aggregate {
+  aggregate: history_authors_aggregate_fields
+  nodes: [history_authors!]!
+}
+
+"""
+aggregate fields of "history.authors"
+"""
+type history_authors_aggregate_fields {
+  count(columns: [history_authors_select_column!], distinct: Boolean): Int!
+  max: history_authors_max_fields
+  min: history_authors_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "history.authors". All fields are combined with a logical 'AND'.
+"""
+input history_authors_bool_exp {
+  _and: [history_authors_bool_exp!]
+  _not: history_authors_bool_exp
+  _or: [history_authors_bool_exp!]
+  books: history_books_bool_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  valid_from: timestamptz_comparison_exp
+  valid_to: timestamptz_comparison_exp
+}
+
+"""
+input type for inserting data into table "history.authors"
+"""
+input history_authors_insert_input {
+  books: history_books_arr_rel_insert_input
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+  valid_from: timestamptz
+  valid_to: timestamptz
+}
+
+"""aggregate max on columns"""
+type history_authors_max_fields {
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+  valid_from: timestamptz
+  valid_to: timestamptz
+}
+
+"""aggregate min on columns"""
+type history_authors_min_fields {
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+  valid_from: timestamptz
+  valid_to: timestamptz
+}
+
+"""
+response of any mutation on the table "history.authors"
+"""
+type history_authors_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [history_authors!]!
+}
+
+"""
+input type for inserting object relation for remote table "history.authors"
+"""
+input history_authors_obj_rel_insert_input {
+  data: history_authors_insert_input!
+}
+
+"""Ordering options when selecting data from "history.authors"."""
+input history_authors_order_by {
+  books_aggregate: history_books_aggregate_order_by
+  created_at: order_by
+  id: order_by
+  name: order_by
+  updated_at: order_by
+  valid_from: order_by
+  valid_to: order_by
+}
+
+"""
+select columns of table "history.authors"
+"""
+enum history_authors_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  valid_from
+
+  """column name"""
+  valid_to
+}
+
+"""
+input type for updating data in table "history.authors"
+"""
+input history_authors_set_input {
+  created_at: timestamptz
+  id: uuid
+  name: String
+  updated_at: timestamptz
+  valid_from: timestamptz
+  valid_to: timestamptz
+}
+
+"""
+columns and relationships of "history.books"
+"""
+type history_books {
+  """An object relationship"""
+  author: history_authors
+  author_id: uuid!
+  created_at: timestamptz!
+  id: uuid!
+  isbn: String
+  published_at: timestamp
+  title: String
+  updated_at: timestamptz!
+  valid_from: timestamptz
+  valid_to: timestamptz
+}
+
+"""
+aggregated selection of "history.books"
+"""
+type history_books_aggregate {
+  aggregate: history_books_aggregate_fields
+  nodes: [history_books!]!
+}
+
+"""
+aggregate fields of "history.books"
+"""
+type history_books_aggregate_fields {
+  count(columns: [history_books_select_column!], distinct: Boolean): Int!
+  max: history_books_max_fields
+  min: history_books_min_fields
+}
+
+"""
+order by aggregate values of table "history.books"
+"""
+input history_books_aggregate_order_by {
+  count: order_by
+  max: history_books_max_order_by
+  min: history_books_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "history.books"
+"""
+input history_books_arr_rel_insert_input {
+  data: [history_books_insert_input!]!
+}
+
+"""
+Boolean expression to filter rows from the table "history.books". All fields are combined with a logical 'AND'.
+"""
+input history_books_bool_exp {
+  _and: [history_books_bool_exp!]
+  _not: history_books_bool_exp
+  _or: [history_books_bool_exp!]
+  author: history_authors_bool_exp
+  author_id: uuid_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  isbn: String_comparison_exp
+  published_at: timestamp_comparison_exp
+  title: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  valid_from: timestamptz_comparison_exp
+  valid_to: timestamptz_comparison_exp
+}
+
+"""
+input type for inserting data into table "history.books"
+"""
+input history_books_insert_input {
+  author: history_authors_obj_rel_insert_input
+  author_id: uuid
+  created_at: timestamptz
+  id: uuid
+  isbn: String
+  published_at: timestamp
+  title: String
+  updated_at: timestamptz
+  valid_from: timestamptz
+  valid_to: timestamptz
+}
+
+"""aggregate max on columns"""
+type history_books_max_fields {
+  author_id: uuid
+  created_at: timestamptz
+  id: uuid
+  isbn: String
+  published_at: timestamp
+  title: String
+  updated_at: timestamptz
+  valid_from: timestamptz
+  valid_to: timestamptz
+}
+
+"""
+order by max() on columns of table "history.books"
+"""
+input history_books_max_order_by {
+  author_id: order_by
+  created_at: order_by
+  id: order_by
+  isbn: order_by
+  published_at: order_by
+  title: order_by
+  updated_at: order_by
+  valid_from: order_by
+  valid_to: order_by
+}
+
+"""aggregate min on columns"""
+type history_books_min_fields {
+  author_id: uuid
+  created_at: timestamptz
+  id: uuid
+  isbn: String
+  published_at: timestamp
+  title: String
+  updated_at: timestamptz
+  valid_from: timestamptz
+  valid_to: timestamptz
+}
+
+"""
+order by min() on columns of table "history.books"
+"""
+input history_books_min_order_by {
+  author_id: order_by
+  created_at: order_by
+  id: order_by
+  isbn: order_by
+  published_at: order_by
+  title: order_by
+  updated_at: order_by
+  valid_from: order_by
+  valid_to: order_by
+}
+
+"""
+response of any mutation on the table "history.books"
+"""
+type history_books_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [history_books!]!
+}
+
+"""Ordering options when selecting data from "history.books"."""
+input history_books_order_by {
+  author: history_authors_order_by
+  author_id: order_by
+  created_at: order_by
+  id: order_by
+  isbn: order_by
+  published_at: order_by
+  title: order_by
+  updated_at: order_by
+  valid_from: order_by
+  valid_to: order_by
+}
+
+"""
+select columns of table "history.books"
+"""
+enum history_books_select_column {
+  """column name"""
+  author_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  isbn
+
+  """column name"""
+  published_at
+
+  """column name"""
+  title
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  valid_from
+
+  """column name"""
+  valid_to
+}
+
+"""
+input type for updating data in table "history.books"
+"""
+input history_books_set_input {
+  author_id: uuid
+  created_at: timestamptz
+  id: uuid
+  isbn: String
+  published_at: timestamp
+  title: String
+  updated_at: timestamptz
+  valid_from: timestamptz
+  valid_to: timestamptz
+}
+
 scalar jsonb
 
 """
@@ -1908,6 +2528,86 @@ type subscription_root {
     """filter the rows returned"""
     where: events_bool_exp
   ): events_aggregate!
+
+  """
+  fetch data from the table: "history.authors"
+  """
+  history_authors(
+    """distinct select on columns"""
+    distinct_on: [history_authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_authors_order_by!]
+
+    """filter the rows returned"""
+    where: history_authors_bool_exp
+  ): [history_authors!]!
+
+  """
+  fetch aggregated fields from the table: "history.authors"
+  """
+  history_authors_aggregate(
+    """distinct select on columns"""
+    distinct_on: [history_authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_authors_order_by!]
+
+    """filter the rows returned"""
+    where: history_authors_bool_exp
+  ): history_authors_aggregate!
+
+  """
+  fetch data from the table: "history.books"
+  """
+  history_books(
+    """distinct select on columns"""
+    distinct_on: [history_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_books_order_by!]
+
+    """filter the rows returned"""
+    where: history_books_bool_exp
+  ): [history_books!]!
+
+  """
+  fetch aggregated fields from the table: "history.books"
+  """
+  history_books_aggregate(
+    """distinct select on columns"""
+    distinct_on: [history_books_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_books_order_by!]
+
+    """filter the rows returned"""
+    where: history_books_bool_exp
+  ): history_books_aggregate!
 }
 
 scalar timestamp

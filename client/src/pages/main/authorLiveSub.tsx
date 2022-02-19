@@ -51,7 +51,6 @@ export const AuthorLiveSub: FC = () => {
                 })
                 setLastUpdated(subscriptionData.data.live.delta.lastUpdated)
                 setTotalData(totalData + JSON.stringify(subscriptionData.data).length)
-                console.log("Updated data", patchResult)
             }
         }
     })
@@ -99,7 +98,7 @@ export const AuthorLiveSub: FC = () => {
                 <Box sx={{ my: 1 }}>
                     <Typography>Last data: {lastPatch.length} bytes</Typography>
                     <Typography>Total data: {totalData} bytes</Typography>
-                    <pre>{JSON.stringify(JSON.parse(lastPatch), null, 2)}</pre>
+                    <pre>{lastPatch.length > 0 ? JSON.stringify(JSON.parse(lastPatch), null, 2) : ""}</pre>
                 </Box>
             </Stack>
         </Box>

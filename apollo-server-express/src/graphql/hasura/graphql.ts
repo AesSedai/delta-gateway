@@ -953,6 +953,354 @@ export type Events_Variance_Fields = {
   operation_id?: Maybe<Scalars['Float']>;
 };
 
+/** columns and relationships of "history.authors" */
+export type History_Authors = {
+  __typename: 'history_authors';
+  /** An array relationship */
+  books: Array<History_Books>;
+  /** An aggregate relationship */
+  books_aggregate: History_Books_Aggregate;
+  created_at: Scalars['timestamptz'];
+  id: Scalars['uuid'];
+  name?: Maybe<Scalars['String']>;
+  updated_at: Scalars['timestamptz'];
+  valid_from?: Maybe<Scalars['timestamptz']>;
+  valid_to?: Maybe<Scalars['timestamptz']>;
+};
+
+
+/** columns and relationships of "history.authors" */
+export type History_AuthorsBooksArgs = {
+  distinct_on?: InputMaybe<Array<History_Books_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Books_Order_By>>;
+  where?: InputMaybe<History_Books_Bool_Exp>;
+};
+
+
+/** columns and relationships of "history.authors" */
+export type History_AuthorsBooks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<History_Books_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Books_Order_By>>;
+  where?: InputMaybe<History_Books_Bool_Exp>;
+};
+
+/** aggregated selection of "history.authors" */
+export type History_Authors_Aggregate = {
+  __typename: 'history_authors_aggregate';
+  aggregate?: Maybe<History_Authors_Aggregate_Fields>;
+  nodes: Array<History_Authors>;
+};
+
+/** aggregate fields of "history.authors" */
+export type History_Authors_Aggregate_Fields = {
+  __typename: 'history_authors_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<History_Authors_Max_Fields>;
+  min?: Maybe<History_Authors_Min_Fields>;
+};
+
+
+/** aggregate fields of "history.authors" */
+export type History_Authors_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<History_Authors_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "history.authors". All fields are combined with a logical 'AND'. */
+export type History_Authors_Bool_Exp = {
+  _and?: InputMaybe<Array<History_Authors_Bool_Exp>>;
+  _not?: InputMaybe<History_Authors_Bool_Exp>;
+  _or?: InputMaybe<Array<History_Authors_Bool_Exp>>;
+  books?: InputMaybe<History_Books_Bool_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  valid_from?: InputMaybe<Timestamptz_Comparison_Exp>;
+  valid_to?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "history.authors" */
+export type History_Authors_Insert_Input = {
+  books?: InputMaybe<History_Books_Arr_Rel_Insert_Input>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  valid_from?: InputMaybe<Scalars['timestamptz']>;
+  valid_to?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type History_Authors_Max_Fields = {
+  __typename: 'history_authors_max_fields';
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  valid_from?: Maybe<Scalars['timestamptz']>;
+  valid_to?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type History_Authors_Min_Fields = {
+  __typename: 'history_authors_min_fields';
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  valid_from?: Maybe<Scalars['timestamptz']>;
+  valid_to?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "history.authors" */
+export type History_Authors_Mutation_Response = {
+  __typename: 'history_authors_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<History_Authors>;
+};
+
+/** input type for inserting object relation for remote table "history.authors" */
+export type History_Authors_Obj_Rel_Insert_Input = {
+  data: History_Authors_Insert_Input;
+};
+
+/** Ordering options when selecting data from "history.authors". */
+export type History_Authors_Order_By = {
+  books_aggregate?: InputMaybe<History_Books_Aggregate_Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  valid_from?: InputMaybe<Order_By>;
+  valid_to?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "history.authors" */
+export enum History_Authors_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  ValidFrom = 'valid_from',
+  /** column name */
+  ValidTo = 'valid_to'
+}
+
+/** input type for updating data in table "history.authors" */
+export type History_Authors_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  valid_from?: InputMaybe<Scalars['timestamptz']>;
+  valid_to?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** columns and relationships of "history.books" */
+export type History_Books = {
+  __typename: 'history_books';
+  /** An object relationship */
+  author?: Maybe<History_Authors>;
+  author_id: Scalars['uuid'];
+  created_at: Scalars['timestamptz'];
+  id: Scalars['uuid'];
+  isbn?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['timestamp']>;
+  title?: Maybe<Scalars['String']>;
+  updated_at: Scalars['timestamptz'];
+  valid_from?: Maybe<Scalars['timestamptz']>;
+  valid_to?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "history.books" */
+export type History_Books_Aggregate = {
+  __typename: 'history_books_aggregate';
+  aggregate?: Maybe<History_Books_Aggregate_Fields>;
+  nodes: Array<History_Books>;
+};
+
+/** aggregate fields of "history.books" */
+export type History_Books_Aggregate_Fields = {
+  __typename: 'history_books_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<History_Books_Max_Fields>;
+  min?: Maybe<History_Books_Min_Fields>;
+};
+
+
+/** aggregate fields of "history.books" */
+export type History_Books_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<History_Books_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "history.books" */
+export type History_Books_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<History_Books_Max_Order_By>;
+  min?: InputMaybe<History_Books_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "history.books" */
+export type History_Books_Arr_Rel_Insert_Input = {
+  data: Array<History_Books_Insert_Input>;
+};
+
+/** Boolean expression to filter rows from the table "history.books". All fields are combined with a logical 'AND'. */
+export type History_Books_Bool_Exp = {
+  _and?: InputMaybe<Array<History_Books_Bool_Exp>>;
+  _not?: InputMaybe<History_Books_Bool_Exp>;
+  _or?: InputMaybe<Array<History_Books_Bool_Exp>>;
+  author?: InputMaybe<History_Authors_Bool_Exp>;
+  author_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  isbn?: InputMaybe<String_Comparison_Exp>;
+  published_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  title?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  valid_from?: InputMaybe<Timestamptz_Comparison_Exp>;
+  valid_to?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "history.books" */
+export type History_Books_Insert_Input = {
+  author?: InputMaybe<History_Authors_Obj_Rel_Insert_Input>;
+  author_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  isbn?: InputMaybe<Scalars['String']>;
+  published_at?: InputMaybe<Scalars['timestamp']>;
+  title?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  valid_from?: InputMaybe<Scalars['timestamptz']>;
+  valid_to?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type History_Books_Max_Fields = {
+  __typename: 'history_books_max_fields';
+  author_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  isbn?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['timestamp']>;
+  title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  valid_from?: Maybe<Scalars['timestamptz']>;
+  valid_to?: Maybe<Scalars['timestamptz']>;
+};
+
+/** order by max() on columns of table "history.books" */
+export type History_Books_Max_Order_By = {
+  author_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  isbn?: InputMaybe<Order_By>;
+  published_at?: InputMaybe<Order_By>;
+  title?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  valid_from?: InputMaybe<Order_By>;
+  valid_to?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type History_Books_Min_Fields = {
+  __typename: 'history_books_min_fields';
+  author_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  isbn?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['timestamp']>;
+  title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  valid_from?: Maybe<Scalars['timestamptz']>;
+  valid_to?: Maybe<Scalars['timestamptz']>;
+};
+
+/** order by min() on columns of table "history.books" */
+export type History_Books_Min_Order_By = {
+  author_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  isbn?: InputMaybe<Order_By>;
+  published_at?: InputMaybe<Order_By>;
+  title?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  valid_from?: InputMaybe<Order_By>;
+  valid_to?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "history.books" */
+export type History_Books_Mutation_Response = {
+  __typename: 'history_books_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<History_Books>;
+};
+
+/** Ordering options when selecting data from "history.books". */
+export type History_Books_Order_By = {
+  author?: InputMaybe<History_Authors_Order_By>;
+  author_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  isbn?: InputMaybe<Order_By>;
+  published_at?: InputMaybe<Order_By>;
+  title?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  valid_from?: InputMaybe<Order_By>;
+  valid_to?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "history.books" */
+export enum History_Books_Select_Column {
+  /** column name */
+  AuthorId = 'author_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Isbn = 'isbn',
+  /** column name */
+  PublishedAt = 'published_at',
+  /** column name */
+  Title = 'title',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  ValidFrom = 'valid_from',
+  /** column name */
+  ValidTo = 'valid_to'
+}
+
+/** input type for updating data in table "history.books" */
+export type History_Books_Set_Input = {
+  author_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  isbn?: InputMaybe<Scalars['String']>;
+  published_at?: InputMaybe<Scalars['timestamp']>;
+  title?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  valid_from?: InputMaybe<Scalars['timestamptz']>;
+  valid_to?: InputMaybe<Scalars['timestamptz']>;
+};
+
 /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
 export type Jsonb_Comparison_Exp = {
   /** is the column contained in the given json value */
@@ -993,6 +1341,10 @@ export type Mutation_Root = {
   delete_cache_by_pk?: Maybe<Cache>;
   /** delete data from the table: "events" */
   delete_events?: Maybe<Events_Mutation_Response>;
+  /** delete data from the table: "history.authors" */
+  delete_history_authors?: Maybe<History_Authors_Mutation_Response>;
+  /** delete data from the table: "history.books" */
+  delete_history_books?: Maybe<History_Books_Mutation_Response>;
   /** insert data into the table: "authors" */
   insert_authors?: Maybe<Authors_Mutation_Response>;
   /** insert a single row into the table: "authors" */
@@ -1009,6 +1361,14 @@ export type Mutation_Root = {
   insert_events?: Maybe<Events_Mutation_Response>;
   /** insert a single row into the table: "events" */
   insert_events_one?: Maybe<Events>;
+  /** insert data into the table: "history.authors" */
+  insert_history_authors?: Maybe<History_Authors_Mutation_Response>;
+  /** insert a single row into the table: "history.authors" */
+  insert_history_authors_one?: Maybe<History_Authors>;
+  /** insert data into the table: "history.books" */
+  insert_history_books?: Maybe<History_Books_Mutation_Response>;
+  /** insert a single row into the table: "history.books" */
+  insert_history_books_one?: Maybe<History_Books>;
   /** update data of the table: "authors" */
   update_authors?: Maybe<Authors_Mutation_Response>;
   /** update single row of the table: "authors" */
@@ -1023,6 +1383,10 @@ export type Mutation_Root = {
   update_cache_by_pk?: Maybe<Cache>;
   /** update data of the table: "events" */
   update_events?: Maybe<Events_Mutation_Response>;
+  /** update data of the table: "history.authors" */
+  update_history_authors?: Maybe<History_Authors_Mutation_Response>;
+  /** update data of the table: "history.books" */
+  update_history_books?: Maybe<History_Books_Mutation_Response>;
 };
 
 
@@ -1065,6 +1429,18 @@ export type Mutation_RootDelete_Cache_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootDelete_EventsArgs = {
   where: Events_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_History_AuthorsArgs = {
+  where: History_Authors_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_History_BooksArgs = {
+  where: History_Books_Bool_Exp;
 };
 
 
@@ -1121,6 +1497,30 @@ export type Mutation_RootInsert_EventsArgs = {
 export type Mutation_RootInsert_Events_OneArgs = {
   object: Events_Insert_Input;
   on_conflict?: InputMaybe<Events_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_History_AuthorsArgs = {
+  objects: Array<History_Authors_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_History_Authors_OneArgs = {
+  object: History_Authors_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_History_BooksArgs = {
+  objects: Array<History_Books_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_History_Books_OneArgs = {
+  object: History_Books_Insert_Input;
 };
 
 
@@ -1188,6 +1588,20 @@ export type Mutation_RootUpdate_EventsArgs = {
   where: Events_Bool_Exp;
 };
 
+
+/** mutation root */
+export type Mutation_RootUpdate_History_AuthorsArgs = {
+  _set?: InputMaybe<History_Authors_Set_Input>;
+  where: History_Authors_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_History_BooksArgs = {
+  _set?: InputMaybe<History_Books_Set_Input>;
+  where: History_Books_Bool_Exp;
+};
+
 /** column ordering options */
 export enum Order_By {
   /** in ascending order, nulls last */
@@ -1228,6 +1642,14 @@ export type Query_Root = {
   events: Array<Events>;
   /** fetch aggregated fields from the table: "events" */
   events_aggregate: Events_Aggregate;
+  /** fetch data from the table: "history.authors" */
+  history_authors: Array<History_Authors>;
+  /** fetch aggregated fields from the table: "history.authors" */
+  history_authors_aggregate: History_Authors_Aggregate;
+  /** fetch data from the table: "history.books" */
+  history_books: Array<History_Books>;
+  /** fetch aggregated fields from the table: "history.books" */
+  history_books_aggregate: History_Books_Aggregate;
 };
 
 
@@ -1317,6 +1739,42 @@ export type Query_RootEvents_AggregateArgs = {
   where?: InputMaybe<Events_Bool_Exp>;
 };
 
+
+export type Query_RootHistory_AuthorsArgs = {
+  distinct_on?: InputMaybe<Array<History_Authors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Authors_Order_By>>;
+  where?: InputMaybe<History_Authors_Bool_Exp>;
+};
+
+
+export type Query_RootHistory_Authors_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<History_Authors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Authors_Order_By>>;
+  where?: InputMaybe<History_Authors_Bool_Exp>;
+};
+
+
+export type Query_RootHistory_BooksArgs = {
+  distinct_on?: InputMaybe<Array<History_Books_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Books_Order_By>>;
+  where?: InputMaybe<History_Books_Bool_Exp>;
+};
+
+
+export type Query_RootHistory_Books_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<History_Books_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Books_Order_By>>;
+  where?: InputMaybe<History_Books_Bool_Exp>;
+};
+
 export type Subscription_Root = {
   __typename: 'subscription_root';
   /** fetch data from the table: "authors" */
@@ -1341,6 +1799,14 @@ export type Subscription_Root = {
   events: Array<Events>;
   /** fetch aggregated fields from the table: "events" */
   events_aggregate: Events_Aggregate;
+  /** fetch data from the table: "history.authors" */
+  history_authors: Array<History_Authors>;
+  /** fetch aggregated fields from the table: "history.authors" */
+  history_authors_aggregate: History_Authors_Aggregate;
+  /** fetch data from the table: "history.books" */
+  history_books: Array<History_Books>;
+  /** fetch aggregated fields from the table: "history.books" */
+  history_books_aggregate: History_Books_Aggregate;
 };
 
 
@@ -1430,6 +1896,42 @@ export type Subscription_RootEvents_AggregateArgs = {
   where?: InputMaybe<Events_Bool_Exp>;
 };
 
+
+export type Subscription_RootHistory_AuthorsArgs = {
+  distinct_on?: InputMaybe<Array<History_Authors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Authors_Order_By>>;
+  where?: InputMaybe<History_Authors_Bool_Exp>;
+};
+
+
+export type Subscription_RootHistory_Authors_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<History_Authors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Authors_Order_By>>;
+  where?: InputMaybe<History_Authors_Bool_Exp>;
+};
+
+
+export type Subscription_RootHistory_BooksArgs = {
+  distinct_on?: InputMaybe<Array<History_Books_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Books_Order_By>>;
+  where?: InputMaybe<History_Books_Bool_Exp>;
+};
+
+
+export type Subscription_RootHistory_Books_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<History_Books_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Books_Order_By>>;
+  where?: InputMaybe<History_Books_Bool_Exp>;
+};
+
 /** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
 export type Timestamp_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['timestamp']>;
@@ -1501,6 +2003,14 @@ export type GetAuthorsRandomQueryVariables = Exact<{
 
 export type GetAuthorsRandomQuery = { __typename: 'query_root', authors: Array<{ __typename: 'authors', updated_at: any, name?: string | null | undefined, books: Array<{ __typename: 'books', updated_at: any, isbn?: string | null | undefined, title?: string | null | undefined }> }> };
 
+export type GetAuthorHistoryQueryVariables = Exact<{
+  ts: Scalars['timestamptz'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetAuthorHistoryQuery = { __typename: 'query_root', history_authors: Array<{ __typename: 'history_authors', id: string, name?: string | null | undefined, updated_at: any, books: Array<{ __typename: 'history_books', id: string, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any }> }> };
+
 export type GetCacheAtTimestampQueryVariables = Exact<{
   query: Scalars['String'];
   timestamp: Scalars['timestamptz'];
@@ -1567,6 +2077,29 @@ export const GetAuthorsRandomDocument = gql`
   }
 }
     `;
+export const GetAuthorHistoryDocument = gql`
+    query getAuthorHistory($ts: timestamptz!, $limit: Int!) {
+  history_authors(
+    limit: $limit
+    order_by: {name: asc}
+    where: {valid_from: {_lte: $ts}, _or: [{valid_to: {_is_null: true}}, {valid_to: {_gt: $ts}}]}
+  ) {
+    __typename
+    id
+    name
+    updated_at
+    books(
+      where: {valid_from: {_lte: $ts}, _or: [{valid_to: {_is_null: true}}, {valid_to: {_gt: $ts}}]}
+    ) {
+      __typename
+      id
+      title
+      isbn
+      updated_at
+    }
+  }
+}
+    `;
 export const GetCacheAtTimestampDocument = gql`
     query getCacheAtTimestamp($query: String!, $timestamp: timestamptz!) {
   cache(where: {query: {_eq: $query}, lastUpdated: {_eq: $timestamp}}) {
@@ -1600,6 +2133,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getAuthorsRandom(variables: GetAuthorsRandomQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAuthorsRandomQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetAuthorsRandomQuery>(GetAuthorsRandomDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAuthorsRandom');
+    },
+    getAuthorHistory(variables: GetAuthorHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAuthorHistoryQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetAuthorHistoryQuery>(GetAuthorHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAuthorHistory');
     },
     getCacheAtTimestamp(variables: GetCacheAtTimestampQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCacheAtTimestampQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetCacheAtTimestampQuery>(GetCacheAtTimestampDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getCacheAtTimestamp');

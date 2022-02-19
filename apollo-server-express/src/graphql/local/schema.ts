@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
 import deepdash from "deepdash"
-import { BREAK, DocumentNode, GraphQLError, Kind, print, SelectionSetNode, visit } from "graphql"
+import { BREAK, DocumentNode, GraphQLError, Kind, SelectionSetNode, visit } from "graphql"
 import { ExecutionResult } from "graphql-ws"
 import hasha from "hasha"
 import lodash from "lodash"
@@ -104,6 +104,23 @@ export const schema = makeExecutableSchema({
                                 console.log("result error", result.errors)
                                 throw result.errors[0]
                             } else {
+                                const history = await sdk.getAuthorHistory({
+                                    ts: latest,
+                                    limit: info.variableValues.limit
+                                })
+
+                                const renamedKeys = _.mapKeysDeep(history, (value, key) => {
+                                    return typeof key === "string" ? key.replace("history_", "") : key
+                                })
+
+                                const renamedTypes = _.mapValuesDeep(renamedKeys, (value, key) => {
+                                    if (key === "__typename" && typeof value === "string") {
+                                        return value.replace("history_", "")
+                                    } else {
+                                        return value
+                                    }
+                                })
+
                                 const key = `${docHash}:${latest}`
                                 const source = cache[key] == null ? {} : cache[key]
                                 // console.log("source", source)

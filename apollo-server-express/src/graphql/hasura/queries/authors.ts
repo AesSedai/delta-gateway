@@ -33,3 +33,30 @@ gql`
         }
     }
 `
+
+gql`
+    query getAuthorHistory($ts: timestamptz!, $limit: Int!) {
+        history_authors(
+            limit: $limit
+            order_by: { name: asc }
+            where: { valid_from: { _lte: $ts }, _or: [{ valid_to: { _is_null: true } }, { valid_to: { _gt: $ts } }] }
+        ) {
+            __typename
+            id
+            name
+            updated_at
+            books(
+                where: {
+                    valid_from: { _lte: $ts }
+                    _or: [{ valid_to: { _is_null: true } }, { valid_to: { _gt: $ts } }]
+                }
+            ) {
+                __typename
+                id
+                title
+                isbn
+                updated_at
+            }
+        }
+    }
+`
