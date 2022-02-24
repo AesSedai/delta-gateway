@@ -12,7 +12,7 @@ const subscriptionClient = createClient({
 
 const client = new Pool(process.env.HASURA_HTTP_ROOT_URL!, { pipelining: 10, connections: 10 })
 
-const httpExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) => {
+export const httpExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) => {
     const query = print(document)
     const body = JSON.stringify({ query, variables, operationName, extensions })
 

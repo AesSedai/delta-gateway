@@ -1,6 +1,7 @@
 import { Box, Button, Divider, Stack, Theme } from "@mui/material"
 import { makeStyles } from "@mui/styles"
 import async from "async"
+import localforage from "localforage"
 import { last, random, sample } from "lodash"
 import { FC, useEffect, useState } from "react"
 import {
@@ -139,14 +140,13 @@ export const Sidebar: FC = () => {
     }
 
     const seed = async () => {
-        let lastAuthorIdx = parseInt(authors.data?.authors.reduce(
-            (acc, author) => {
+        let lastAuthorIdx = parseInt(
+            authors.data?.authors.reduce((acc, author) => {
                 const name = author.name || ""
                 const idx = parseInt(last(name.split(" ")) || "1").toString()
                 return acc > idx ? acc : idx || ""
-            },
-            "0"
-        ) || "0")
+            }, "0") || "0"
+        )
         const a: Authors_Insert_Input[] = Array.from(Array(3), (_j, i) => {
             return {
                 name: `Author ${(i + 1 + lastAuthorIdx).toString().padStart(3, "0")}`,
@@ -164,10 +164,16 @@ export const Sidebar: FC = () => {
         await seedAuthorsMutation({ variables: { authors: a } })
     }
 
+    const resetCache = async () => {
+        await localforage.clear()
+        window.location.reload()
+    }
+
     return (
         <Box display="flex" sx={{ flex: "1 1 100%" }}>
             <Stack sx={{ width: "100%" }}>
-                <Button onClick={removeAll}>Reset</Button>
+                <Button onClick={removeAll}>Remove Authors from Database</Button>
+                <Button onClick={resetCache}>Reset web cache and refresh</Button>
                 <Divider></Divider>
                 <Button onClick={seed}>Add 3 Authors</Button>
                 <Button onClick={updateAuthor}>Update Random Author</Button>

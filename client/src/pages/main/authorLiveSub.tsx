@@ -43,11 +43,7 @@ export const AuthorLiveSub: FC = () => {
                 prev,
                 { subscriptionData: { data } }: { subscriptionData: { data: AuthorsLiveSubscription } }
             ) => {
-                console.log("prev", prev, "data", data)
                 if (data?.live.delta.patch != null) {
-
-                    console.log(cloneDeep(prev), "patch", JSON.parse(data.live.delta.patch))
-
                     let patchResult: any
                     if (prev != null) {
                         patchResult = instance.patch(cloneDeep(prev), JSON.parse(data.live.delta.patch))

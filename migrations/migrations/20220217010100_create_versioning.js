@@ -137,9 +137,9 @@ END;
 $$ LANGUAGE plpgsql;
 `
 
-const VERSIONING_FN_DOWN = /* SQL */ `DROP FUNCTION versioning`
+const VERSIONING_FN_DOWN = /* SQL */ `DROP FUNCTION versioning;`
 
-const VERSIONING_INSERT_DOWN = /* SQL */ `DROP FUNCTION versioning_insert`
+const VERSIONING_INSERT_DOWN = /* SQL */ `DROP FUNCTION versioning_insert;`
 
 exports.up = async (knex) => {
     await knex.raw(VERSIONING_FN_UP)

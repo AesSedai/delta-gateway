@@ -21,6 +21,7 @@ export const WithApollo = (props: WithApolloProps): JSX.Element => {
     const [persistor, setPersistor] = useState<CachePersistor<NormalizedCacheObject>>()
 
     useAsyncEffect(async () => {
+        // type policy to prevent Apollo Client from caching the patch data
         const typePolicies: StrictTypedTypePolicies = {
             delta: {
                 fields: {

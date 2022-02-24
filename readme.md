@@ -1,3 +1,6 @@
+## WARNING ⚠️
+This project is highly experimental and unstable. 
+
 ## Graphql Delta Gateway
 
 This proof-of-concept was inpired by the desire to change how Hasura subscriptions return their updated result sets to a client. By default, with no filtering or limiting, a Hasura subscription will return the entire updated result set to the client regardless of the magnitude of the change. When the result set is large, or the objects in question have many properties, this can lead to a lot of additional data being sent unnecessarily to the client.
@@ -9,7 +12,9 @@ Given the following subscription and result, any change that affected the result
 ### Delta Gateway Subscription Behavior
 This Delta Gateway demo wraps the Hasura schema and exposes it so users can adopt it with minimal changes to their graphql setup. The Delta Gateway adds a new Subscription field `live` that allows for a `query` field (the same as Hasura's `subscription_root`) and a `deltas` field.
 
-When a client initially connects, the Hasura result is stored as revision 0 on the gateway and a patch is generated and sent to the client instead of the full subscription result. The client is responsible for taking the patch data and applying it to its cache. When a new Hasura subscription event is emitted, the previous revision is used to generate a delta and only the changes are sent to the client.
+The server is able to ascertain the client state from a timestamp provided by the client during the subscription initiation. There is a historical schema and a pair of database triggers added to allow for temporal queries. The triggers record the valid time for a row and its changes, and by querying for a known time frame it is possible to get what the query results should be for any point in time.
+
+When a new Hasura subscription event is emitted (on connect, or on any update), the historical schema is queried to get the client state and the new event is diffed against that client state to produce a patch and a new timestamp to send to the client.
 
 The delta generation uses the combination of `[__typename, id]` to uniquely identify objects in the response. As such, it is highly recommended to include these two fields in the subscription to optimise the patch generation.
 ![AuthorBooksSubscription2](./example-images/subscription_author_books_2.jpg)
@@ -72,7 +77,6 @@ Live subscription + local graphql server: `apollo-server-express/src/graphql/loc
 
 ### Todos
 - Add toggle for subscription-transport-ws for the graphql-helix servers
-- Add `rev` input to `live` / `query` field for cursor-based query resume
-- Add redis or another storage option for persisting subscription data
 - Add client headers to `httpExecutor` and `wsExecutor` to allow for secure client communications
 - Figure out what to do for role specific schemas from hasura (admin vs. user vs. anonymous)
+- More historical schema testing and bugfixing

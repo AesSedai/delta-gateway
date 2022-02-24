@@ -1,18 +1,16 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
 import deepdash from "deepdash"
-import { BREAK, DocumentNode, GraphQLError, Kind, SelectionSetNode, visit } from "graphql"
+import { BREAK, DocumentNode, GraphQLError, Kind, SelectionSetNode, VariableDefinitionNode, visit } from "graphql"
 import { ExecutionResult } from "graphql-ws"
 import hasha from "hasha"
 import lodash from "lodash"
-import { sdk } from "../../utils/gqlClient"
-import { instance } from "../../utils/jsondiffpatch"
-import { hasuraSchema as rawHasuraSchema, wsExecutor } from "../hasura/schema"
-import { LiveSubscription } from "./graphql"
 import { DateTime } from "luxon"
+import { instance } from "../../utils/jsondiffpatch"
+import { hasuraSchema as rawHasuraSchema, httpExecutor, wsExecutor } from "../hasura/schema"
+import { LiveSubscription } from "./graphql"
 
 const _ = deepdash(lodash)
-
-const cache: any = {}
+const history_var = "history__ts"
 
 export const schema = makeExecutableSchema({
     typeDefs: [
@@ -64,11 +62,171 @@ export const schema = makeExecutableSchema({
                         }
                     })
 
+                    const selectionPaths: (string | number)[][] = []
+
+                    const historySelection = visit(_.cloneDeep(selectionSet), {
+                        SelectionSet: {
+                            enter(node, key, parent, path, ancestors) {
+                                selectionPaths.push([...path].slice(0, -1))
+                            }
+                        },
+                        Name: {
+                            enter(node, key, parent, path, ancestors) {
+                                // rewrite name for first field to be "history_${name}"
+                                if (_.isEqual(path, ["selections", 0, "name"])) {
+                                    return {
+                                        ...node,
+                                        value: `history_${node.value}`
+                                    }
+                                }
+                            }
+                        }
+                    })
+
+                    let whereConstruct = {
+                        kind: "Argument",
+                        name: {
+                            kind: "Name",
+                            value: "where"
+                        },
+                        value: {
+                            kind: "ObjectValue",
+                            fields: [
+                                {
+                                    kind: "ObjectField",
+                                    name: {
+                                        kind: "Name",
+                                        value: "valid_from"
+                                    },
+                                    value: {
+                                        kind: "ObjectValue",
+                                        fields: [
+                                            {
+                                                kind: "ObjectField",
+                                                name: {
+                                                    kind: "Name",
+                                                    value: "_lte"
+                                                },
+                                                value: {
+                                                    kind: "Variable",
+                                                    name: {
+                                                        kind: "Name",
+                                                        value: history_var
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    kind: "ObjectField",
+                                    name: {
+                                        kind: "Name",
+                                        value: "_or"
+                                    },
+                                    value: {
+                                        kind: "ListValue",
+                                        values: [
+                                            {
+                                                kind: "ObjectValue",
+                                                fields: [
+                                                    {
+                                                        kind: "ObjectField",
+                                                        name: {
+                                                            kind: "Name",
+                                                            value: "valid_to"
+                                                        },
+                                                        value: {
+                                                            kind: "ObjectValue",
+                                                            fields: [
+                                                                {
+                                                                    kind: "ObjectField",
+                                                                    name: {
+                                                                        kind: "Name",
+                                                                        value: "_is_null"
+                                                                    },
+                                                                    value: {
+                                                                        kind: "BooleanValue",
+                                                                        value: true
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                kind: "ObjectValue",
+                                                fields: [
+                                                    {
+                                                        kind: "ObjectField",
+                                                        name: {
+                                                            kind: "Name",
+                                                            value: "valid_to"
+                                                        },
+                                                        value: {
+                                                            kind: "ObjectValue",
+                                                            fields: [
+                                                                {
+                                                                    kind: "ObjectField",
+                                                                    name: {
+                                                                        kind: "Name",
+                                                                        value: "_gt"
+                                                                    },
+                                                                    value: {
+                                                                        kind: "Variable",
+                                                                        name: {
+                                                                            kind: "Name",
+                                                                            value: history_var
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+
+                    selectionPaths.forEach((path) => {
+                        if (path.length > 0) {
+                            const selections = _.get(historySelection, path)
+                            selections.arguments.push(whereConstruct)
+                        }
+                    })
+
                     // console.log("updated by", JSON.stringify(info.operation.variableDefinitions, null, 2))
                     // remove our lastUpdated var, keep the remaining ones
                     const varDefs = (info.operation.variableDefinitions || []).filter((def) => {
                         return def.variable.name.value !== "lastUpdated"
                     })
+
+                    const historyVarDefs: VariableDefinitionNode = {
+                        kind: "VariableDefinition",
+                        variable: {
+                            kind: "Variable",
+                            name: {
+                                kind: "Name",
+                                value: history_var
+                            }
+                        },
+                        type: {
+                            kind: "NonNullType",
+                            type: {
+                                kind: "NamedType",
+                                name: {
+                                    kind: "Name",
+                                    value: "timestamptz"
+                                }
+                            }
+                        },
+                        directives: []
+                    }
 
                     // construct subscription document to forward
                     const op: DocumentNode = {
@@ -83,8 +241,17 @@ export const schema = makeExecutableSchema({
                         ]
                     }
 
-                    // console.log("op", JSON.stringify(op, null, 2))
-                    // console.log("doc", print(op))
+                    const historyOp: DocumentNode = {
+                        kind: Kind.DOCUMENT,
+                        definitions: [
+                            {
+                                kind: Kind.OPERATION_DEFINITION,
+                                operation: "query",
+                                variableDefinitions: varDefs.concat([historyVarDefs]), //info.operation.variableDefinitions,
+                                selectionSet: historySelection
+                            }
+                        ]
+                    }
 
                     // initialize rev + docHash (todo: accept rev variable?)
                     let latest = "2022-01-01T00:00:00.000000+00:00"
@@ -105,12 +272,10 @@ export const schema = makeExecutableSchema({
                                 console.log("result error", result.errors)
                                 throw result.errors[0]
                             } else {
-                                const history = await sdk.getAuthorHistory({
-                                    ts: latest,
-                                    limit: info.variableValues.limit
+                                const history = await httpExecutor({
+                                    document: historyOp,
+                                    variables: { ...varValues, [history_var]: latest }
                                 })
-
-                                // console.log("data", JSON.stringify(result.data, null, 2))
 
                                 const renamedKeys = _.mapKeysDeep(history, (value, key) => {
                                     return typeof key === "string" ? key.replace("history_", "") : key
@@ -124,15 +289,9 @@ export const schema = makeExecutableSchema({
                                     }
                                 })
 
-                                // console.log("history", JSON.stringify(renamedTypes))
-
-                                // const key = `${docHash}:${latest}`
-                                const source = latest == "2022-01-01T00:00:00.000000+00:00" ? {} : renamedTypes
-                                // console.log("source", JSON.stringify(source))
-                                // console.log("same?", _.isEqual(JSON.stringify(source), JSON.stringify(renamedTypes)))
+                                const source = latest == "2022-01-01T00:00:00.000000+00:00" ? {} : renamedTypes.data
                                 const patch = instance.diff(source, result.data)
 
-                                // console.log("result data", result.data)
                                 if (patch != null) {
                                     // find newest updatedAt
                                     const oldLatest = latest
@@ -145,7 +304,7 @@ export const schema = makeExecutableSchema({
                                         latest
                                     )
 
-                                    // the entire set has been deleted, so we need to give latest a tiny "bump" to prevent 
+                                    // the entire set has been deleted, so we need to give latest a tiny "bump" to prevent
                                     // re-sending the delete-all patch
                                     if (oldLatest === latest) {
                                         latest = DateTime.now().plus(1).toISO()
