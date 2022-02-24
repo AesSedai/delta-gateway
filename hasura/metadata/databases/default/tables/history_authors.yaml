@@ -1,0 +1,13 @@
+table:
+  name: authors
+  schema: history
+array_relationships:
+- name: books
+  using:
+    manual_configuration:
+      column_mapping:
+        id: author_id
+      insertion_order: null
+      remote_table:
+        name: books
+        schema: history
