@@ -8,11 +8,11 @@ import { execute, GraphQLSchema, parse, subscribe } from "graphql"
 import { createClient } from "graphql-ws"
 import { useServer } from "graphql-ws/lib/use/ws"
 import { createServer } from "http"
+import _ from "lodash"
 import { SubscriptionServer } from "subscriptions-transport-ws"
 import WebSocket, { WebSocketServer } from "ws"
 import { adminSchema, userSchema } from "./graphql/schema"
 import validateEnv from "./utils/validateEnv"
-import _ from "lodash"
 
 const useGraphqlWs = true
 
@@ -78,7 +78,8 @@ const apolloServer = new ExtendedApolloServer({
                     return userSchema
                 }
             } else {
-                // ??
+                // default to admin schema if admin secret present, but no role present
+                return adminSchema
             }
         }
 
@@ -140,16 +141,12 @@ if (useGraphqlWs) {
                             return userSchema
                         }
                     } else {
-                        // ??
+                        // default to admin schema if admin secret present, but no role present
+                        return adminSchema
                     }
                 }
 
                 throw new Error("Invalid authentication or role")
-
-                // console.log("req", context.request)
-                // const isAdmin = await checkIsAdmin(ctx.request);
-                // if (isAdmin) return getDebugSchema(ctx, msg, executionArgsWithoutSchema);
-                return adminSchema
             },
             onConnect: () => {},
             onSubscribe: (context, msg) => {
@@ -161,18 +158,21 @@ if (useGraphqlWs) {
                 }
 
                 if (!context.extra.hasOwnProperty("subscriptionClient")) {
-                    // console.log("ws context", JSON.stringify(context, null, 2))
                     let contextHeaders: any = {}
-                    if (
-                        context != null &&
-                        context.connectionParams != null &&
-                        context.connectionParams.hasOwnProperty("headers")
-                    ) {
-                        contextHeaders = context.connectionParams.headers
+                    // console.log("connectionParams", context.connectionParams)
+                    if (context != null && context.connectionParams != null) {
+                        if (context.connectionParams.hasOwnProperty("headers")) {
+                            contextHeaders = {
+                                ..._.pick(context.connectionParams.headers, ["x-hasura-admin-secret", "x-hasura-role"])
+                            }
+                        } else {
+                            contextHeaders = {
+                                ..._.pick(context.connectionParams, ["x-hasura-admin-secret", "x-hasura-role"])
+                            }
+                        }
                     }
 
-                    console.log("client exists?", context.extra.hasOwnProperty("subscriptionClient"))
-                    console.log("creating client")
+                    // console.log("creating client, headers:", contextHeaders)
 
                     const subscriptionClient = createClient({
                         url: process.env.HASURA_WS_GRAPHQL_URL!,
