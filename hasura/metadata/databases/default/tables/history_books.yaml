@@ -11,3 +11,15 @@ array_relationships:
       remote_table:
         name: authors
         schema: history
+select_permissions:
+- permission:
+    columns:
+    - author_id
+    - created_at
+    - id
+    - title
+    - updated_at
+    - valid_from
+    - valid_to
+    filter: {}
+  role: user

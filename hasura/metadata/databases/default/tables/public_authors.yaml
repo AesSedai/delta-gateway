@@ -9,3 +9,12 @@ array_relationships:
       table:
         name: books
         schema: public
+select_permissions:
+- permission:
+    columns:
+    - created_at
+    - id
+    - name
+    - updated_at
+    filter: {}
+  role: user

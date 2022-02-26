@@ -47,6 +47,7 @@ services:
             HASURA_GRAPHQL_LOG_LEVEL: warn
             HASURA_GRAPHQL_DATABASE_URL: ${HASURA_GRAPHQL_DATABASE_URL}
             HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: "true"
+            HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
             ## enable the console served by server
             HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
             ## enable debugging mode. It is recommended to disable this in production
@@ -134,6 +135,7 @@ services:
         environment:
             NODE_ENV: "production"
             SERVER_PORT_CONTAINER: ${APOLLO_SERVER_EXPRESS_SERVER_PORT_CONTAINER}
+            HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
             HASURA_HTTP_GRAPHQL_URL: ${HASURA_HTTP_GRAPHQL_URL}
             HASURA_WS_GRAPHQL_URL: ${HASURA_WS_GRAPHQL_URL}
             HASURA_HTTP_METADATA_URL: ${HASURA_HTTP_METADATA_URL}

@@ -17,7 +17,6 @@ exports.up = async (knex) => {
 
         table
             .uuid("author_id")
-            .notNullable()
             .index()
             .references("id")
             .inTable("public.authors")

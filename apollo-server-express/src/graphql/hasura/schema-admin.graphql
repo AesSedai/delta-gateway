@@ -302,8 +302,8 @@ columns and relationships of "books"
 """
 type books {
   """An object relationship"""
-  author: authors!
-  author_id: uuid!
+  author: authors
+  author_id: uuid
   created_at: timestamptz!
   id: uuid!
   isbn: String
@@ -532,237 +532,6 @@ enum books_update_column {
 
   """column name"""
   title
-
-  """column name"""
-  updated_at
-}
-
-"""
-columns and relationships of "cache"
-"""
-type cache {
-  created_at: timestamptz!
-  id: uuid!
-  lastUpdated: timestamptz
-  patch(
-    """JSON select path"""
-    path: String
-  ): jsonb!
-  query: String!
-  result(
-    """JSON select path"""
-    path: String
-  ): jsonb!
-  updated_at: timestamptz!
-}
-
-"""
-aggregated selection of "cache"
-"""
-type cache_aggregate {
-  aggregate: cache_aggregate_fields
-  nodes: [cache!]!
-}
-
-"""
-aggregate fields of "cache"
-"""
-type cache_aggregate_fields {
-  count(columns: [cache_select_column!], distinct: Boolean): Int!
-  max: cache_max_fields
-  min: cache_min_fields
-}
-
-"""append existing jsonb value of filtered columns with new jsonb value"""
-input cache_append_input {
-  patch: jsonb
-  result: jsonb
-}
-
-"""
-Boolean expression to filter rows from the table "cache". All fields are combined with a logical 'AND'.
-"""
-input cache_bool_exp {
-  _and: [cache_bool_exp!]
-  _not: cache_bool_exp
-  _or: [cache_bool_exp!]
-  created_at: timestamptz_comparison_exp
-  id: uuid_comparison_exp
-  lastUpdated: timestamptz_comparison_exp
-  patch: jsonb_comparison_exp
-  query: String_comparison_exp
-  result: jsonb_comparison_exp
-  updated_at: timestamptz_comparison_exp
-}
-
-"""
-unique or primary key constraints on table "cache"
-"""
-enum cache_constraint {
-  """unique or primary key constraint"""
-  cache_pkey
-
-  """unique or primary key constraint"""
-  cache_query_lastupdated_unique
-}
-
-"""
-delete the field or element with specified path (for JSON arrays, negative integers count from the end)
-"""
-input cache_delete_at_path_input {
-  patch: [String!]
-  result: [String!]
-}
-
-"""
-delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
-"""
-input cache_delete_elem_input {
-  patch: Int
-  result: Int
-}
-
-"""
-delete key/value pair or string element. key/value pairs are matched based on their key value
-"""
-input cache_delete_key_input {
-  patch: String
-  result: String
-}
-
-"""
-input type for inserting data into table "cache"
-"""
-input cache_insert_input {
-  created_at: timestamptz
-  id: uuid
-  lastUpdated: timestamptz
-  patch: jsonb
-  query: String
-  result: jsonb
-  updated_at: timestamptz
-}
-
-"""aggregate max on columns"""
-type cache_max_fields {
-  created_at: timestamptz
-  id: uuid
-  lastUpdated: timestamptz
-  query: String
-  updated_at: timestamptz
-}
-
-"""aggregate min on columns"""
-type cache_min_fields {
-  created_at: timestamptz
-  id: uuid
-  lastUpdated: timestamptz
-  query: String
-  updated_at: timestamptz
-}
-
-"""
-response of any mutation on the table "cache"
-"""
-type cache_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [cache!]!
-}
-
-"""
-on conflict condition type for table "cache"
-"""
-input cache_on_conflict {
-  constraint: cache_constraint!
-  update_columns: [cache_update_column!]! = []
-  where: cache_bool_exp
-}
-
-"""Ordering options when selecting data from "cache"."""
-input cache_order_by {
-  created_at: order_by
-  id: order_by
-  lastUpdated: order_by
-  patch: order_by
-  query: order_by
-  result: order_by
-  updated_at: order_by
-}
-
-"""primary key columns input for table: cache"""
-input cache_pk_columns_input {
-  id: uuid!
-}
-
-"""prepend existing jsonb value of filtered columns with new jsonb value"""
-input cache_prepend_input {
-  patch: jsonb
-  result: jsonb
-}
-
-"""
-select columns of table "cache"
-"""
-enum cache_select_column {
-  """column name"""
-  created_at
-
-  """column name"""
-  id
-
-  """column name"""
-  lastUpdated
-
-  """column name"""
-  patch
-
-  """column name"""
-  query
-
-  """column name"""
-  result
-
-  """column name"""
-  updated_at
-}
-
-"""
-input type for updating data in table "cache"
-"""
-input cache_set_input {
-  created_at: timestamptz
-  id: uuid
-  lastUpdated: timestamptz
-  patch: jsonb
-  query: String
-  result: jsonb
-  updated_at: timestamptz
-}
-
-"""
-update columns of table "cache"
-"""
-enum cache_update_column {
-  """column name"""
-  created_at
-
-  """column name"""
-  id
-
-  """column name"""
-  lastUpdated
-
-  """column name"""
-  patch
-
-  """column name"""
-  query
-
-  """column name"""
-  result
 
   """column name"""
   updated_at
@@ -1143,6 +912,22 @@ type history_authors_aggregate_fields {
 }
 
 """
+order by aggregate values of table "history.authors"
+"""
+input history_authors_aggregate_order_by {
+  count: order_by
+  max: history_authors_max_order_by
+  min: history_authors_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "history.authors"
+"""
+input history_authors_arr_rel_insert_input {
+  data: [history_authors_insert_input!]!
+}
+
+"""
 Boolean expression to filter rows from the table "history.authors". All fields are combined with a logical 'AND'.
 """
 input history_authors_bool_exp {
@@ -1181,6 +966,18 @@ type history_authors_max_fields {
   valid_to: timestamptz
 }
 
+"""
+order by max() on columns of table "history.authors"
+"""
+input history_authors_max_order_by {
+  created_at: order_by
+  id: order_by
+  name: order_by
+  updated_at: order_by
+  valid_from: order_by
+  valid_to: order_by
+}
+
 """aggregate min on columns"""
 type history_authors_min_fields {
   created_at: timestamptz
@@ -1192,6 +989,18 @@ type history_authors_min_fields {
 }
 
 """
+order by min() on columns of table "history.authors"
+"""
+input history_authors_min_order_by {
+  created_at: order_by
+  id: order_by
+  name: order_by
+  updated_at: order_by
+  valid_from: order_by
+  valid_to: order_by
+}
+
+"""
 response of any mutation on the table "history.authors"
 """
 type history_authors_mutation_response {
@@ -1200,13 +1009,6 @@ type history_authors_mutation_response {
 
   """data from the rows affected by the mutation"""
   returning: [history_authors!]!
-}
-
-"""
-input type for inserting object relation for remote table "history.authors"
-"""
-input history_authors_obj_rel_insert_input {
-  data: history_authors_insert_input!
 }
 
 """Ordering options when selecting data from "history.authors"."""
@@ -1259,9 +1061,42 @@ input history_authors_set_input {
 columns and relationships of "history.books"
 """
 type history_books {
-  """An object relationship"""
-  author: history_authors
-  author_id: uuid!
+  """An array relationship"""
+  author(
+    """distinct select on columns"""
+    distinct_on: [history_authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_authors_order_by!]
+
+    """filter the rows returned"""
+    where: history_authors_bool_exp
+  ): [history_authors!]!
+
+  """An aggregate relationship"""
+  author_aggregate(
+    """distinct select on columns"""
+    distinct_on: [history_authors_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [history_authors_order_by!]
+
+    """filter the rows returned"""
+    where: history_authors_bool_exp
+  ): history_authors_aggregate!
+  author_id: uuid
   created_at: timestamptz!
   id: uuid!
   isbn: String
@@ -1328,7 +1163,7 @@ input history_books_bool_exp {
 input type for inserting data into table "history.books"
 """
 input history_books_insert_input {
-  author: history_authors_obj_rel_insert_input
+  author: history_authors_arr_rel_insert_input
   author_id: uuid
   created_at: timestamptz
   id: uuid
@@ -1409,7 +1244,7 @@ type history_books_mutation_response {
 
 """Ordering options when selecting data from "history.books"."""
 input history_books_order_by {
-  author: history_authors_order_by
+  author_aggregate: history_authors_aggregate_order_by
   author_id: order_by
   created_at: order_by
   id: order_by
@@ -1528,19 +1363,6 @@ type mutation_root {
   delete_books_by_pk(id: uuid!): books
 
   """
-  delete data from the table: "cache"
-  """
-  delete_cache(
-    """filter the rows which have to be deleted"""
-    where: cache_bool_exp!
-  ): cache_mutation_response
-
-  """
-  delete single row from the table: "cache"
-  """
-  delete_cache_by_pk(id: uuid!): cache
-
-  """
   delete data from the table: "events"
   """
   delete_events(
@@ -1607,28 +1429,6 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: books_on_conflict
   ): books
-
-  """
-  insert data into the table: "cache"
-  """
-  insert_cache(
-    """the rows to be inserted"""
-    objects: [cache_insert_input!]!
-
-    """on conflict condition"""
-    on_conflict: cache_on_conflict
-  ): cache_mutation_response
-
-  """
-  insert a single row into the table: "cache"
-  """
-  insert_cache_one(
-    """the row to be inserted"""
-    object: cache_insert_input!
-
-    """on conflict condition"""
-    on_conflict: cache_on_conflict
-  ): cache
 
   """
   insert data into the table: "events"
@@ -1723,68 +1523,6 @@ type mutation_root {
     _set: books_set_input
     pk_columns: books_pk_columns_input!
   ): books
-
-  """
-  update data of the table: "cache"
-  """
-  update_cache(
-    """append existing jsonb value of filtered columns with new jsonb value"""
-    _append: cache_append_input
-
-    """
-    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
-    """
-    _delete_at_path: cache_delete_at_path_input
-
-    """
-    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
-    """
-    _delete_elem: cache_delete_elem_input
-
-    """
-    delete key/value pair or string element. key/value pairs are matched based on their key value
-    """
-    _delete_key: cache_delete_key_input
-
-    """prepend existing jsonb value of filtered columns with new jsonb value"""
-    _prepend: cache_prepend_input
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: cache_set_input
-
-    """filter the rows which have to be updated"""
-    where: cache_bool_exp!
-  ): cache_mutation_response
-
-  """
-  update single row of the table: "cache"
-  """
-  update_cache_by_pk(
-    """append existing jsonb value of filtered columns with new jsonb value"""
-    _append: cache_append_input
-
-    """
-    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
-    """
-    _delete_at_path: cache_delete_at_path_input
-
-    """
-    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
-    """
-    _delete_elem: cache_delete_elem_input
-
-    """
-    delete key/value pair or string element. key/value pairs are matched based on their key value
-    """
-    _delete_key: cache_delete_key_input
-
-    """prepend existing jsonb value of filtered columns with new jsonb value"""
-    _prepend: cache_prepend_input
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: cache_set_input
-    pk_columns: cache_pk_columns_input!
-  ): cache
 
   """
   update data of the table: "events"
@@ -1949,49 +1687,6 @@ type query_root {
 
   """fetch data from the table: "books" using primary key columns"""
   books_by_pk(id: uuid!): books
-
-  """
-  fetch data from the table: "cache"
-  """
-  cache(
-    """distinct select on columns"""
-    distinct_on: [cache_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [cache_order_by!]
-
-    """filter the rows returned"""
-    where: cache_bool_exp
-  ): [cache!]!
-
-  """
-  fetch aggregated fields from the table: "cache"
-  """
-  cache_aggregate(
-    """distinct select on columns"""
-    distinct_on: [cache_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [cache_order_by!]
-
-    """filter the rows returned"""
-    where: cache_bool_exp
-  ): cache_aggregate!
-
-  """fetch data from the table: "cache" using primary key columns"""
-  cache_by_pk(id: uuid!): cache
 
   """
   fetch data from the table: "events"
@@ -2198,49 +1893,6 @@ type subscription_root {
 
   """fetch data from the table: "books" using primary key columns"""
   books_by_pk(id: uuid!): books
-
-  """
-  fetch data from the table: "cache"
-  """
-  cache(
-    """distinct select on columns"""
-    distinct_on: [cache_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [cache_order_by!]
-
-    """filter the rows returned"""
-    where: cache_bool_exp
-  ): [cache!]!
-
-  """
-  fetch aggregated fields from the table: "cache"
-  """
-  cache_aggregate(
-    """distinct select on columns"""
-    distinct_on: [cache_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [cache_order_by!]
-
-    """filter the rows returned"""
-    where: cache_bool_exp
-  ): cache_aggregate!
-
-  """fetch data from the table: "cache" using primary key columns"""
-  cache_by_pk(id: uuid!): cache
 
   """
   fetch data from the table: "events"

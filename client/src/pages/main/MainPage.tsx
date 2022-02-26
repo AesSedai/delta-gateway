@@ -32,13 +32,13 @@ export const MainPage: FC = () => {
                 <Paper className={classes.paper}>
                     <Box display="flex" sx={{ flex: "1 0 50%" }}>
                         <WithApollo cacheKey="AuthorSub">
-                            <BookSub />
+                            <AuthorSub />
                         </WithApollo>
                     </Box>
                     <Divider orientation="vertical" flexItem />
                     <Box display="flex" sx={{ flex: "1 0 50%", pl: 2 }}>
                         <WithApollo cacheKey="AuthorLiveSub">
-                            <BookLiveSub />
+                            <AuthorLiveSub />
                         </WithApollo>
                     </Box>
                 </Paper>

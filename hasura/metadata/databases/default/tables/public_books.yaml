@@ -5,3 +5,13 @@ object_relationships:
 - name: author
   using:
     foreign_key_constraint_on: author_id
+select_permissions:
+- permission:
+    columns:
+    - author_id
+    - created_at
+    - id
+    - title
+    - updated_at
+    filter: {}
+  role: user

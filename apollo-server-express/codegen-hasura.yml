@@ -1,10 +1,13 @@
-schema:
-  - ${HASURA_HTTP_GRAPHQL_LOCAL_URL}
-documents:
-  - ./src/graphql/hasura/**/*.ts
 overwrite: true
 generates:
-  ./src/graphql/hasura/graphql.ts:
+  ./src/graphql/hasura/graphql-admin.ts:
+    schema:
+      - ${HASURA_HTTP_GRAPHQL_LOCAL_URL}:
+          headers:
+            X-Hasura-Admin-Secret: ${HASURA_GRAPHQL_ADMIN_SECRET}
+            X-Hasura-Role: admin
+    documents:
+      - ./src/graphql/hasura/admin/**/*.ts
     plugins:
       - typescript
       - typescript-operations
@@ -15,6 +18,41 @@ generates:
       transformUnderscore: true
       nonOptionalTypename: true
       scalars: { 'uuid': 'string' }
-  ./src/graphql/hasura/schema.graphql:
+  ./src/graphql/hasura/schema-admin.graphql:
+    schema:
+      - ${HASURA_HTTP_GRAPHQL_LOCAL_URL}:
+          headers:
+            X-Hasura-Admin-Secret: ${HASURA_GRAPHQL_ADMIN_SECRET}
+            X-Hasura-Role: admin
+    documents:
+      - ./src/graphql/hasura/admin/**/*.ts
+    plugins:
+      - schema-ast
+  ./src/graphql/hasura/graphql-user.ts:
+    schema:
+      - ${HASURA_HTTP_GRAPHQL_LOCAL_URL}:
+          headers:
+            X-Hasura-Admin-Secret: ${HASURA_GRAPHQL_ADMIN_SECRET}
+            X-Hasura-Role: user
+    documents:
+      - ./src/graphql/hasura/user/**/*.ts
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-graphql-request
+    config:
+      skipTypename: false
+      addUnderscoreToArgsType: false
+      transformUnderscore: true
+      nonOptionalTypename: true
+      scalars: { 'uuid': 'string' }
+  ./src/graphql/hasura/schema-user.graphql:
+    schema:
+      - ${HASURA_HTTP_GRAPHQL_LOCAL_URL}:
+          headers:
+            X-Hasura-Admin-Secret: ${HASURA_GRAPHQL_ADMIN_SECRET}
+            X-Hasura-Role: user
+    documents:
+      - ./src/graphql/hasura/user/**/*.ts
     plugins:
       - schema-ast

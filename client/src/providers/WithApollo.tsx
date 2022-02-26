@@ -88,15 +88,16 @@ export const WithApollo = (props: WithApolloProps): JSX.Element => {
 
         const graphqlWsLink = new GraphqlWsLink({
             url: "ws://127.0.0.1:5002/graphql",
-            keepAlive: 10000
-            // connectionParams: async () => {
-            //     const token = await getAuth().currentUser?.getIdToken()
-            //     return {
-            //         headers: {
-            //             Authorization: token !== undefined ? `Bearer ${token}` : ""
-            //         }
-            //     }
-            // }
+            keepAlive: 10000,
+            connectionParams: () => {
+                return {
+                    headers: {
+                        "x-hasura-admin-secret": "CMEl5G6sobPIN_iTzXcQVvOari9GcSCZ7U6o",
+                        "x-hasura-role": "admin"
+                        //  Authorization: token !== undefined ? `Bearer ${token}` : ""
+                    }
+                }
+            }
         })
 
         const client = new ApolloClient({

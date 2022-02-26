@@ -13,7 +13,7 @@ export const AuthorSub: FC = () => {
     const [expanded, setExpanded] = useState<string[]>([])
     const [totalData, setTotalData] = useState<number>(0)
 
-    // Using a subscription directly is not recommended, 
+    // Using a subscription directly is not recommended,
     // because apollo will trigger a subscription twice.
     // REF: https://github.com/apollographql/apollo-client/issues/6037
     const authors = useGetAuthorsQuery({

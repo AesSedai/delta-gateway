@@ -31,7 +31,7 @@ Docker compose is used to run the demo. Included are the following:
 - OpenTelemetry Collector
 - Jaeger
 
-Three http / ws distributions have been provided, all three should work but testing was mostly conducted with apollo server express so I'd recommend sticking with that one for now.
+Three http / ws distributions have been provided, but the apollo-server one is the most up-to-date / working.
 
 Note: the client and apollo server uses subscription-transport-ws to allow for graphql-bench subscripton tests to function. The graphql-bench subscription does not work with the graphql-ws protocol, which both graphql-helix implementations use. 
 
@@ -77,6 +77,4 @@ Live subscription + local graphql server: `apollo-server-express/src/graphql/loc
 
 ### Todos
 - Add toggle for subscription-transport-ws for the graphql-helix servers
-- Add client headers to `httpExecutor` and `wsExecutor` to allow for secure client communications
-- Figure out what to do for role specific schemas from hasura (admin vs. user vs. anonymous)
 - More historical schema testing and bugfixing

@@ -4,6 +4,7 @@ const validateEnv = () => {
     cleanEnv(process.env, {
         NODE_ENV: str(),
         SERVER_PORT_CONTAINER: port(),
+        HASURA_GRAPHQL_ADMIN_SECRET: str(),
         HASURA_HTTP_GRAPHQL_URL: str(),
         HASURA_WS_GRAPHQL_URL: str(),
         HASURA_HTTP_METADATA_URL: str(),

@@ -251,8 +251,8 @@ export enum Authors_Update_Column {
 export type Books = {
   __typename: 'books';
   /** An object relationship */
-  author: Authors;
-  author_id: Scalars['uuid'];
+  author?: Maybe<Authors>;
+  author_id?: Maybe<Scalars['uuid']>;
   created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   isbn?: Maybe<Scalars['String']>;
@@ -452,214 +452,6 @@ export enum Books_Update_Column {
   PublishedAt = 'published_at',
   /** column name */
   Title = 'title',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** columns and relationships of "cache" */
-export type Cache = {
-  __typename: 'cache';
-  created_at: Scalars['timestamptz'];
-  id: Scalars['uuid'];
-  lastUpdated?: Maybe<Scalars['timestamptz']>;
-  patch: Scalars['jsonb'];
-  query: Scalars['String'];
-  result: Scalars['jsonb'];
-  updated_at: Scalars['timestamptz'];
-};
-
-
-/** columns and relationships of "cache" */
-export type CachePatchArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-
-/** columns and relationships of "cache" */
-export type CacheResultArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregated selection of "cache" */
-export type Cache_Aggregate = {
-  __typename: 'cache_aggregate';
-  aggregate?: Maybe<Cache_Aggregate_Fields>;
-  nodes: Array<Cache>;
-};
-
-/** aggregate fields of "cache" */
-export type Cache_Aggregate_Fields = {
-  __typename: 'cache_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<Cache_Max_Fields>;
-  min?: Maybe<Cache_Min_Fields>;
-};
-
-
-/** aggregate fields of "cache" */
-export type Cache_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Cache_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Cache_Append_Input = {
-  patch?: InputMaybe<Scalars['jsonb']>;
-  result?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** Boolean expression to filter rows from the table "cache". All fields are combined with a logical 'AND'. */
-export type Cache_Bool_Exp = {
-  _and?: InputMaybe<Array<Cache_Bool_Exp>>;
-  _not?: InputMaybe<Cache_Bool_Exp>;
-  _or?: InputMaybe<Array<Cache_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  lastUpdated?: InputMaybe<Timestamptz_Comparison_Exp>;
-  patch?: InputMaybe<Jsonb_Comparison_Exp>;
-  query?: InputMaybe<String_Comparison_Exp>;
-  result?: InputMaybe<Jsonb_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "cache" */
-export enum Cache_Constraint {
-  /** unique or primary key constraint */
-  CachePkey = 'cache_pkey',
-  /** unique or primary key constraint */
-  CacheQueryLastupdatedUnique = 'cache_query_lastupdated_unique'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Cache_Delete_At_Path_Input = {
-  patch?: InputMaybe<Array<Scalars['String']>>;
-  result?: InputMaybe<Array<Scalars['String']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Cache_Delete_Elem_Input = {
-  patch?: InputMaybe<Scalars['Int']>;
-  result?: InputMaybe<Scalars['Int']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Cache_Delete_Key_Input = {
-  patch?: InputMaybe<Scalars['String']>;
-  result?: InputMaybe<Scalars['String']>;
-};
-
-/** input type for inserting data into table "cache" */
-export type Cache_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  lastUpdated?: InputMaybe<Scalars['timestamptz']>;
-  patch?: InputMaybe<Scalars['jsonb']>;
-  query?: InputMaybe<Scalars['String']>;
-  result?: InputMaybe<Scalars['jsonb']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate max on columns */
-export type Cache_Max_Fields = {
-  __typename: 'cache_max_fields';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['uuid']>;
-  lastUpdated?: Maybe<Scalars['timestamptz']>;
-  query?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** aggregate min on columns */
-export type Cache_Min_Fields = {
-  __typename: 'cache_min_fields';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['uuid']>;
-  lastUpdated?: Maybe<Scalars['timestamptz']>;
-  query?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** response of any mutation on the table "cache" */
-export type Cache_Mutation_Response = {
-  __typename: 'cache_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Cache>;
-};
-
-/** on conflict condition type for table "cache" */
-export type Cache_On_Conflict = {
-  constraint: Cache_Constraint;
-  update_columns?: Array<Cache_Update_Column>;
-  where?: InputMaybe<Cache_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "cache". */
-export type Cache_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  lastUpdated?: InputMaybe<Order_By>;
-  patch?: InputMaybe<Order_By>;
-  query?: InputMaybe<Order_By>;
-  result?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: cache */
-export type Cache_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Cache_Prepend_Input = {
-  patch?: InputMaybe<Scalars['jsonb']>;
-  result?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** select columns of table "cache" */
-export enum Cache_Select_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  LastUpdated = 'lastUpdated',
-  /** column name */
-  Patch = 'patch',
-  /** column name */
-  Query = 'query',
-  /** column name */
-  Result = 'result',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** input type for updating data in table "cache" */
-export type Cache_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  lastUpdated?: InputMaybe<Scalars['timestamptz']>;
-  patch?: InputMaybe<Scalars['jsonb']>;
-  query?: InputMaybe<Scalars['String']>;
-  result?: InputMaybe<Scalars['jsonb']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** update columns of table "cache" */
-export enum Cache_Update_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  LastUpdated = 'lastUpdated',
-  /** column name */
-  Patch = 'patch',
-  /** column name */
-  Query = 'query',
-  /** column name */
-  Result = 'result',
   /** column name */
   UpdatedAt = 'updated_at'
 }
@@ -1010,6 +802,18 @@ export type History_Authors_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
+/** order by aggregate values of table "history.authors" */
+export type History_Authors_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<History_Authors_Max_Order_By>;
+  min?: InputMaybe<History_Authors_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "history.authors" */
+export type History_Authors_Arr_Rel_Insert_Input = {
+  data: Array<History_Authors_Insert_Input>;
+};
+
 /** Boolean expression to filter rows from the table "history.authors". All fields are combined with a logical 'AND'. */
 export type History_Authors_Bool_Exp = {
   _and?: InputMaybe<Array<History_Authors_Bool_Exp>>;
@@ -1046,6 +850,16 @@ export type History_Authors_Max_Fields = {
   valid_to?: Maybe<Scalars['timestamptz']>;
 };
 
+/** order by max() on columns of table "history.authors" */
+export type History_Authors_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  valid_from?: InputMaybe<Order_By>;
+  valid_to?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type History_Authors_Min_Fields = {
   __typename: 'history_authors_min_fields';
@@ -1057,6 +871,16 @@ export type History_Authors_Min_Fields = {
   valid_to?: Maybe<Scalars['timestamptz']>;
 };
 
+/** order by min() on columns of table "history.authors" */
+export type History_Authors_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  valid_from?: InputMaybe<Order_By>;
+  valid_to?: InputMaybe<Order_By>;
+};
+
 /** response of any mutation on the table "history.authors" */
 export type History_Authors_Mutation_Response = {
   __typename: 'history_authors_mutation_response';
@@ -1064,11 +888,6 @@ export type History_Authors_Mutation_Response = {
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
   returning: Array<History_Authors>;
-};
-
-/** input type for inserting object relation for remote table "history.authors" */
-export type History_Authors_Obj_Rel_Insert_Input = {
-  data: History_Authors_Insert_Input;
 };
 
 /** Ordering options when selecting data from "history.authors". */
@@ -1111,9 +930,11 @@ export type History_Authors_Set_Input = {
 /** columns and relationships of "history.books" */
 export type History_Books = {
   __typename: 'history_books';
-  /** An object relationship */
-  author?: Maybe<History_Authors>;
-  author_id: Scalars['uuid'];
+  /** An array relationship */
+  author: Array<History_Authors>;
+  /** An aggregate relationship */
+  author_aggregate: History_Authors_Aggregate;
+  author_id?: Maybe<Scalars['uuid']>;
   created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   isbn?: Maybe<Scalars['String']>;
@@ -1122,6 +943,26 @@ export type History_Books = {
   updated_at: Scalars['timestamptz'];
   valid_from?: Maybe<Scalars['timestamptz']>;
   valid_to?: Maybe<Scalars['timestamptz']>;
+};
+
+
+/** columns and relationships of "history.books" */
+export type History_BooksAuthorArgs = {
+  distinct_on?: InputMaybe<Array<History_Authors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Authors_Order_By>>;
+  where?: InputMaybe<History_Authors_Bool_Exp>;
+};
+
+
+/** columns and relationships of "history.books" */
+export type History_BooksAuthor_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<History_Authors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<History_Authors_Order_By>>;
+  where?: InputMaybe<History_Authors_Bool_Exp>;
 };
 
 /** aggregated selection of "history.books" */
@@ -1177,7 +1018,7 @@ export type History_Books_Bool_Exp = {
 
 /** input type for inserting data into table "history.books" */
 export type History_Books_Insert_Input = {
-  author?: InputMaybe<History_Authors_Obj_Rel_Insert_Input>;
+  author?: InputMaybe<History_Authors_Arr_Rel_Insert_Input>;
   author_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -1254,7 +1095,7 @@ export type History_Books_Mutation_Response = {
 
 /** Ordering options when selecting data from "history.books". */
 export type History_Books_Order_By = {
-  author?: InputMaybe<History_Authors_Order_By>;
+  author_aggregate?: InputMaybe<History_Authors_Aggregate_Order_By>;
   author_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -1335,10 +1176,6 @@ export type Mutation_Root = {
   delete_books?: Maybe<Books_Mutation_Response>;
   /** delete single row from the table: "books" */
   delete_books_by_pk?: Maybe<Books>;
-  /** delete data from the table: "cache" */
-  delete_cache?: Maybe<Cache_Mutation_Response>;
-  /** delete single row from the table: "cache" */
-  delete_cache_by_pk?: Maybe<Cache>;
   /** delete data from the table: "events" */
   delete_events?: Maybe<Events_Mutation_Response>;
   /** delete data from the table: "history.authors" */
@@ -1353,10 +1190,6 @@ export type Mutation_Root = {
   insert_books?: Maybe<Books_Mutation_Response>;
   /** insert a single row into the table: "books" */
   insert_books_one?: Maybe<Books>;
-  /** insert data into the table: "cache" */
-  insert_cache?: Maybe<Cache_Mutation_Response>;
-  /** insert a single row into the table: "cache" */
-  insert_cache_one?: Maybe<Cache>;
   /** insert data into the table: "events" */
   insert_events?: Maybe<Events_Mutation_Response>;
   /** insert a single row into the table: "events" */
@@ -1377,10 +1210,6 @@ export type Mutation_Root = {
   update_books?: Maybe<Books_Mutation_Response>;
   /** update single row of the table: "books" */
   update_books_by_pk?: Maybe<Books>;
-  /** update data of the table: "cache" */
-  update_cache?: Maybe<Cache_Mutation_Response>;
-  /** update single row of the table: "cache" */
-  update_cache_by_pk?: Maybe<Cache>;
   /** update data of the table: "events" */
   update_events?: Maybe<Events_Mutation_Response>;
   /** update data of the table: "history.authors" */
@@ -1410,18 +1239,6 @@ export type Mutation_RootDelete_BooksArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Books_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_CacheArgs = {
-  where: Cache_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Cache_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -1469,20 +1286,6 @@ export type Mutation_RootInsert_BooksArgs = {
 export type Mutation_RootInsert_Books_OneArgs = {
   object: Books_Insert_Input;
   on_conflict?: InputMaybe<Books_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_CacheArgs = {
-  objects: Array<Cache_Insert_Input>;
-  on_conflict?: InputMaybe<Cache_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Cache_OneArgs = {
-  object: Cache_Insert_Input;
-  on_conflict?: InputMaybe<Cache_On_Conflict>;
 };
 
 
@@ -1553,30 +1356,6 @@ export type Mutation_RootUpdate_Books_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_CacheArgs = {
-  _append?: InputMaybe<Cache_Append_Input>;
-  _delete_at_path?: InputMaybe<Cache_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Cache_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Cache_Delete_Key_Input>;
-  _prepend?: InputMaybe<Cache_Prepend_Input>;
-  _set?: InputMaybe<Cache_Set_Input>;
-  where: Cache_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Cache_By_PkArgs = {
-  _append?: InputMaybe<Cache_Append_Input>;
-  _delete_at_path?: InputMaybe<Cache_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Cache_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Cache_Delete_Key_Input>;
-  _prepend?: InputMaybe<Cache_Prepend_Input>;
-  _set?: InputMaybe<Cache_Set_Input>;
-  pk_columns: Cache_Pk_Columns_Input;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_EventsArgs = {
   _append?: InputMaybe<Events_Append_Input>;
   _delete_at_path?: InputMaybe<Events_Delete_At_Path_Input>;
@@ -1632,12 +1411,6 @@ export type Query_Root = {
   books_aggregate: Books_Aggregate;
   /** fetch data from the table: "books" using primary key columns */
   books_by_pk?: Maybe<Books>;
-  /** fetch data from the table: "cache" */
-  cache: Array<Cache>;
-  /** fetch aggregated fields from the table: "cache" */
-  cache_aggregate: Cache_Aggregate;
-  /** fetch data from the table: "cache" using primary key columns */
-  cache_by_pk?: Maybe<Cache>;
   /** fetch data from the table: "events" */
   events: Array<Events>;
   /** fetch aggregated fields from the table: "events" */
@@ -1695,29 +1468,6 @@ export type Query_RootBooks_AggregateArgs = {
 
 
 export type Query_RootBooks_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootCacheArgs = {
-  distinct_on?: InputMaybe<Array<Cache_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Cache_Order_By>>;
-  where?: InputMaybe<Cache_Bool_Exp>;
-};
-
-
-export type Query_RootCache_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Cache_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Cache_Order_By>>;
-  where?: InputMaybe<Cache_Bool_Exp>;
-};
-
-
-export type Query_RootCache_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -1789,12 +1539,6 @@ export type Subscription_Root = {
   books_aggregate: Books_Aggregate;
   /** fetch data from the table: "books" using primary key columns */
   books_by_pk?: Maybe<Books>;
-  /** fetch data from the table: "cache" */
-  cache: Array<Cache>;
-  /** fetch aggregated fields from the table: "cache" */
-  cache_aggregate: Cache_Aggregate;
-  /** fetch data from the table: "cache" using primary key columns */
-  cache_by_pk?: Maybe<Cache>;
   /** fetch data from the table: "events" */
   events: Array<Events>;
   /** fetch aggregated fields from the table: "events" */
@@ -1852,29 +1596,6 @@ export type Subscription_RootBooks_AggregateArgs = {
 
 
 export type Subscription_RootBooks_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootCacheArgs = {
-  distinct_on?: InputMaybe<Array<Cache_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Cache_Order_By>>;
-  where?: InputMaybe<Cache_Bool_Exp>;
-};
-
-
-export type Subscription_RootCache_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Cache_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Cache_Order_By>>;
-  where?: InputMaybe<Cache_Bool_Exp>;
-};
-
-
-export type Subscription_RootCache_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -1971,13 +1692,6 @@ export type Uuid_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['uuid']>>;
 };
 
-export type InsertCacheMutationVariables = Exact<{
-  result: Cache_Insert_Input;
-}>;
-
-
-export type InsertCacheMutation = { __typename: 'mutation_root', insert_cache_one?: { __typename: 'cache', lastUpdated?: any | null | undefined, id: string } | null | undefined };
-
 export type Seed_AuthorsMutationVariables = Exact<{
   authors: Array<Authors_Insert_Input> | Authors_Insert_Input;
 }>;
@@ -2011,26 +1725,7 @@ export type GetAuthorHistoryQueryVariables = Exact<{
 
 export type GetAuthorHistoryQuery = { __typename: 'query_root', history_authors: Array<{ __typename: 'history_authors', id: string, name?: string | null | undefined, updated_at: any, books: Array<{ __typename: 'history_books', id: string, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any }> }> };
 
-export type GetCacheAtTimestampQueryVariables = Exact<{
-  query: Scalars['String'];
-  timestamp: Scalars['timestamptz'];
-}>;
 
-
-export type GetCacheAtTimestampQuery = { __typename: 'query_root', cache: Array<{ __typename: 'cache', id: string, lastUpdated?: any | null | undefined, patch: any, query: string, result: any }> };
-
-
-export const InsertCacheDocument = gql`
-    mutation insertCache($result: cache_insert_input!) {
-  insert_cache_one(
-    object: $result
-    on_conflict: {constraint: cache_query_lastupdated_unique, update_columns: []}
-  ) {
-    lastUpdated
-    id
-  }
-}
-    `;
 export const Seed_AuthorsDocument = gql`
     mutation seed_authors($authors: [authors_insert_input!]!) {
   insert_authors(objects: $authors) {
@@ -2101,17 +1796,6 @@ export const GetAuthorHistoryDocument = gql`
   }
 }
     `;
-export const GetCacheAtTimestampDocument = gql`
-    query getCacheAtTimestamp($query: String!, $timestamp: timestamptz!) {
-  cache(where: {query: {_eq: $query}, lastUpdated: {_eq: $timestamp}}) {
-    id
-    lastUpdated
-    patch
-    query
-    result
-  }
-}
-    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string) => Promise<T>;
 
@@ -2120,9 +1804,6 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    insertCache(variables: InsertCacheMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertCacheMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<InsertCacheMutation>(InsertCacheDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'insertCache');
-    },
     seed_authors(variables: Seed_AuthorsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<Seed_AuthorsMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<Seed_AuthorsMutation>(Seed_AuthorsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'seed_authors');
     },
@@ -2137,9 +1818,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getAuthorHistory(variables: GetAuthorHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAuthorHistoryQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetAuthorHistoryQuery>(GetAuthorHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAuthorHistory');
-    },
-    getCacheAtTimestamp(variables: GetCacheAtTimestampQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCacheAtTimestampQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetCacheAtTimestampQuery>(GetCacheAtTimestampDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getCacheAtTimestamp');
     }
   };
 }
