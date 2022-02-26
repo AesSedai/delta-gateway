@@ -5,7 +5,7 @@ headers:
 queries:
     # Name: Unique name for the query
     - name: UndiciPool
-      tools: [autocannon, k6]
+      tools: [k6]
       # Execution Strategy: the type of the benchmark to run. Options are:
       # REQUESTS_PER_SECOND: Fixed duration, fixed rps. Example parameters:
       #   duration: 10s
@@ -25,7 +25,7 @@ queries:
       execution_strategy: MAX_REQUESTS_IN_DURATION
       rps: 1000
       duration: 15s
-      connections: 1000
+      connections: 20
       query: |
         query MyQuery {
             authors(where: {books: {title: {_similar: "%6%"}}}) {

@@ -1890,6 +1890,13 @@ export type GetAuthorsQueryVariables = Exact<{
 
 export type GetAuthorsQuery = { __typename: 'Query', authors: Array<{ __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any, books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any }> }> };
 
+export type GetBooksQueryVariables = Exact<{
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetBooksQuery = { __typename: 'Query', books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any, author: { __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any } }> };
+
 export type AuthorsSubscriptionVariables = Exact<{
   limit: Scalars['Int'];
 }>;
@@ -1904,6 +1911,21 @@ export type AuthorsLiveSubscriptionVariables = Exact<{
 
 
 export type AuthorsLiveSubscription = { __typename: 'Subscription', live: { __typename: 'LiveSubscription', id: string, query?: { __typename: 'subscription_root', authors: Array<{ __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any, books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any }> }> } | null | undefined, delta: { __typename: 'delta', lastUpdated: any, patch: string, hash: string } } };
+
+export type BooksSubscriptionVariables = Exact<{
+  limit: Scalars['Int'];
+}>;
+
+
+export type BooksSubscription = { __typename: 'Subscription', books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any, author: { __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any } }> };
+
+export type BooksLiveSubscriptionVariables = Exact<{
+  lastUpdated: Scalars['timestamptz'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type BooksLiveSubscription = { __typename: 'Subscription', live: { __typename: 'LiveSubscription', id: string, query?: { __typename: 'subscription_root', books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any, author: { __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any } }> } | null | undefined, delta: { __typename: 'delta', lastUpdated: any, patch: string, hash: string } } };
 
 
 export const UpdateAuthorDocument = gql`
@@ -2150,6 +2172,51 @@ export function useGetAuthorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetAuthorsQueryHookResult = ReturnType<typeof useGetAuthorsQuery>;
 export type GetAuthorsLazyQueryHookResult = ReturnType<typeof useGetAuthorsLazyQuery>;
 export type GetAuthorsQueryResult = Apollo.QueryResult<GetAuthorsQuery, GetAuthorsQueryVariables>;
+export const GetBooksDocument = gql`
+    query getBooks($limit: Int!) {
+  books(limit: $limit, order_by: {title: asc}) {
+    __typename
+    id
+    title
+    isbn
+    updated_at
+    author {
+      __typename
+      id
+      name
+      updated_at
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBooksQuery__
+ *
+ * To run a query within a React component, call `useGetBooksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBooksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBooksQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetBooksQuery(baseOptions: Apollo.QueryHookOptions<GetBooksQuery, GetBooksQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBooksQuery, GetBooksQueryVariables>(GetBooksDocument, options);
+      }
+export function useGetBooksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBooksQuery, GetBooksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBooksQuery, GetBooksQueryVariables>(GetBooksDocument, options);
+        }
+export type GetBooksQueryHookResult = ReturnType<typeof useGetBooksQuery>;
+export type GetBooksLazyQueryHookResult = ReturnType<typeof useGetBooksLazyQuery>;
+export type GetBooksQueryResult = Apollo.QueryResult<GetBooksQuery, GetBooksQueryVariables>;
 export const AuthorsDocument = gql`
     subscription authors($limit: Int!) {
   authors(limit: $limit, order_by: {name: asc}) {
@@ -2242,6 +2309,98 @@ export function useAuthorsLiveSubscription(baseOptions: Apollo.SubscriptionHookO
       }
 export type AuthorsLiveSubscriptionHookResult = ReturnType<typeof useAuthorsLiveSubscription>;
 export type AuthorsLiveSubscriptionResult = Apollo.SubscriptionResult<AuthorsLiveSubscription>;
+export const BooksDocument = gql`
+    subscription books($limit: Int!) {
+  books(limit: $limit, order_by: {title: asc}) {
+    __typename
+    id
+    title
+    isbn
+    updated_at
+    author {
+      __typename
+      id
+      name
+      updated_at
+    }
+  }
+}
+    `;
+
+/**
+ * __useBooksSubscription__
+ *
+ * To run a query within a React component, call `useBooksSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useBooksSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBooksSubscription({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useBooksSubscription(baseOptions: Apollo.SubscriptionHookOptions<BooksSubscription, BooksSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<BooksSubscription, BooksSubscriptionVariables>(BooksDocument, options);
+      }
+export type BooksSubscriptionHookResult = ReturnType<typeof useBooksSubscription>;
+export type BooksSubscriptionResult = Apollo.SubscriptionResult<BooksSubscription>;
+export const BooksLiveDocument = gql`
+    subscription booksLive($lastUpdated: timestamptz!, $limit: Int!) {
+  live {
+    __typename
+    id
+    query {
+      books(limit: $limit, order_by: {title: asc}) {
+        __typename
+        id
+        title
+        isbn
+        updated_at
+        author {
+          __typename
+          id
+          name
+          updated_at
+        }
+      }
+    }
+    delta(lastUpdated: $lastUpdated) {
+      lastUpdated
+      patch
+      hash
+    }
+  }
+}
+    `;
+
+/**
+ * __useBooksLiveSubscription__
+ *
+ * To run a query within a React component, call `useBooksLiveSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useBooksLiveSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBooksLiveSubscription({
+ *   variables: {
+ *      lastUpdated: // value for 'lastUpdated'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useBooksLiveSubscription(baseOptions: Apollo.SubscriptionHookOptions<BooksLiveSubscription, BooksLiveSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<BooksLiveSubscription, BooksLiveSubscriptionVariables>(BooksLiveDocument, options);
+      }
+export type BooksLiveSubscriptionHookResult = ReturnType<typeof useBooksLiveSubscription>;
+export type BooksLiveSubscriptionResult = Apollo.SubscriptionResult<BooksLiveSubscription>;
 export type LiveSubscriptionKeySpecifier = ('delta' | 'id' | 'query' | LiveSubscriptionKeySpecifier)[];
 export type LiveSubscriptionFieldPolicy = {
 	delta?: FieldPolicy<any> | FieldReadFunction<any>,

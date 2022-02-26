@@ -100,7 +100,7 @@ export const WithApollo = (props: WithApolloProps): JSX.Element => {
         })
 
         const client = new ApolloClient({
-            link: from([retryLink, errorLink, wsLink]),
+            link: from([retryLink, errorLink, graphqlWsLink]),
             cache,
             connectToDevTools: true
         })

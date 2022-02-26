@@ -4,6 +4,8 @@ import { FC } from "react"
 import { WithApollo } from "../../providers/WithApollo"
 import { AuthorLiveSub } from "./authorLiveSub"
 import { AuthorSub } from "./authorSub"
+import { BookSub } from "./bookSub"
+import { BookLiveSub } from "./bookLiveSub"
 import { Sidebar } from "./sidebar"
 
 const useStyles = makeStyles<Theme>((theme) => ({
@@ -30,13 +32,13 @@ export const MainPage: FC = () => {
                 <Paper className={classes.paper}>
                     <Box display="flex" sx={{ flex: "1 0 50%" }}>
                         <WithApollo cacheKey="AuthorSub">
-                            <AuthorSub />
+                            <BookSub />
                         </WithApollo>
                     </Box>
                     <Divider orientation="vertical" flexItem />
                     <Box display="flex" sx={{ flex: "1 0 50%", pl: 2 }}>
                         <WithApollo cacheKey="AuthorLiveSub">
-                            <AuthorLiveSub />
+                            <BookLiveSub />
                         </WithApollo>
                     </Box>
                 </Paper>

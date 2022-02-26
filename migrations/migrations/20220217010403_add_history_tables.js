@@ -11,19 +11,12 @@ begin
         -- don't include constraints, because that include primary key uniqueness
         'CREATE TABLE %s.%s (like %s.%s INCLUDING DEFAULTS INCLUDING INDEXES)',
         new_schema, new_table, source_schema, source_table);
-    for rec in
-        select oid, conname
-        from pg_constraint
-        where contype = 'f' 
-        and conrelid = source_table::regclass
-    loop
-        execute format(
-            'ALTER TABLE %s.%s ADD CONSTRAINT %s %s',
-            new_schema,
-            new_table,
-            replace(rec.conname, source_table, new_table),
-            pg_get_constraintdef(rec.oid));
-    end loop;
+
+    execute (SELECT concat(format('alter table %s.%s drop constraint ', new_schema, new_table), constraint_name) AS my_query
+            FROM information_schema.table_constraints
+            WHERE table_schema = new_schema
+                AND table_name = new_table
+                AND constraint_type = 'PRIMARY KEY');
 end $$;
 `
 

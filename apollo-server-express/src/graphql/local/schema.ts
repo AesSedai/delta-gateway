@@ -1,6 +1,17 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
 import deepdash from "deepdash"
-import { BREAK, DocumentNode, GraphQLError, Kind, SelectionSetNode, VariableDefinitionNode, visit } from "graphql"
+import {
+    BREAK,
+    DocumentNode,
+    GraphQLError,
+    isCompositeType,
+    Kind,
+    SelectionSetNode,
+    TypeInfo,
+    VariableDefinitionNode,
+    visit,
+    visitWithTypeInfo
+} from "graphql"
 import { ExecutionResult } from "graphql-ws"
 import hasha from "hasha"
 import lodash from "lodash"
@@ -83,6 +94,7 @@ export const schema = makeExecutableSchema({
                         }
                     })
 
+                    // ugly way to inject the `value_from` and `value_to` clauses for history schema query
                     let whereConstruct = {
                         kind: "Argument",
                         name: {
@@ -253,7 +265,120 @@ export const schema = makeExecutableSchema({
                         ]
                     }
 
-                    // initialize rev + docHash (todo: accept rev variable?)
+                    // The history schema has to be all array relations, but the original schema can include object relations
+                    // So, we need to compare the incoming query to the history query using the full hasura schema
+                    // to identify what history query return values are arrays that need to be objects
+                    const hasuraTypeInfo = new TypeInfo(rawHasuraSchema)
+                    const hasuraTypesMap: any = {}
+                    visit(
+                        op,
+                        visitWithTypeInfo(hasuraTypeInfo, {
+                            enter(node, key, parent, path, ancestors) {
+                                hasuraTypeInfo.enter(node)
+                            },
+                            leave(node, key, parent, path, ancestors) {
+                                hasuraTypeInfo.leave(node)
+                            },
+                            SelectionSet: {
+                                enter(node, key, parent, path, ancestors) {
+                                    const type = hasuraTypeInfo.getType()
+                                    if (
+                                        type != null &&
+                                        !isCompositeType(type) &&
+                                        parent != null &&
+                                        parent.hasOwnProperty("name")
+                                    ) {
+                                        // we've guaranteed that the "name" property is available, ts is just unhappy
+                                        // @ts-expect-error
+                                        let modified = parent.name.value
+                                        let jsType = modified
+
+                                        const joinedPath = path.join(" ")
+                                        if (type.toString().includes("[")) {
+                                            jsType = `${jsType}[]`
+                                        }
+
+                                        // there's got to be a better way to do this, but this works for now
+                                        const longestMatch = Object.keys(hasuraTypesMap).reduce((acc, key) => {
+                                            if (key.length >= acc.length && joinedPath.includes(key)) {
+                                                acc = key
+                                            }
+                                            return acc
+                                        }, "")
+
+                                        hasuraTypesMap[joinedPath] = {
+                                            type: modified,
+                                            jsType:
+                                                longestMatch.length > 0
+                                                    ? `${hasuraTypesMap[longestMatch].jsType}.${jsType}`
+                                                    : jsType
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                    )
+
+                    const historyTypesMap: any = {}
+                    visit(
+                        historyOp,
+                        visitWithTypeInfo(hasuraTypeInfo, {
+                            enter(node, key, parent, path, ancestors) {
+                                hasuraTypeInfo.enter(node)
+                            },
+                            leave(node, key, parent, path, ancestors) {
+                                hasuraTypeInfo.leave(node)
+                            },
+                            SelectionSet: {
+                                enter(node, key, parent, path, ancestors) {
+                                    const type = hasuraTypeInfo.getType()
+                                    if (
+                                        type != null &&
+                                        !isCompositeType(type) &&
+                                        parent != null &&
+                                        parent.hasOwnProperty("name")
+                                    ) {
+                                        // we've guaranteed that the "name" property is available, ts is just unhappy
+                                        // @ts-expect-error
+                                        let modified = parent.name.value.replace("history_", "")
+                                        let jsType = modified
+
+                                        const joinedPath = path.join(" ")
+                                        if (type.toString().includes("[")) {
+                                            jsType = `${jsType}[]`
+                                        }
+
+                                        // there's got to be a better way to do this, but this works for now
+                                        const longestMatch = Object.keys(historyTypesMap).reduce((acc, key) => {
+                                            if (key.length >= acc.length && joinedPath.includes(key)) {
+                                                acc = key
+                                            }
+                                            return acc
+                                        }, "")
+
+                                        historyTypesMap[joinedPath] = {
+                                            type: modified,
+                                            jsType:
+                                                longestMatch.length > 0
+                                                    ? `${historyTypesMap[longestMatch].jsType}.${jsType}`
+                                                    : jsType
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                    )
+
+                    // Collect the differences between the two
+                    const diffs = _.reduce(
+                        hasuraTypesMap,
+                        function (result, value, key) {
+                            return _.isEqual(value, historyTypesMap[key]) ? result : result.concat(value.jsType)
+                        },
+                        [] as any[]
+                    )
+
+                    // initialize latest
                     let latest = "2022-01-01T00:00:00.000000+00:00"
                     if (info.variableValues.lastUpdated != null) {
                         latest = info.variableValues.lastUpdated
@@ -272,58 +397,76 @@ export const schema = makeExecutableSchema({
                                 console.log("result error", result.errors)
                                 throw result.errors[0]
                             } else {
-                                const history = await httpExecutor({
+                                const history = (await httpExecutor({
                                     document: historyOp,
                                     variables: { ...varValues, [history_var]: latest }
-                                })
+                                })) as ExecutionResult
 
-                                const renamedKeys = _.mapKeysDeep(history, (value, key) => {
-                                    return typeof key === "string" ? key.replace("history_", "") : key
-                                })
+                                if (history.data != null) {
+                                    const renamedKeys = _.mapKeysDeep(history.data, (value, key) => {
+                                        return typeof key === "string" ? key.replace("history_", "") : key
+                                    })
 
-                                const renamedTypes = _.mapValuesDeep(renamedKeys, (value, key) => {
-                                    if (key === "__typename" && typeof value === "string") {
-                                        return value.replace("history_", "")
-                                    } else {
-                                        return value
-                                    }
-                                })
-
-                                const source = latest == "2022-01-01T00:00:00.000000+00:00" ? {} : renamedTypes.data
-                                const patch = instance.diff(source, result.data)
-
-                                if (patch != null) {
-                                    // find newest updatedAt
-                                    const oldLatest = latest
-                                    latest = _.reduceDeep(
-                                        result.data,
-                                        (acc, value, key, parent, ctx) => {
-                                            if (key === "updated_at" && value > acc) return value
-                                            return acc
-                                        },
-                                        latest
-                                    )
-
-                                    // the entire set has been deleted, so we need to give latest a tiny "bump" to prevent
-                                    // re-sending the delete-all patch
-                                    if (oldLatest === latest) {
-                                        latest = DateTime.now().plus(1).toISO()
-                                    }
-
-                                    let ret: LiveSubscription = {
-                                        id: docHash,
-                                        __typename: "LiveSubscription",
-                                        // query: instance.patch(_.cloneDeep(source), patch),
-                                        delta: {
-                                            __typename: "delta",
-                                            lastUpdated: latest,
-                                            patch: JSON.stringify(patch),
-                                            hash: ""
+                                    // Rename the default __typename properties from the history schema to remove "history_xyz" prepend
+                                    // Also, do object / array replacement to match the incoming query format
+                                    const renamedTypes = _.mapValuesDeep(renamedKeys, (value, key, parent, context) => {
+                                        if (key === "__typename" && typeof value === "string") {
+                                            value = value.replace("history_", "")
                                         }
-                                    }
 
-                                    yield {
-                                        live: ret
+                                        if (context != null && context.path != null) {
+                                            let path = ""
+                                            if (_.isArray(context.path)) {
+                                                path = context.path.join("").replaceAll(/\[\d+\]/gm, "[]")
+                                            } else {
+                                                path = context.path.replaceAll(/\[\d+\]/gm, "[]")
+                                            }
+                                            if (diffs.includes(path)) {
+                                                if (value[0].hasOwnProperty("__typename")) {
+                                                    value[0].__typename = value[0].__typename.replace("history_", "")
+                                                }
+                                                return value[0]
+                                            }
+                                        }
+                                        return value
+                                    })
+
+                                    const source = latest == "2022-01-01T00:00:00.000000+00:00" ? {} : renamedTypes
+                                    const patch = instance.diff(source, result.data)
+
+                                    if (patch != null) {
+                                        // find newest updatedAt
+                                        const oldLatest = latest
+                                        latest = _.reduceDeep(
+                                            result.data,
+                                            (acc, value, key, parent, ctx) => {
+                                                if (key === "updated_at" && value > acc) return value
+                                                return acc
+                                            },
+                                            latest
+                                        )
+
+                                        // the entire set has been deleted, so we need to give latest a tiny "bump" to prevent
+                                        // re-sending the delete-all patch
+                                        if (oldLatest === latest) {
+                                            latest = DateTime.now().plus(1).toISO()
+                                        }
+
+                                        let ret: LiveSubscription = {
+                                            id: docHash,
+                                            __typename: "LiveSubscription",
+                                            // query: instance.patch(_.cloneDeep(source), patch),
+                                            delta: {
+                                                __typename: "delta",
+                                                lastUpdated: latest,
+                                                patch: JSON.stringify(patch),
+                                                hash: ""
+                                            }
+                                        }
+
+                                        yield {
+                                            live: ret
+                                        }
                                     }
                                 }
                             }

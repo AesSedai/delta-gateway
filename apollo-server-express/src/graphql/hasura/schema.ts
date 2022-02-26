@@ -1,7 +1,9 @@
 import { AsyncExecutor, observableToAsyncIterable } from "@graphql-tools/utils"
 import { introspectSchema } from "@graphql-tools/wrap"
+import axios from "axios"
 import { getOperationAST, print } from "graphql"
 import { createClient } from "graphql-ws"
+import http from "http"
 import { Pool } from "undici"
 import WebSocket from "ws"
 
@@ -10,13 +12,27 @@ const subscriptionClient = createClient({
     webSocketImpl: WebSocket
 })
 
-const client = new Pool(process.env.HASURA_HTTP_ROOT_URL!, { pipelining: 10, connections: 10 })
+const pool = new Pool(process.env.HASURA_HTTP_ROOT_URL!)
+const agent = new http.Agent({ keepAlive: true, maxSockets: 50 })
 
 export const httpExecutor: AsyncExecutor = async ({ document, variables, operationName, extensions }) => {
     const query = print(document)
     const body = JSON.stringify({ query, variables, operationName, extensions })
 
-    const res = await client.request({
+    // const p = await axios({
+    //     url: "/v1/graphql",
+    //     method: "POST",
+    //     baseURL: process.env.HASURA_HTTP_ROOT_URL!,
+    //     headers: {
+    //         "Content-Type": "application/json"
+    //     },
+    //     data: body,
+    //     maxContentLength: 2000000,
+    //     maxBodyLength: 2000000,
+    //     httpAgent: agent
+    // })
+
+    const res = await pool.request({
         path: "/v1/graphql",
         method: "POST",
         headers: {
@@ -25,6 +41,7 @@ export const httpExecutor: AsyncExecutor = async ({ document, variables, operati
         body: body
     })
 
+    // return p.data as Promise<any>
     return res.body.json() as Promise<any>
 }
 
