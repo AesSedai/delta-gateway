@@ -79,12 +79,12 @@ export const WithApollo = (props: WithApolloProps): JSX.Element => {
             }
         })
 
-        const wsLink = new WebSocketLink({
-            uri: "ws://127.0.0.1:5002/graphql",
-            options: {
-                reconnect: true
-            }
-        })
+        // const wsLink = new WebSocketLink({
+        //     uri: "ws://127.0.0.1:5002/graphql",
+        //     options: {
+        //         reconnect: true
+        //     }
+        // })
 
         const graphqlWsLink = new GraphqlWsLink({
             url: "ws://127.0.0.1:5002/graphql",

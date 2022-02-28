@@ -73,8 +73,12 @@ export type Mutation = {
   delete_events?: Maybe<Events_Mutation_Response>;
   /** delete data from the table: "history.authors" */
   delete_history_authors?: Maybe<History_Authors_Mutation_Response>;
+  /** delete single row from the table: "history.authors" */
+  delete_history_authors_by_pk?: Maybe<History_Authors>;
   /** delete data from the table: "history.books" */
   delete_history_books?: Maybe<History_Books_Mutation_Response>;
+  /** delete single row from the table: "history.books" */
+  delete_history_books_by_pk?: Maybe<History_Books>;
   /** insert data into the table: "authors" */
   insert_authors?: Maybe<Authors_Mutation_Response>;
   /** insert a single row into the table: "authors" */
@@ -107,8 +111,12 @@ export type Mutation = {
   update_events?: Maybe<Events_Mutation_Response>;
   /** update data of the table: "history.authors" */
   update_history_authors?: Maybe<History_Authors_Mutation_Response>;
+  /** update single row of the table: "history.authors" */
+  update_history_authors_by_pk?: Maybe<History_Authors>;
   /** update data of the table: "history.books" */
   update_history_books?: Maybe<History_Books_Mutation_Response>;
+  /** update single row of the table: "history.books" */
+  update_history_books_by_pk?: Maybe<History_Books>;
 };
 
 
@@ -149,8 +157,22 @@ export type MutationDelete_History_AuthorsArgs = {
 
 
 /** mutation root */
+export type MutationDelete_History_Authors_By_PkArgs = {
+  id: Scalars['uuid'];
+  valid_from: Scalars['timestamptz'];
+};
+
+
+/** mutation root */
 export type MutationDelete_History_BooksArgs = {
   where: History_Books_Bool_Exp;
+};
+
+
+/** mutation root */
+export type MutationDelete_History_Books_By_PkArgs = {
+  id: Scalars['uuid'];
+  valid_from: Scalars['timestamptz'];
 };
 
 
@@ -199,24 +221,28 @@ export type MutationInsert_Events_OneArgs = {
 /** mutation root */
 export type MutationInsert_History_AuthorsArgs = {
   objects: Array<History_Authors_Insert_Input>;
+  on_conflict?: InputMaybe<History_Authors_On_Conflict>;
 };
 
 
 /** mutation root */
 export type MutationInsert_History_Authors_OneArgs = {
   object: History_Authors_Insert_Input;
+  on_conflict?: InputMaybe<History_Authors_On_Conflict>;
 };
 
 
 /** mutation root */
 export type MutationInsert_History_BooksArgs = {
   objects: Array<History_Books_Insert_Input>;
+  on_conflict?: InputMaybe<History_Books_On_Conflict>;
 };
 
 
 /** mutation root */
 export type MutationInsert_History_Books_OneArgs = {
   object: History_Books_Insert_Input;
+  on_conflict?: InputMaybe<History_Books_On_Conflict>;
 };
 
 
@@ -269,9 +295,23 @@ export type MutationUpdate_History_AuthorsArgs = {
 
 
 /** mutation root */
+export type MutationUpdate_History_Authors_By_PkArgs = {
+  _set?: InputMaybe<History_Authors_Set_Input>;
+  pk_columns: History_Authors_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type MutationUpdate_History_BooksArgs = {
   _set?: InputMaybe<History_Books_Set_Input>;
   where: History_Books_Bool_Exp;
+};
+
+
+/** mutation root */
+export type MutationUpdate_History_Books_By_PkArgs = {
+  _set?: InputMaybe<History_Books_Set_Input>;
+  pk_columns: History_Books_Pk_Columns_Input;
 };
 
 export type Query = {
@@ -296,10 +336,14 @@ export type Query = {
   history_authors: Array<History_Authors>;
   /** fetch aggregated fields from the table: "history.authors" */
   history_authors_aggregate: History_Authors_Aggregate;
+  /** fetch data from the table: "history.authors" using primary key columns */
+  history_authors_by_pk?: Maybe<History_Authors>;
   /** fetch data from the table: "history.books" */
   history_books: Array<History_Books>;
   /** fetch aggregated fields from the table: "history.books" */
   history_books_aggregate: History_Books_Aggregate;
+  /** fetch data from the table: "history.books" using primary key columns */
+  history_books_by_pk?: Maybe<History_Books>;
 };
 
 
@@ -385,6 +429,12 @@ export type QueryHistory_Authors_AggregateArgs = {
 };
 
 
+export type QueryHistory_Authors_By_PkArgs = {
+  id: Scalars['uuid'];
+  valid_from: Scalars['timestamptz'];
+};
+
+
 export type QueryHistory_BooksArgs = {
   distinct_on?: InputMaybe<Array<History_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -400,6 +450,12 @@ export type QueryHistory_Books_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<History_Books_Order_By>>;
   where?: InputMaybe<History_Books_Bool_Exp>;
+};
+
+
+export type QueryHistory_Books_By_PkArgs = {
+  id: Scalars['uuid'];
+  valid_from: Scalars['timestamptz'];
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -457,10 +513,14 @@ export type Subscription = {
   history_authors: Array<History_Authors>;
   /** fetch aggregated fields from the table: "history.authors" */
   history_authors_aggregate: History_Authors_Aggregate;
+  /** fetch data from the table: "history.authors" using primary key columns */
+  history_authors_by_pk?: Maybe<History_Authors>;
   /** fetch data from the table: "history.books" */
   history_books: Array<History_Books>;
   /** fetch aggregated fields from the table: "history.books" */
   history_books_aggregate: History_Books_Aggregate;
+  /** fetch data from the table: "history.books" using primary key columns */
+  history_books_by_pk?: Maybe<History_Books>;
   live: LiveSubscription;
 };
 
@@ -547,6 +607,12 @@ export type SubscriptionHistory_Authors_AggregateArgs = {
 };
 
 
+export type SubscriptionHistory_Authors_By_PkArgs = {
+  id: Scalars['uuid'];
+  valid_from: Scalars['timestamptz'];
+};
+
+
 export type SubscriptionHistory_BooksArgs = {
   distinct_on?: InputMaybe<Array<History_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -562,6 +628,12 @@ export type SubscriptionHistory_Books_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<History_Books_Order_By>>;
   where?: InputMaybe<History_Books_Bool_Exp>;
+};
+
+
+export type SubscriptionHistory_Books_By_PkArgs = {
+  id: Scalars['uuid'];
+  valid_from: Scalars['timestamptz'];
 };
 
 /** columns and relationships of "authors" */
@@ -737,8 +809,8 @@ export enum Authors_Update_Column {
 export type Books = {
   __typename: 'books';
   /** An object relationship */
-  author: Authors;
-  author_id: Scalars['uuid'];
+  author?: Maybe<Authors>;
+  author_id?: Maybe<Scalars['uuid']>;
   created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   isbn?: Maybe<Scalars['String']>;
@@ -1249,7 +1321,7 @@ export type History_Authors = {
   id: Scalars['uuid'];
   name?: Maybe<Scalars['String']>;
   updated_at: Scalars['timestamptz'];
-  valid_from?: Maybe<Scalars['timestamptz']>;
+  valid_from: Scalars['timestamptz'];
   valid_to?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -1295,18 +1367,6 @@ export type History_Authors_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "history.authors" */
-export type History_Authors_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<History_Authors_Max_Order_By>;
-  min?: InputMaybe<History_Authors_Min_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "history.authors" */
-export type History_Authors_Arr_Rel_Insert_Input = {
-  data: Array<History_Authors_Insert_Input>;
-};
-
 /** Boolean expression to filter rows from the table "history.authors". All fields are combined with a logical 'AND'. */
 export type History_Authors_Bool_Exp = {
   _and?: InputMaybe<Array<History_Authors_Bool_Exp>>;
@@ -1320,6 +1380,12 @@ export type History_Authors_Bool_Exp = {
   valid_from?: InputMaybe<Timestamptz_Comparison_Exp>;
   valid_to?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
+
+/** unique or primary key constraints on table "history.authors" */
+export enum History_Authors_Constraint {
+  /** unique or primary key constraint */
+  AuthorsPkey = 'authors_pkey'
+}
 
 /** input type for inserting data into table "history.authors" */
 export type History_Authors_Insert_Input = {
@@ -1343,16 +1409,6 @@ export type History_Authors_Max_Fields = {
   valid_to?: Maybe<Scalars['timestamptz']>;
 };
 
-/** order by max() on columns of table "history.authors" */
-export type History_Authors_Max_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-  valid_from?: InputMaybe<Order_By>;
-  valid_to?: InputMaybe<Order_By>;
-};
-
 /** aggregate min on columns */
 export type History_Authors_Min_Fields = {
   __typename: 'history_authors_min_fields';
@@ -1364,16 +1420,6 @@ export type History_Authors_Min_Fields = {
   valid_to?: Maybe<Scalars['timestamptz']>;
 };
 
-/** order by min() on columns of table "history.authors" */
-export type History_Authors_Min_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-  valid_from?: InputMaybe<Order_By>;
-  valid_to?: InputMaybe<Order_By>;
-};
-
 /** response of any mutation on the table "history.authors" */
 export type History_Authors_Mutation_Response = {
   __typename: 'history_authors_mutation_response';
@@ -1381,6 +1427,20 @@ export type History_Authors_Mutation_Response = {
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
   returning: Array<History_Authors>;
+};
+
+/** input type for inserting object relation for remote table "history.authors" */
+export type History_Authors_Obj_Rel_Insert_Input = {
+  data: History_Authors_Insert_Input;
+  /** on conflict condition */
+  on_conflict?: InputMaybe<History_Authors_On_Conflict>;
+};
+
+/** on conflict condition type for table "history.authors" */
+export type History_Authors_On_Conflict = {
+  constraint: History_Authors_Constraint;
+  update_columns?: Array<History_Authors_Update_Column>;
+  where?: InputMaybe<History_Authors_Bool_Exp>;
 };
 
 /** Ordering options when selecting data from "history.authors". */
@@ -1392,6 +1452,12 @@ export type History_Authors_Order_By = {
   updated_at?: InputMaybe<Order_By>;
   valid_from?: InputMaybe<Order_By>;
   valid_to?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: history_authors */
+export type History_Authors_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+  valid_from: Scalars['timestamptz'];
 };
 
 /** select columns of table "history.authors" */
@@ -1420,42 +1486,36 @@ export type History_Authors_Set_Input = {
   valid_to?: InputMaybe<Scalars['timestamptz']>;
 };
 
+/** update columns of table "history.authors" */
+export enum History_Authors_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  ValidFrom = 'valid_from',
+  /** column name */
+  ValidTo = 'valid_to'
+}
+
 /** columns and relationships of "history.books" */
 export type History_Books = {
   __typename: 'history_books';
-  /** An array relationship */
-  author: Array<History_Authors>;
-  /** An aggregate relationship */
-  author_aggregate: History_Authors_Aggregate;
-  author_id: Scalars['uuid'];
+  /** An object relationship */
+  author?: Maybe<History_Authors>;
+  author_id?: Maybe<Scalars['uuid']>;
   created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   isbn?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['timestamp']>;
   title?: Maybe<Scalars['String']>;
   updated_at: Scalars['timestamptz'];
-  valid_from?: Maybe<Scalars['timestamptz']>;
+  valid_from: Scalars['timestamptz'];
   valid_to?: Maybe<Scalars['timestamptz']>;
-};
-
-
-/** columns and relationships of "history.books" */
-export type History_BooksAuthorArgs = {
-  distinct_on?: InputMaybe<Array<History_Authors_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<History_Authors_Order_By>>;
-  where?: InputMaybe<History_Authors_Bool_Exp>;
-};
-
-
-/** columns and relationships of "history.books" */
-export type History_BooksAuthor_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<History_Authors_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<History_Authors_Order_By>>;
-  where?: InputMaybe<History_Authors_Bool_Exp>;
 };
 
 /** aggregated selection of "history.books" */
@@ -1490,6 +1550,8 @@ export type History_Books_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "history.books" */
 export type History_Books_Arr_Rel_Insert_Input = {
   data: Array<History_Books_Insert_Input>;
+  /** on conflict condition */
+  on_conflict?: InputMaybe<History_Books_On_Conflict>;
 };
 
 /** Boolean expression to filter rows from the table "history.books". All fields are combined with a logical 'AND'. */
@@ -1509,9 +1571,15 @@ export type History_Books_Bool_Exp = {
   valid_to?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
+/** unique or primary key constraints on table "history.books" */
+export enum History_Books_Constraint {
+  /** unique or primary key constraint */
+  BooksPkey = 'books_pkey'
+}
+
 /** input type for inserting data into table "history.books" */
 export type History_Books_Insert_Input = {
-  author?: InputMaybe<History_Authors_Arr_Rel_Insert_Input>;
+  author?: InputMaybe<History_Authors_Obj_Rel_Insert_Input>;
   author_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -1586,9 +1654,16 @@ export type History_Books_Mutation_Response = {
   returning: Array<History_Books>;
 };
 
+/** on conflict condition type for table "history.books" */
+export type History_Books_On_Conflict = {
+  constraint: History_Books_Constraint;
+  update_columns?: Array<History_Books_Update_Column>;
+  where?: InputMaybe<History_Books_Bool_Exp>;
+};
+
 /** Ordering options when selecting data from "history.books". */
 export type History_Books_Order_By = {
-  author_aggregate?: InputMaybe<History_Authors_Aggregate_Order_By>;
+  author?: InputMaybe<History_Authors_Order_By>;
   author_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -1598,6 +1673,12 @@ export type History_Books_Order_By = {
   updated_at?: InputMaybe<Order_By>;
   valid_from?: InputMaybe<Order_By>;
   valid_to?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: history_books */
+export type History_Books_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+  valid_from: Scalars['timestamptz'];
 };
 
 /** select columns of table "history.books" */
@@ -1634,6 +1715,28 @@ export type History_Books_Set_Input = {
   valid_from?: InputMaybe<Scalars['timestamptz']>;
   valid_to?: InputMaybe<Scalars['timestamptz']>;
 };
+
+/** update columns of table "history.books" */
+export enum History_Books_Update_Column {
+  /** column name */
+  AuthorId = 'author_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Isbn = 'isbn',
+  /** column name */
+  PublishedAt = 'published_at',
+  /** column name */
+  Title = 'title',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  ValidFrom = 'valid_from',
+  /** column name */
+  ValidTo = 'valid_to'
+}
 
 /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
 export type Jsonb_Comparison_Exp = {
@@ -1696,10 +1799,14 @@ export type Subscription_Root = {
   history_authors: Array<History_Authors>;
   /** fetch aggregated fields from the table: "history.authors" */
   history_authors_aggregate: History_Authors_Aggregate;
+  /** fetch data from the table: "history.authors" using primary key columns */
+  history_authors_by_pk?: Maybe<History_Authors>;
   /** fetch data from the table: "history.books" */
   history_books: Array<History_Books>;
   /** fetch aggregated fields from the table: "history.books" */
   history_books_aggregate: History_Books_Aggregate;
+  /** fetch data from the table: "history.books" using primary key columns */
+  history_books_by_pk?: Maybe<History_Books>;
 };
 
 
@@ -1785,6 +1892,12 @@ export type Subscription_RootHistory_Authors_AggregateArgs = {
 };
 
 
+export type Subscription_RootHistory_Authors_By_PkArgs = {
+  id: Scalars['uuid'];
+  valid_from: Scalars['timestamptz'];
+};
+
+
 export type Subscription_RootHistory_BooksArgs = {
   distinct_on?: InputMaybe<Array<History_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -1800,6 +1913,12 @@ export type Subscription_RootHistory_Books_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<History_Books_Order_By>>;
   where?: InputMaybe<History_Books_Bool_Exp>;
+};
+
+
+export type Subscription_RootHistory_Books_By_PkArgs = {
+  id: Scalars['uuid'];
+  valid_from: Scalars['timestamptz'];
 };
 
 /** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
@@ -1895,7 +2014,7 @@ export type GetBooksQueryVariables = Exact<{
 }>;
 
 
-export type GetBooksQuery = { __typename: 'Query', books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any, author: { __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any } }> };
+export type GetBooksQuery = { __typename: 'Query', books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any, author?: { __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any } | null | undefined }> };
 
 export type AuthorsSubscriptionVariables = Exact<{
   limit: Scalars['Int'];
@@ -1917,7 +2036,7 @@ export type BooksSubscriptionVariables = Exact<{
 }>;
 
 
-export type BooksSubscription = { __typename: 'Subscription', books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any, author: { __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any } }> };
+export type BooksSubscription = { __typename: 'Subscription', books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any, author?: { __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any } | null | undefined }> };
 
 export type BooksLiveSubscriptionVariables = Exact<{
   lastUpdated: Scalars['timestamptz'];
@@ -1925,7 +2044,7 @@ export type BooksLiveSubscriptionVariables = Exact<{
 }>;
 
 
-export type BooksLiveSubscription = { __typename: 'Subscription', live: { __typename: 'LiveSubscription', id: string, query?: { __typename: 'subscription_root', books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any, author: { __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any } }> } | null | undefined, delta: { __typename: 'delta', lastUpdated: any, patch: string, hash: string } } };
+export type BooksLiveSubscription = { __typename: 'Subscription', live: { __typename: 'LiveSubscription', id: string, query?: { __typename: 'subscription_root', books: Array<{ __typename: 'books', id: any, title?: string | null | undefined, isbn?: string | null | undefined, updated_at: any, author?: { __typename: 'authors', id: any, name?: string | null | undefined, updated_at: any } | null | undefined }> } | null | undefined, delta: { __typename: 'delta', lastUpdated: any, patch: string, hash: string } } };
 
 
 export const UpdateAuthorDocument = gql`
@@ -2407,7 +2526,7 @@ export type LiveSubscriptionFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	query?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('delete_authors' | 'delete_authors_by_pk' | 'delete_books' | 'delete_books_by_pk' | 'delete_events' | 'delete_history_authors' | 'delete_history_books' | 'insert_authors' | 'insert_authors_one' | 'insert_books' | 'insert_books_one' | 'insert_events' | 'insert_events_one' | 'insert_history_authors' | 'insert_history_authors_one' | 'insert_history_books' | 'insert_history_books_one' | 'update_authors' | 'update_authors_by_pk' | 'update_books' | 'update_books_by_pk' | 'update_events' | 'update_history_authors' | 'update_history_books' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = ('delete_authors' | 'delete_authors_by_pk' | 'delete_books' | 'delete_books_by_pk' | 'delete_events' | 'delete_history_authors' | 'delete_history_authors_by_pk' | 'delete_history_books' | 'delete_history_books_by_pk' | 'insert_authors' | 'insert_authors_one' | 'insert_books' | 'insert_books_one' | 'insert_events' | 'insert_events_one' | 'insert_history_authors' | 'insert_history_authors_one' | 'insert_history_books' | 'insert_history_books_one' | 'update_authors' | 'update_authors_by_pk' | 'update_books' | 'update_books_by_pk' | 'update_events' | 'update_history_authors' | 'update_history_authors_by_pk' | 'update_history_books' | 'update_history_books_by_pk' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	delete_authors?: FieldPolicy<any> | FieldReadFunction<any>,
 	delete_authors_by_pk?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -2415,7 +2534,9 @@ export type MutationFieldPolicy = {
 	delete_books_by_pk?: FieldPolicy<any> | FieldReadFunction<any>,
 	delete_events?: FieldPolicy<any> | FieldReadFunction<any>,
 	delete_history_authors?: FieldPolicy<any> | FieldReadFunction<any>,
+	delete_history_authors_by_pk?: FieldPolicy<any> | FieldReadFunction<any>,
 	delete_history_books?: FieldPolicy<any> | FieldReadFunction<any>,
+	delete_history_books_by_pk?: FieldPolicy<any> | FieldReadFunction<any>,
 	insert_authors?: FieldPolicy<any> | FieldReadFunction<any>,
 	insert_authors_one?: FieldPolicy<any> | FieldReadFunction<any>,
 	insert_books?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -2432,9 +2553,11 @@ export type MutationFieldPolicy = {
 	update_books_by_pk?: FieldPolicy<any> | FieldReadFunction<any>,
 	update_events?: FieldPolicy<any> | FieldReadFunction<any>,
 	update_history_authors?: FieldPolicy<any> | FieldReadFunction<any>,
-	update_history_books?: FieldPolicy<any> | FieldReadFunction<any>
+	update_history_authors_by_pk?: FieldPolicy<any> | FieldReadFunction<any>,
+	update_history_books?: FieldPolicy<any> | FieldReadFunction<any>,
+	update_history_books_by_pk?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('authors' | 'authors_aggregate' | 'authors_by_pk' | 'books' | 'books_aggregate' | 'books_by_pk' | 'events' | 'events_aggregate' | 'history_authors' | 'history_authors_aggregate' | 'history_books' | 'history_books_aggregate' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('authors' | 'authors_aggregate' | 'authors_by_pk' | 'books' | 'books_aggregate' | 'books_by_pk' | 'events' | 'events_aggregate' | 'history_authors' | 'history_authors_aggregate' | 'history_authors_by_pk' | 'history_books' | 'history_books_aggregate' | 'history_books_by_pk' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	authors?: FieldPolicy<any> | FieldReadFunction<any>,
 	authors_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -2446,10 +2569,12 @@ export type QueryFieldPolicy = {
 	events_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	history_authors?: FieldPolicy<any> | FieldReadFunction<any>,
 	history_authors_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
+	history_authors_by_pk?: FieldPolicy<any> | FieldReadFunction<any>,
 	history_books?: FieldPolicy<any> | FieldReadFunction<any>,
-	history_books_aggregate?: FieldPolicy<any> | FieldReadFunction<any>
+	history_books_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
+	history_books_by_pk?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type SubscriptionKeySpecifier = ('authors' | 'authors_aggregate' | 'authors_by_pk' | 'books' | 'books_aggregate' | 'books_by_pk' | 'events' | 'events_aggregate' | 'history_authors' | 'history_authors_aggregate' | 'history_books' | 'history_books_aggregate' | 'live' | SubscriptionKeySpecifier)[];
+export type SubscriptionKeySpecifier = ('authors' | 'authors_aggregate' | 'authors_by_pk' | 'books' | 'books_aggregate' | 'books_by_pk' | 'events' | 'events_aggregate' | 'history_authors' | 'history_authors_aggregate' | 'history_authors_by_pk' | 'history_books' | 'history_books_aggregate' | 'history_books_by_pk' | 'live' | SubscriptionKeySpecifier)[];
 export type SubscriptionFieldPolicy = {
 	authors?: FieldPolicy<any> | FieldReadFunction<any>,
 	authors_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -2461,8 +2586,10 @@ export type SubscriptionFieldPolicy = {
 	events_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	history_authors?: FieldPolicy<any> | FieldReadFunction<any>,
 	history_authors_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
+	history_authors_by_pk?: FieldPolicy<any> | FieldReadFunction<any>,
 	history_books?: FieldPolicy<any> | FieldReadFunction<any>,
 	history_books_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
+	history_books_by_pk?: FieldPolicy<any> | FieldReadFunction<any>,
 	live?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type authorsKeySpecifier = ('books' | 'books_aggregate' | 'created_at' | 'id' | 'name' | 'updated_at' | authorsKeySpecifier)[];
@@ -2711,10 +2838,9 @@ export type history_authors_mutation_responseFieldPolicy = {
 	affected_rows?: FieldPolicy<any> | FieldReadFunction<any>,
 	returning?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type history_booksKeySpecifier = ('author' | 'author_aggregate' | 'author_id' | 'created_at' | 'id' | 'isbn' | 'published_at' | 'title' | 'updated_at' | 'valid_from' | 'valid_to' | history_booksKeySpecifier)[];
+export type history_booksKeySpecifier = ('author' | 'author_id' | 'created_at' | 'id' | 'isbn' | 'published_at' | 'title' | 'updated_at' | 'valid_from' | 'valid_to' | history_booksKeySpecifier)[];
 export type history_booksFieldPolicy = {
 	author?: FieldPolicy<any> | FieldReadFunction<any>,
-	author_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	author_id?: FieldPolicy<any> | FieldReadFunction<any>,
 	created_at?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -2765,7 +2891,7 @@ export type history_books_mutation_responseFieldPolicy = {
 	affected_rows?: FieldPolicy<any> | FieldReadFunction<any>,
 	returning?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type subscription_rootKeySpecifier = ('authors' | 'authors_aggregate' | 'authors_by_pk' | 'books' | 'books_aggregate' | 'books_by_pk' | 'events' | 'events_aggregate' | 'history_authors' | 'history_authors_aggregate' | 'history_books' | 'history_books_aggregate' | subscription_rootKeySpecifier)[];
+export type subscription_rootKeySpecifier = ('authors' | 'authors_aggregate' | 'authors_by_pk' | 'books' | 'books_aggregate' | 'books_by_pk' | 'events' | 'events_aggregate' | 'history_authors' | 'history_authors_aggregate' | 'history_authors_by_pk' | 'history_books' | 'history_books_aggregate' | 'history_books_by_pk' | subscription_rootKeySpecifier)[];
 export type subscription_rootFieldPolicy = {
 	authors?: FieldPolicy<any> | FieldReadFunction<any>,
 	authors_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -2777,8 +2903,10 @@ export type subscription_rootFieldPolicy = {
 	events_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
 	history_authors?: FieldPolicy<any> | FieldReadFunction<any>,
 	history_authors_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
+	history_authors_by_pk?: FieldPolicy<any> | FieldReadFunction<any>,
 	history_books?: FieldPolicy<any> | FieldReadFunction<any>,
-	history_books_aggregate?: FieldPolicy<any> | FieldReadFunction<any>
+	history_books_aggregate?: FieldPolicy<any> | FieldReadFunction<any>,
+	history_books_by_pk?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type StrictTypedTypePolicies = {
 	LiveSubscription?: Omit<TypePolicy, "fields" | "keyFields"> & {

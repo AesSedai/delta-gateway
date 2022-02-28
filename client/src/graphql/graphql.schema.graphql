@@ -79,12 +79,22 @@ type Mutation {
   ): history_authors_mutation_response
 
   """
+  delete single row from the table: "history.authors"
+  """
+  delete_history_authors_by_pk(id: uuid!, valid_from: timestamptz!): history_authors
+
+  """
   delete data from the table: "history.books"
   """
   delete_history_books(
     """filter the rows which have to be deleted"""
     where: history_books_bool_exp!
   ): history_books_mutation_response
+
+  """
+  delete single row from the table: "history.books"
+  """
+  delete_history_books_by_pk(id: uuid!, valid_from: timestamptz!): history_books
 
   """
   insert data into the table: "authors"
@@ -158,6 +168,9 @@ type Mutation {
   insert_history_authors(
     """the rows to be inserted"""
     objects: [history_authors_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: history_authors_on_conflict
   ): history_authors_mutation_response
 
   """
@@ -166,6 +179,9 @@ type Mutation {
   insert_history_authors_one(
     """the row to be inserted"""
     object: history_authors_insert_input!
+
+    """on conflict condition"""
+    on_conflict: history_authors_on_conflict
   ): history_authors
 
   """
@@ -174,6 +190,9 @@ type Mutation {
   insert_history_books(
     """the rows to be inserted"""
     objects: [history_books_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: history_books_on_conflict
   ): history_books_mutation_response
 
   """
@@ -182,6 +201,9 @@ type Mutation {
   insert_history_books_one(
     """the row to be inserted"""
     object: history_books_insert_input!
+
+    """on conflict condition"""
+    on_conflict: history_books_on_conflict
   ): history_books
 
   """
@@ -271,6 +293,15 @@ type Mutation {
   ): history_authors_mutation_response
 
   """
+  update single row of the table: "history.authors"
+  """
+  update_history_authors_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: history_authors_set_input
+    pk_columns: history_authors_pk_columns_input!
+  ): history_authors
+
+  """
   update data of the table: "history.books"
   """
   update_history_books(
@@ -280,6 +311,15 @@ type Mutation {
     """filter the rows which have to be updated"""
     where: history_books_bool_exp!
   ): history_books_mutation_response
+
+  """
+  update single row of the table: "history.books"
+  """
+  update_history_books_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: history_books_set_input
+    pk_columns: history_books_pk_columns_input!
+  ): history_books
 }
 
 type Query {
@@ -447,6 +487,9 @@ type Query {
     where: history_authors_bool_exp
   ): history_authors_aggregate!
 
+  """fetch data from the table: "history.authors" using primary key columns"""
+  history_authors_by_pk(id: uuid!, valid_from: timestamptz!): history_authors
+
   """
   fetch data from the table: "history.books"
   """
@@ -486,6 +529,9 @@ type Query {
     """filter the rows returned"""
     where: history_books_bool_exp
   ): history_books_aggregate!
+
+  """fetch data from the table: "history.books" using primary key columns"""
+  history_books_by_pk(id: uuid!, valid_from: timestamptz!): history_books
 }
 
 """
@@ -706,6 +752,9 @@ type Subscription {
     where: history_authors_bool_exp
   ): history_authors_aggregate!
 
+  """fetch data from the table: "history.authors" using primary key columns"""
+  history_authors_by_pk(id: uuid!, valid_from: timestamptz!): history_authors
+
   """
   fetch data from the table: "history.books"
   """
@@ -745,6 +794,9 @@ type Subscription {
     """filter the rows returned"""
     where: history_books_bool_exp
   ): history_books_aggregate!
+
+  """fetch data from the table: "history.books" using primary key columns"""
+  history_books_by_pk(id: uuid!, valid_from: timestamptz!): history_books
   live: LiveSubscription!
 }
 
@@ -954,8 +1006,8 @@ columns and relationships of "books"
 """
 type books {
   """An object relationship"""
-  author: authors!
-  author_id: uuid!
+  author: authors
+  author_id: uuid
   created_at: timestamptz!
   id: uuid!
   isbn: String
@@ -1548,7 +1600,7 @@ type history_authors {
   id: uuid!
   name: String
   updated_at: timestamptz!
-  valid_from: timestamptz
+  valid_from: timestamptz!
   valid_to: timestamptz
 }
 
@@ -1570,22 +1622,6 @@ type history_authors_aggregate_fields {
 }
 
 """
-order by aggregate values of table "history.authors"
-"""
-input history_authors_aggregate_order_by {
-  count: order_by
-  max: history_authors_max_order_by
-  min: history_authors_min_order_by
-}
-
-"""
-input type for inserting array relation for remote table "history.authors"
-"""
-input history_authors_arr_rel_insert_input {
-  data: [history_authors_insert_input!]!
-}
-
-"""
 Boolean expression to filter rows from the table "history.authors". All fields are combined with a logical 'AND'.
 """
 input history_authors_bool_exp {
@@ -1599,6 +1635,14 @@ input history_authors_bool_exp {
   updated_at: timestamptz_comparison_exp
   valid_from: timestamptz_comparison_exp
   valid_to: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "history.authors"
+"""
+enum history_authors_constraint {
+  """unique or primary key constraint"""
+  authors_pkey
 }
 
 """
@@ -1624,18 +1668,6 @@ type history_authors_max_fields {
   valid_to: timestamptz
 }
 
-"""
-order by max() on columns of table "history.authors"
-"""
-input history_authors_max_order_by {
-  created_at: order_by
-  id: order_by
-  name: order_by
-  updated_at: order_by
-  valid_from: order_by
-  valid_to: order_by
-}
-
 """aggregate min on columns"""
 type history_authors_min_fields {
   created_at: timestamptz
@@ -1644,18 +1676,6 @@ type history_authors_min_fields {
   updated_at: timestamptz
   valid_from: timestamptz
   valid_to: timestamptz
-}
-
-"""
-order by min() on columns of table "history.authors"
-"""
-input history_authors_min_order_by {
-  created_at: order_by
-  id: order_by
-  name: order_by
-  updated_at: order_by
-  valid_from: order_by
-  valid_to: order_by
 }
 
 """
@@ -1669,6 +1689,25 @@ type history_authors_mutation_response {
   returning: [history_authors!]!
 }
 
+"""
+input type for inserting object relation for remote table "history.authors"
+"""
+input history_authors_obj_rel_insert_input {
+  data: history_authors_insert_input!
+
+  """on conflict condition"""
+  on_conflict: history_authors_on_conflict
+}
+
+"""
+on conflict condition type for table "history.authors"
+"""
+input history_authors_on_conflict {
+  constraint: history_authors_constraint!
+  update_columns: [history_authors_update_column!]! = []
+  where: history_authors_bool_exp
+}
+
 """Ordering options when selecting data from "history.authors"."""
 input history_authors_order_by {
   books_aggregate: history_books_aggregate_order_by
@@ -1678,6 +1717,12 @@ input history_authors_order_by {
   updated_at: order_by
   valid_from: order_by
   valid_to: order_by
+}
+
+"""primary key columns input for table: history_authors"""
+input history_authors_pk_columns_input {
+  id: uuid!
+  valid_from: timestamptz!
 }
 
 """
@@ -1716,52 +1761,42 @@ input history_authors_set_input {
 }
 
 """
+update columns of table "history.authors"
+"""
+enum history_authors_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  valid_from
+
+  """column name"""
+  valid_to
+}
+
+"""
 columns and relationships of "history.books"
 """
 type history_books {
-  """An array relationship"""
-  author(
-    """distinct select on columns"""
-    distinct_on: [history_authors_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [history_authors_order_by!]
-
-    """filter the rows returned"""
-    where: history_authors_bool_exp
-  ): [history_authors!]!
-
-  """An aggregate relationship"""
-  author_aggregate(
-    """distinct select on columns"""
-    distinct_on: [history_authors_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [history_authors_order_by!]
-
-    """filter the rows returned"""
-    where: history_authors_bool_exp
-  ): history_authors_aggregate!
-  author_id: uuid!
+  """An object relationship"""
+  author: history_authors
+  author_id: uuid
   created_at: timestamptz!
   id: uuid!
   isbn: String
   published_at: timestamp
   title: String
   updated_at: timestamptz!
-  valid_from: timestamptz
+  valid_from: timestamptz!
   valid_to: timestamptz
 }
 
@@ -1796,6 +1831,9 @@ input type for inserting array relation for remote table "history.books"
 """
 input history_books_arr_rel_insert_input {
   data: [history_books_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: history_books_on_conflict
 }
 
 """
@@ -1818,10 +1856,18 @@ input history_books_bool_exp {
 }
 
 """
+unique or primary key constraints on table "history.books"
+"""
+enum history_books_constraint {
+  """unique or primary key constraint"""
+  books_pkey
+}
+
+"""
 input type for inserting data into table "history.books"
 """
 input history_books_insert_input {
-  author: history_authors_arr_rel_insert_input
+  author: history_authors_obj_rel_insert_input
   author_id: uuid
   created_at: timestamptz
   id: uuid
@@ -1900,9 +1946,18 @@ type history_books_mutation_response {
   returning: [history_books!]!
 }
 
+"""
+on conflict condition type for table "history.books"
+"""
+input history_books_on_conflict {
+  constraint: history_books_constraint!
+  update_columns: [history_books_update_column!]! = []
+  where: history_books_bool_exp
+}
+
 """Ordering options when selecting data from "history.books"."""
 input history_books_order_by {
-  author_aggregate: history_authors_aggregate_order_by
+  author: history_authors_order_by
   author_id: order_by
   created_at: order_by
   id: order_by
@@ -1912,6 +1967,12 @@ input history_books_order_by {
   updated_at: order_by
   valid_from: order_by
   valid_to: order_by
+}
+
+"""primary key columns input for table: history_books"""
+input history_books_pk_columns_input {
+  id: uuid!
+  valid_from: timestamptz!
 }
 
 """
@@ -1959,6 +2020,38 @@ input history_books_set_input {
   updated_at: timestamptz
   valid_from: timestamptz
   valid_to: timestamptz
+}
+
+"""
+update columns of table "history.books"
+"""
+enum history_books_update_column {
+  """column name"""
+  author_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  isbn
+
+  """column name"""
+  published_at
+
+  """column name"""
+  title
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  valid_from
+
+  """column name"""
+  valid_to
 }
 
 scalar jsonb
@@ -2178,6 +2271,9 @@ type subscription_root {
     where: history_authors_bool_exp
   ): history_authors_aggregate!
 
+  """fetch data from the table: "history.authors" using primary key columns"""
+  history_authors_by_pk(id: uuid!, valid_from: timestamptz!): history_authors
+
   """
   fetch data from the table: "history.books"
   """
@@ -2217,6 +2313,9 @@ type subscription_root {
     """filter the rows returned"""
     where: history_books_bool_exp
   ): history_books_aggregate!
+
+  """fetch data from the table: "history.books" using primary key columns"""
+  history_books_by_pk(id: uuid!, valid_from: timestamptz!): history_books
 }
 
 scalar timestamp

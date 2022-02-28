@@ -97,12 +97,14 @@ export const BookLiveSub: FC = () => {
                     onNodeToggle={handleToggle}
                     expanded={expanded}>
                     {books.data.books.map((book) => (
-                        <TreeItem key={book.id} nodeId={book.id} label={book.title ?? ""}>
+                        book.author == null ? <></> : (
+                            <TreeItem key={book.id} nodeId={book.id} label={book.title ?? ""}>
                             <TreeItem
                                 key={book.author.id}
                                 nodeId={book.author.id}
                                 label={book.author.name ?? ""}></TreeItem>
                         </TreeItem>
+                        )
                     ))}
                 </TreeView>
                 <Box sx={{ my: 1 }}>

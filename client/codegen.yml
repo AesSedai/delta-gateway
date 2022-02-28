@@ -1,5 +1,7 @@
 schema:
-    - http://127.0.0.1:5002/graphql
+    - http://127.0.0.1:5002/graphql:
+        headers:
+            X-Hasura-Admin-Secret: ${HASURA_GRAPHQL_ADMIN_SECRET}
 documents:
     - ./src/**/*.tsx
     - ./src/**/*.ts
