@@ -11,6 +11,7 @@ select_permissions:
     - author_id
     - created_at
     - id
+    - isbn
     - title
     - updated_at
     filter: {}

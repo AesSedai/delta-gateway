@@ -1,7 +1,7 @@
 table:
   name: books
   schema: history
-array_relationships:
+object_relationships:
 - name: author
   using:
     manual_configuration:
@@ -17,9 +17,18 @@ select_permissions:
     - author_id
     - created_at
     - id
+    - isbn
     - title
     - updated_at
     - valid_from
     - valid_to
-    filter: {}
+    filter:
+      _and:
+      - valid_from:
+          _lte: X-Hasura-Timestamp
+      - _or:
+        - valid_to:
+            _is_null: true
+        - valid_to:
+            _gt: X-Hasura-Timestamp
   role: user

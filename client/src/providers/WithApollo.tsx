@@ -94,7 +94,6 @@ export const WithApollo = (props: WithApolloProps): JSX.Element => {
                     headers: {
                         "x-hasura-admin-secret": "CMEl5G6sobPIN_iTzXcQVvOari9GcSCZ7U6o",
                         "x-hasura-role": "admin"
-                        //  Authorization: token !== undefined ? `Bearer ${token}` : ""
                     }
                 }
             }

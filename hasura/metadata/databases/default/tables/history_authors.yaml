@@ -20,5 +20,13 @@ select_permissions:
     - valid_from
     - valid_to
     - id
-    filter: {}
+    filter:
+      _and:
+      - valid_from:
+          _lte: X-Hasura-Timestamp
+      - _or:
+        - valid_to:
+            _is_null: true
+        - valid_to:
+            _gt: X-Hasura-Timestamp
   role: user
